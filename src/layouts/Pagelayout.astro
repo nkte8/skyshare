@@ -1,0 +1,28 @@
+---
+import path from "path";
+import { baseurl } from "@/utils/vars";
+import Metadatas from "@/components/Metadatas.astro";
+// import "@/styles/global.css";
+const favicon = path.join(baseurl, "favicon.svg");
+interface Props {
+    pageTitle: string;
+    cardPath: string;
+}
+const { cardPath, pageTitle } = Astro.props;
+import Header from "@/components/Header.astro";
+---
+
+<html lang="ja">
+    <head>
+        <link rel="icon" href={favicon} />
+        <Metadatas cardPath={cardPath} pageTitle={pageTitle} />
+    </head>
+    <body class="bg-gradient-to-b from-transparent to-sky-300 bg-fixed h-dvh">
+        <Header slot="header" />
+        <div class="container mx-auto p-5 max-w-5xl">
+            <div class="bg-white bg-opacity-80 p-5 rounded-lg">
+                <slot />
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,62 @@
+name: Add images and datas
+on:
+  repository_dispatch:
+    types: [update_content]
+    ## {"event_type":"push",
+    ## "client_payload":"{"format","webp,jpg,etc..","data":"<base64 imagedata>}"}
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  append:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: install pngquant
+        run: |
+          cd /tmp/
+          curl -OL https://pngquant.org/pngquant-linux.tar.bz2
+          tar -xf pngquant-linux.tar.bz2 pngquant
+      - name: install jpegoptim
+        run: |
+          echo "\$nrconf{restart} = 'a';" | sudo tee /etc/needrestart/conf.d/50local.conf
+          sudo apt-get install -y libjpeg-dev
+          cd /tmp/
+          git clone -b v1.5.5 --single-branch https://github.com/tjko/jpegoptim.git
+          cd jpegoptim/
+          ./configure
+          make
+      - name: Read Payload and compress image
+        env: 
+          DATA: ${{ github.event.client_payload.data }}
+          FORMAT: ${{ github.event.client_payload.format }}
+        run: |
+          [[ ${FORMAT,,} != "png" ]] && [[ ${FORMAT,,} != "jpg" ]] && exit 1
+          FILENAME=./public/img/`date +%Y%m%d_%H%M%S`.${FORMAT,,}
+          echo -n "${DATA}" | base64 -d > ${FILENAME}
+          if [[ ${FORMAT,,} = "png" ]]; then
+            /tmp/pngquant --ext .png --force ${FILENAME}
+          elif [[ ${FORMAT,,} = "jpg" ]]; then
+            /tmp/jpegoptim -m85 --strip-all ${FILENAME}
+          fi
+      - name: Add branch to Image
+        run: | 
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git add -N .
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "[github action] append sucessed"; \
+            git push;
+          fi
+
+  call-deploy:
+    needs: [append]
+    uses: ./.github/workflows/deploy.yml

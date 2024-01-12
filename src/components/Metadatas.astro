@@ -1,0 +1,26 @@
+---
+interface Props {
+    pageTitle: string,
+    cardPath: string,
+}
+const { cardPath, pageTitle } = Astro.props;
+
+const url = Astro.url;
+const cardUrl = new URL(cardPath, Astro.url);
+---
+<title>{pageTitle}</title>
+<meta property="og:url" content={url} />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content="skydrop" />
+<meta property="og:site_name" content="skydrop" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content="skydrop" />
+<meta name="twitter:image" content={cardUrl} />
+<meta property="og:image" content={cardUrl} />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+<meta name="robots" content="noindex,nofollow,noarchive,noimageindex" />

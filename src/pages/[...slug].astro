@@ -1,0 +1,44 @@
+---
+import path from "path";
+type staticpath = {
+    params: {
+        slug: string;
+    };
+    props: {
+        id: string;
+        img_path: string;
+    };
+};
+
+export const extfilters = ["png", "jpg"];
+export async function getStaticPaths() {
+    const res_array = await findExt("public/img/", extfilters);
+    let apage_array: staticpath[] = [];
+    res_array.forEach((value) => {
+        apage_array.push({
+            params: {
+                slug: postpath + "/" + path.parse(value).name,
+            },
+            props: {
+                id: path.parse(value).name,
+                img_path: path.join(baseurl, path.relative("public/", value)),
+            },
+        });
+    });
+    return apage_array;
+}
+
+import { findExt } from "@/utils/filelistarray";
+import { baseurl, postpath } from "@/utils/vars";
+
+interface Props {
+    id: string;
+    img_path: string;
+}
+const { id, img_path } = Astro.props;
+import Pagelayout from "@/layouts/Pagelayout.astro";
+---
+
+<Pagelayout cardPath={img_path} pageTitle={`${id} - SkyDrop`}>
+    <img src={img_path} alt={id} />
+</Pagelayout>

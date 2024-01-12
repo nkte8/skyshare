@@ -1,0 +1,37 @@
+---
+import Pagelayout from "@/layouts/Pagelayout.astro";
+import path from "path";
+import { findExt } from "@/utils/filelistarray";
+import { baseurl, postpath, siteurl } from "@/utils/vars";
+
+export const extfilters = ["png", "jpg"];
+const res_array = await findExt("public/img/", extfilters);
+type link = {
+    url: string;
+    name: string;
+};
+let links: Array<link> = [];
+res_array.forEach((value) => {
+    links.push({
+        url: path.join(baseurl, postpath, path.parse(value).name),
+        name: path.basename(value),
+    });
+});
+
+import { subject, link } from "@/utils/tailwind_variants";
+---
+
+<Pagelayout cardPath="" pageTitle="Posts - SkyDrop">
+    <h1 class={subject({ size: "l" })}>Posts List</h1>
+    <ul>
+        {
+            links.map((item) => (
+                <li class="p-6 mx-auto bg-white rounded-xl shadow-lg items-center space-x-4">
+                    <a class={link()} href={item.url}>
+                        {item.name} （{new URL(item.url, siteurl)}）
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+</Pagelayout>
