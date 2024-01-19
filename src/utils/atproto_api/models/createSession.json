@@ -1,0 +1,8 @@
+{
+    "did": "did:plc:XXXXXXXXXXXXXXXXX",
+    "handle": "handlename",
+    "email": "mail",
+    "emailConfirmed": true,
+    "accessJwt": "token",
+    "refreshJwt": "token"
+}

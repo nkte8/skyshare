@@ -1,0 +1,17 @@
+{
+    "did": "did:plc:XXXXXXXXX",
+    "handle": "handle",
+    "displayName": "name",
+    "description": "description",
+    "avatar": "url",
+    "banner": "url",
+    "followsCount": 0,
+    "followersCount": 0,
+    "postsCount": 0,
+    "indexedAt": "date",
+    "viewer": {
+        "muted": false,
+        "blockedBy": false
+    },
+    "labels": []
+}

@@ -1,8 +1,7 @@
 ---
-import { baseurl, postpath, siteurl } from "@/utils/vars";
-import path from "path"
+import { baseurl, siteurl } from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
-const example_url = new URL(path.join(baseurl, postpath, "EXAMPLE/"), siteurl);
+const example_url = new URL(baseurl + "EXAMPLE/", siteurl);
 import { subject, link } from "@/utils/tailwind_variants";
 ---
 

@@ -1,26 +1,27 @@
 ---
-import path from "path"
 // thanks for https://tailblocks.cc/
-import { baseurl, postpath } from "@/utils/vars";
-const postpath_relative = path.join(baseurl,postpath)
+import { baseurl } from "@/utils/vars";
+const login_bsky = baseurl + "login/bluesky"
 import { link } from "@/utils/tailwind_variants";
 ---
 <header class="text-gray-600 body-font bg-white">
     <div
-        class="container mx-auto max-w-5xl flex flex-wrap p-5 flex-col md:flex-row items-center"
+        class="container mx-auto max-w-5xl flex flex-wrap p-5 px-6 flex-col md:flex-row items-center"
     >
         <a href={baseurl}
-            class="flex title-font font-medium items-center mb-4 md:mb-0"
+            class="flex title-font font-medium items-center mb-2 mx-4 md:mb-0"
         >
-            <span class="ml-3 text-xl hover:text-gray-900">SkyDrop</span>
+            <span class="text-xl hover:text-gray-900">SkyDrop</span>
         </a>
         <nav
             class="md:ml-auto flex flex-wrap items-center text-base justify-center"
         >
-            <a href={postpath_relative} class={link({class: "mr-4"})}>Posts</a>
+            <a href={login_bsky} class={link({class: "mx-2"})}>Login Bluesky</a>
         </nav>
         <a href="https://github.com/nkte8/favo-system"
-            class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
+            class="inline-flex items-center bg-gray-100 border-0 
+                py-1 px-3 focus:outline-none hover:bg-gray-200 rounded 
+                text-base mt-2 mx-2 md:mt-0"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,9 +1,8 @@
 ---
-import path from "path";
 import { baseurl } from "@/utils/vars";
 import Metadatas from "@/components/Metadatas.astro";
 // import "@/styles/global.css";
-const favicon = path.join(baseurl, "favicon.svg");
+const favicon = baseurl + "favicon.svg";
 interface Props {
     pageTitle: string;
     cardPath: string;

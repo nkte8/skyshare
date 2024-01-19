@@ -1,0 +1,9 @@
+{
+    "blob": {
+        "ref": {
+            "$link": "string"
+        },
+        "mimeType": "mimeType",
+        "size": 1000
+    }
+}

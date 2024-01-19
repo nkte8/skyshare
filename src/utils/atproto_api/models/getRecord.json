@@ -1,0 +1,21 @@
+{
+    "uri": "uri",
+    "cid": "cid",
+    "value": {
+        "text": "context",
+        "$type": "app.bsky.feed.post",
+        "embed": {
+            "$type": "app.bsky.embed.images",
+            "images": [
+                {
+                    "alt": "",
+                    "image": {
+                        "cid": "cid",
+                        "mimeType": "mimetype"
+                    }
+                }
+            ]
+        },
+        "createdAt": "2024-01-27T07:03:47.746Z"
+    }
+}

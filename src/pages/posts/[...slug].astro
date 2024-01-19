@@ -1,0 +1,56 @@
+---
+export const prerender = false;
+import Pagelayout from "@/layouts/Pagelayout.astro";
+import getPage from "@/utils/skydrop_api/getPage";
+import { subject, link } from "@/utils/tailwind_variants";
+
+const { slug } = Astro.params;
+if (typeof slug === "undefined") {
+    return new Response(null, {
+        status: 503,
+        statusText: "Server Error",
+    });
+}
+const [author, rkey] = slug.split("_");
+const getpage_res = await getPage({ slug: slug });
+
+if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
+    return new Response(null, {
+        status: 404,
+        statusText: "Not found",
+    });
+}
+const imgs = getpage_res.imgs;
+---
+
+<Pagelayout cardPath={getpage_res.ogp} pageTitle={`${author} Post - SkyDrop`}>
+    <div
+        class="p-6 mx-auto
+          bg-white rounded-xl shadow-lg
+            md:w-xl w-full max-w-xl
+            items-center text-center"
+    >
+        <div class={subject({ size: "m", class: "text-center" })}>
+            <a
+                href={new URL(`${author}`, "https://bsky.app/profile/")}
+                class={link()}
+            >
+                @{author}</a
+            > のポスト:
+            <a
+                href={new URL(
+                    `${author}/post/${rkey}`,
+                    "https://bsky.app/profile/",
+                )}
+                class={link()}
+            >
+                Bluesky
+            </a>
+        </div>
+        {
+            imgs.map((value) => {
+                return <img src={value.thumb} alt={value.alt} />;
+            })
+        }
+    </div>
+</Pagelayout>
