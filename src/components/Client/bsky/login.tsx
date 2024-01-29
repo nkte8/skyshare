@@ -45,14 +45,14 @@ export const Component = () => {
     return (
         <>
             <div>
-                <label className="w-28 inline-block">
+                <label className="w-32 inline-block">
                     Email or ID:
                 </label>
                 <input onChange={(event) => setIdentifer(event.target.value)}
                     className={inputtext_base({ class: "max-w-48 w-full" })} type="text" />
             </div>
             <div>
-                <label className="w-28 inline-block">
+                <label className="w-32 inline-block">
                     App Password:
                 </label>
                 <input onChange={(event) => setPassword(event.target.value)}

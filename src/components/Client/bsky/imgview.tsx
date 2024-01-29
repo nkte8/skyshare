@@ -109,7 +109,7 @@ const Component = ({
                     )
                 ) : (
                     <div className="rounded-lg mb-1 border-2 p-1">
-                        ここにプレビューが表示されます
+                        X.com(Twitter)プレビューが表示されます
                     </div>
                 )
             }

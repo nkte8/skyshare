@@ -1,0 +1,27 @@
+---
+import { baseurl } from "@/utils/vars";
+import Metadatas from "@/components/Metadatas.astro";
+// import "@/styles/global.css";
+const favicon = baseurl + "favicon.svg";
+interface Props {
+    pageTitle: string;
+    cardPath: string;
+}
+const { cardPath, pageTitle } = Astro.props;
+---
+
+<html lang="ja">
+    <head>
+        <link rel="icon" href={favicon} />
+        <Metadatas cardPath={cardPath} pageTitle={pageTitle} />
+    </head>
+    <body
+        class="relative bg-fixed flex flex-col min-h-dvh bg-gradient-to-b from-transparent to-sky-300 text-gray-700 overflow-x-hidden max-w-dvw mx-auto"
+    >
+        <slot name="header" />
+        <div class="flex-grow">
+            <slot />
+        </div>
+        <slot name="footer" />
+    </body>
+</html>

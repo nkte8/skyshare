@@ -13,7 +13,7 @@ export const Component = ({
                     <a target="_blank"
                         className={link()}
                         href={`https://twitter.com/intent/tweet?text=${context}${
-                            twiurl !== "" ? ("&url=" + new URL(`posts/${twiurl}`, siteurl)) : ("")
+                            twiurl !== "" ? ("&url=" + new URL(`posts/${twiurl}/`, siteurl)) : ("")
                             }`}>
                         <button className={button_base({ mode: true })}>
                             X.com(Twitter)へ投稿する

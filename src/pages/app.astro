@@ -1,10 +1,13 @@
 ---
 import Pagelayout from "@/layouts/Pagelayout.astro";
 // import { BskyLoginForm } from "@/components/bsky_login";
-import App from "@/components/Client/app";
+import Client from "@/components/Client/app";
 //<!-- <BskyLoginForm client:load /> -->
 ---
 
-<Pagelayout cardPath="" pageTitle="Bluesky login - SkyDrop">
-    <App client:load />
+<Pagelayout
+    cardPath="/materials/ogp_main.png"
+    pageTitle="Bluesky login - SkyDrop"
+>
+    <Client client:load />
 </Pagelayout>
