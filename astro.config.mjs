@@ -7,7 +7,8 @@ import cloudflare from "@astrojs/cloudflare";
 // https://astro.build/config
 export default defineConfig({
   base: "/",
-  site: "https://skydrop.pages.dev/",
+  site: "https://bskylinx.com/",
+  trailingSlash: "always",
   server: {
     port: 4321,
     host: true

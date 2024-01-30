@@ -30,5 +30,8 @@
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.1",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/partytown": "^2.0.4"
   }
 }

@@ -1,89 +1,81 @@
 ---
-import { baseurl, siteurl } from "@/utils/vars";
-import Pagelayout from "@/layouts/Pagelayout.astro";
-const example_url = new URL(baseurl + "EXAMPLE/", siteurl);
-import { subject, link } from "@/utils/tailwind_variants";
+import Pagelayout from "@/layouts/Indexlayout.astro";
+import { link } from "@/utils/tailwind_variants";
+import cloud from "@/images/cloud.svg";
+import { github_url, abouturl, posturl } from "@/utils/vars";
+
+const svgbsky_url = `url('/materials/bluesky.svg')`;
+const svgtag_url = `url('/materials/tag.svg')`;
+const svgtwi_url = `url('/materials/twitter.svg')`;
 ---
 
-<Pagelayout cardPath="" pageTitle="SkyDrop">
-	<div class="mb-8">
-		<h1 class={subject({ size: "xl" })}>SkyDrop</h1>
-		<h2 class={subject({ size: "l" })}>
-			Lets drop your tweets from blue sky!
-		</h2>
-		<h3 class={subject({ size: "m" })}>version 0.0.1</h3>
-		<div class="mb-4">
-			SkyDropは、遥かる青空の民が、地に落ちてしまった青い鳥を救うべく生まれたツールです。
-		</div>
+<style define:vars={{ svgbsky_url, svgtwi_url, svgtag_url }}>
+	.bsky {
+		mask-image: var(--svgbsky_url);
+		mask-size: 100%;
+		mask-repeat: no-repeat;
+		background: #1185fe;
+	}
+	.twi {
+		mask-image: var(--svgtwi_url);
+		mask-size: 100%;
+		mask-repeat: no-repeat;
+		background: #444;
+	}
+	.tag {
+		mask-image: var(--svgtag_url);
+		mask-size: 100%;
+		mask-repeat: no-repeat;
+		background: #ff8f8f;
+		aspect-ratio: 135/50;
+		font-size: min(4vw, 28px);
+	}
+</style>
+<Pagelayout cardPath="/materials/ogp_main.png" pageTitle="SkyDrop">
+	<div class="absolute overflow-hidden bottom-20 w-1/2 -z-10 left-1/2">
+		<img src={cloud.src} class="lg:max-w-4xl md:max-w-3xl w-max max-w-md" />
 	</div>
-	<div class="mb-8">
-		<h2 class={subject({ size: "l" })}>どのようなツール？</h2>
-		<div class="mb-4">
-			SkyDropは、TwitterユーザをBlueskyへ連れていくために、ユーザーのSNS投稿の煩雑な作業を簡略化します。
-			具体的には、あなたの<a class={link()} href="https://bsky.app/"
-				>Bluesky Social</a
-			>への投稿...の、<b>模倣</b>を<a class={link()} href="http://x.com/"
-				>Twitter</a
-			>へ投稿するお手伝いをします。
-		</div>
-	</div>
-	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>模倣？</h3>
-		<div class="mb-4">
-			<div class="mb-4">
-				2024/01/18現在、TwitterAPIv2ではMediaUploadのエンドポイントが対応されていません。
-				また、対応されても高額すぎる課金体制の前で門前払いされてしまうことでしょう。
-				このWebツールが無償で提供され続けるためには、
-				この問題への対処は必須です。
+
+	<div class="text-center mx-auto md:max-w-3xl my-4 font-extrabold relative">
+		<div class="relative">
+			<img
+				src="/materials/longlogo.svg"
+				class="max-w-2xl mb-8 mx-auto w-11/12"
+			/>
+			<div
+				class="tag aspect-auto[135/73] top-2/3 left-3/4 max-w-32 w-1/5 font-mono absolute leading-none font-extrabold rotate-12"
+			>
+				<span class="block top-0 bottom-0 left-3 right-0 m-auto w-min h-min absolute text-gray-700">&nbsp;*Beta</span>
 			</div>
-			<div class="mb-4">
-				SkyDropでは、Twitterへの画像投稿はOGPとして提供します。
-				SkyDropへ投稿された画像はGithubへ保存され、Astroにより簡易的なWebページとしてデプロイされます。
-				Bluesky
-				Socialへの投稿はAPI、Twitterへの投稿はこのWebページへのリンクを含む投稿リンクとしてナビゲーションすることで、
-				二つのSNSへの（メディアを含む）投稿を簡略化しています。
+		</div>
+		<div class="max-w-3xl my-8 text-2xl font-normal">
+			<div class="h-20">
+				<div
+					class="bsky max-w-12 mx-4 w-full aspect-square my-auto inline-block align-middle"
+				>
+				</div>
+				<span class="align-middle">と</span>
+				<div
+					class="twi max-w-12 mx-4 w-full aspect-square inline-block align-middle"
+				>
+				</div>
+				<span class="block my-2 text-xl"
+					>同時投稿するためのウェブアプリです</span
+				>
 			</div>
-			<span>
-				<svg
-					class="inline-block"
-					xmlns="http://www.w3.org/2000/svg"
-					width="16"
-					height="16"
-					fill="currentColor"
-					class="bi bi-link-45deg"
-					viewBox="0 0 16 16"
-				>
-					<path
-						d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"
-					></path>
-					<path
-						d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"
-					></path>
-				</svg><a
-					class={link()}
-					href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。&url=${example_url}`}
-					>投稿リンクの例</a
-				>
-			</span>
 		</div>
+		<a
+			href={posturl}
+			class={link({
+				class: "bg-white text-xl bg-opacity-80 border-0 py-4 px-10 focus:outline-none hover:bg-sky-200 inline-flex rounded-full transition-colors",
+			})}
+			>Blueskyへログイン
+		</a>
 	</div>
-	<div class="mb-8">
-		<h2 class={subject({ size: "l" })}>今後の開発は？</h2>
-		<div class="mb-4">
-			現在SkyDropは開発中です。現在はGithub
-			Actionsを用いたページビルドであるため、
-			ユーザーはGithubに精通していなければこのツールを使うことができません。
-			本ツールは最終的にはWebサービスとして稼働することを目標としています。
-		</div>
-		<div class="mb-4">
-			ただし、使用に一切の広告を見る必要がない・無償で利用できるという大前提のため、
-			ランニングコストのかからない方法をとらざるを得ず、そのためには多少の制約
-			（例えばTwitter向けに作成したOGPカードおよびメディアURLは1週間後に破棄される...等）
-			が課せらることになることをご理解ください。
-		</div>
-		<div class="mb-4">
-			最終的にTwitterユーザをBlueskyへ連れていくことが目的であるため、
-			Twitterへのアプローチは最低限であることをご了承ください。
+	<div class="text-center mx-auto md:max-w-3xl my-5">
+		<div class="bg-white bg-opacity-80 rounded-lg w-fit px-4 py-2 m-auto">
+			<a href={abouturl} class={link({ class: "mx-2" })}>About</a>
+			<a href={github_url} class={link({ class: "mx-2" })}>Github</a>
 		</div>
 	</div>
 </Pagelayout>

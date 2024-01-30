@@ -8,7 +8,6 @@ export const api = async ({
     slug: string
 }): Promise<typeof mtype & typeof etype> => {
     const url = new URL(slug, endpoint_url)
-    console.log(url)
     return fetch(url,
         {
             method: 'GET',
