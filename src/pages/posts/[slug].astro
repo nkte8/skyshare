@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 import Pagelayout from "@/layouts/Pagelayout.astro";
-import getPage from "@/utils/skydrop_api/getPage";
+import getPage from "@/utils/bskylinx_api/getPage";
 import { subject, link } from "@/utils/tailwind_variants";
 
 const { slug } = Astro.params;
@@ -23,7 +23,7 @@ if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
 const imgs = getpage_res.imgs;
 ---
 
-<Pagelayout cardPath={getpage_res.ogp} pageTitle={`${author} Post - SkyDrop`}>
+<Pagelayout cardPath={getpage_res.ogp} pageTitle={`${author} Post - BskyLinX`}>
     <div
         class="p-6 mx-auto
           bg-white rounded-xl shadow-lg
