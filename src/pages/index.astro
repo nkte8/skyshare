@@ -4,24 +4,17 @@ import { link } from "@/utils/tailwind_variants";
 import cloud from "@/images/cloud.svg";
 import { github_url, abouturl, posturl } from "@/utils/vars";
 
-const svgshape_url = `url('/materials/bluesky.svg')`;
-const svgarrow_url = `url('/materials/arrow.svg')`;
+const svgbsky_url = `url('/materials/bluesky.svg')`;
+const svgtag_url = `url('/materials/tag.svg')`;
 const svgtwi_url = `url('/materials/twitter.svg')`;
 ---
 
-<style define:vars={{ svgshape_url, svgarrow_url, svgtwi_url }}>
+<style define:vars={{ svgbsky_url, svgtwi_url, svgtag_url }}>
 	.bsky {
-		mask-image: var(--svgshape_url);
+		mask-image: var(--svgbsky_url);
 		mask-size: 100%;
 		mask-repeat: no-repeat;
 		background: #1185fe;
-	}
-	.arrow {
-		transform: scale(-1, 1);
-		mask-image: var(--svgarrow_url);
-		mask-size: 100%;
-		mask-repeat: no-repeat;
-		background: #55e0ff;
 	}
 	.twi {
 		mask-image: var(--svgtwi_url);
@@ -29,20 +22,32 @@ const svgtwi_url = `url('/materials/twitter.svg')`;
 		mask-repeat: no-repeat;
 		background: #444;
 	}
+	.tag {
+		mask-image: var(--svgtag_url);
+		mask-size: 100%;
+		mask-repeat: no-repeat;
+		background: #ff8f8f;
+		aspect-ratio: 135/50;
+		font-size: min(4vw, 28px);
+	}
 </style>
 <Pagelayout cardPath="/materials/ogp_main.png" pageTitle="SkyDrop">
 	<div class="absolute overflow-hidden bottom-20 w-1/2 -z-10 left-1/2">
-		<img
-		src={cloud.src}
-		class="lg:max-w-4xl md:max-w-3xl w-max max-w-md"
-	/>
+		<img src={cloud.src} class="lg:max-w-4xl md:max-w-3xl w-max max-w-md" />
 	</div>
 
 	<div class="text-center mx-auto md:max-w-3xl my-4 font-extrabold relative">
-		<img
-			src="/materials/longlogo.svg"
-			class="max-w-2xl mb-8 mx-auto w-11/12"
-		/>
+		<div class="relative">
+			<img
+				src="/materials/longlogo.svg"
+				class="max-w-2xl mb-8 mx-auto w-11/12"
+			/>
+			<div
+				class="tag aspect-auto[135/73] top-2/3 left-3/4 max-w-32 w-1/5 font-mono absolute leading-none font-extrabold rotate-12"
+			>
+				<span class="block top-0 bottom-0 left-3 right-0 m-auto w-min h-min absolute text-gray-700">&nbsp;*Beta</span>
+			</div>
+		</div>
 		<div class="max-w-3xl my-8 text-2xl font-normal">
 			<div class="h-20">
 				<div
