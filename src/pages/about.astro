@@ -1,7 +1,10 @@
 ---
-import { baseurl } from "@/utils/vars";
+import { baseurl, siteurl } from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
-const example_url = baseurl + "posts/nlla.bsky.social_3kk7qzpffl22n/";
+const example_url = new URL(
+	baseurl + "posts/nlla.bsky.social_3kk7qzpffl22n/",
+	siteurl,
+);
 import { subject, link } from "@/utils/tailwind_variants";
 import { Picture } from "astro:assets";
 import ogp_example from "@/images/ogp_nlla.bsky.jpg";
@@ -14,16 +17,16 @@ import { github_url } from "@/utils/vars";
 		<h2 class={subject({ size: "xl" })}>Bluesky Link-𝕏</h2>
 		<div class="mb-4">
 			<div>
-				SkyDropは、青空（Bluesky）の民が地に落ちた青い鳥（Twitter,現𝕏）の民を救うべく生まれたWebサービスです。「ブルースカイ リンクス」と読みます。</div>
+				SkyDropは、青空（Bluesky）の民が地に落ちた青い鳥（Twitter,現𝕏）の民を救うべく生まれたWebサービスです。「ブルースカイ
+				リンクス」と読みます。
+			</div>
 		</div>
 		<div>
 			Bluesky Link-𝕏
 			は、Bluesky投稿専用クライアント、およびOGPジェネレータです。
 		</div>
 		<div>
-			<b
-				>本サービスはBluesky・𝕏への同時投稿を簡略化します。</b
-			>
+			<b>本サービスはBluesky・𝕏への同時投稿を簡略化します。</b>
 		</div><div>
 			これにより、Blueskyを軸に添えた活動への移行を補助します。
 		</div>
@@ -99,7 +102,10 @@ import { github_url } from "@/utils/vars";
 			<div class="">
 				Zennへ本サービスの開発について執筆を予定してます。
 				気になる方はぜひ...
-				<div>気にならない方は...ぜひサービスを使ってください。Goodbye X... Hello Bluesky!</div>
+				<div>
+					気にならない方は...ぜひサービスを使ってください。Goodbye
+					X... Hello Bluesky!
+				</div>
 			</div>
 		</div>
 	</div>
