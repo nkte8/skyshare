@@ -1,9 +1,10 @@
 import { useState, useContext } from "react"
-import { inputtext_base } from "../tailwind_variants"
+import { inputtext_base, link } from "../tailwind_variants"
 import { Session_context, Msg_context } from "../contexts"
 import createSession from "@/utils/atproto_api/createSession";
 import { write_Jwt } from "@/utils/localstorage"
 import ProcButton from "../procButton"
+import Tooltip from "../toolctip"
 
 export const Component = () => {
     const [loading, setLoad] = useState<boolean>(false)
@@ -53,7 +54,7 @@ export const Component = () => {
             </div>
             <div>
                 <label className="w-32 inline-block">
-                    App Password:
+                    AppPassword※:
                 </label>
                 <input onChange={(event) => setPassword(event.target.value)}
                     className={inputtext_base({ class: "max-w-48 w-full" })} type="password" />
@@ -64,6 +65,22 @@ export const Component = () => {
                     isProcessing={loading}
                     context="Bluesky Login" />
             </div>
+            <Tooltip tooltip={
+                <div className="flex flex-col sm:flex-row">
+                    <div className="inline-block px-4 py-2 text-left">
+                        （BskyLinXに限らず）非公式のアプリを使う際はAppPasswordの利用が推奨されています。
+                        <a className={link()}
+                            target="_blank"
+                            href="https://bsky.app/settings/app-passwords">
+                            <b>bsky.appの⚙設定</b>→<b>🔒高度な設定(新規タブが開きます)</b>
+                        </a>から生成してください。
+                    </div>
+                </div>
+            }>
+                <span className="text-sky-400">
+                    ※AppPasswordとは？(タップで説明を表示)
+                </span>
+            </Tooltip>
         </>
     )
 }
