@@ -15,7 +15,7 @@ const App = () => {
     const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
 
     return (
-        <div className="p-6 mx-auto
+        <div className="p-0 mx-auto
             items-center text-center">
             <Msg_context.Provider value={{ msgInfo, setMsgInfo }}>
                 <Session_context.Provider value={{ session, setSession }}>

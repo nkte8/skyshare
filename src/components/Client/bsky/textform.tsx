@@ -10,7 +10,7 @@ const Component = ({ post, setPost }: {
             <textarea onChange={(event) => setPost(event.target.value)}
                 value={post}
                 maxLength={300}
-                className={inputtext_base({ class: "mt-1 md-1 mr-1 w-full md:w-lg resize-y" })} />
+                className={inputtext_base({ class: "mt-1 md-1 mr-1 w-full h-32 md:w-lg resize-y" })} />
         </div>
     )
 }
