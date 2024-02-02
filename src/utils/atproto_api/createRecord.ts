@@ -25,8 +25,6 @@ export const api = async ({
                 record: record
             })
     }).then((response) => response.json()
-    ).catch(() => {
-        console.log("error");
-    })
+    ).catch(() => {})
 
 export default api

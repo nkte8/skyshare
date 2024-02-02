@@ -11,8 +11,8 @@ if (typeof slug === "undefined") {
         statusText: "Server Error",
     });
 }
-const [author, rkey] = slug.split("_");
-const getpage_res = await getPage({ slug: slug });
+const [author, rkey] = slug.split(/(_|@)/);
+const getpage_res = await getPage({ id: slug });
 
 if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
     return new Response(null, {
@@ -22,12 +22,14 @@ if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
 }
 const imgs = getpage_res.imgs;
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
+import Loadingcircle from "@/components/loadingcircle.astro";
 ---
 
 <Pagelayout
     cardPath={getpage_res.ogp}
     pageTitle={`${author} Post - BskyLinX`}
     robots={robots}
+    hideLoader={true}
 >
     <div
         class="p-6 mx-auto
@@ -57,5 +59,11 @@ const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
                 return <img src={value.thumb} alt={value.alt} />;
             })
         }
+    </div>
+    <div class="m-auto w-fit my-2 items-center text-center">
+        <div id="pload">
+            <Loadingcircle size="l" />
+        </div>
+        <space id="page" pageid={slug} ></space>
     </div>
 </Pagelayout>

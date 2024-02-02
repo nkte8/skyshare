@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { inputtext_base } from "../tailwind_variants"
+import { inputtext_base } from "../common/tailwind_variants"
 
 const Component = ({ post, setPost }: {
     post: string

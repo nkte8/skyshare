@@ -7,7 +7,7 @@
 BskyLinX post your post to Bluesky with AT Protocol.  
 for twitter, because of X taxes, BskyLinX present Post Link: [Like that](https://twitter.com/intent/tweet?text=This&nbsp;is&nbsp;tweet&nbsp;sample.&url=https://bskylinx.com/posts/nlla.bsky.social_3kk7qzpffl22n/), can only with media by OGP image.
 
-## AR Protocol
+## AT Protocol
 
 Because of [bluesky official typescript client]() seems not available works on React, BskyLinX uses REST API directry by fetch API.  
 

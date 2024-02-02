@@ -3,17 +3,18 @@ import {
     Dispatch, SetStateAction,
     useContext, useEffect
 } from "react"
-import { Session_context, Msg_context } from "../contexts"
+import { Session_context, type msgInfo } from "../common/contexts"
 import { read_Jwt, reset_Jwt } from "@/utils/localstorage"
-import { load_circle } from "../tailwind_variants"
 import refreshSession from "@/utils/atproto_api/refreshSession";
 
 export const Component = ({
-    setIsLoad
-}: { setIsLoad: Dispatch<SetStateAction<boolean>> }) => {
-
+    setIsLoad,
+    setMsgInfo
+}: {
+    setIsLoad: Dispatch<SetStateAction<boolean>>,
+    setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
+}) => {
     const { setSession } = useContext(Session_context)
-    const { setMsgInfo } = useContext(Msg_context)
     setIsLoad(false)
 
     const handleLoad = async () => {
@@ -29,14 +30,17 @@ export const Component = ({
                         refreshJwt: res.refreshJwt,
                         handle: res.handle,
                     })
-                    setMsgInfo({
-                        msg: "Login successed!", isError: false
-                    })
+                    if (setMsgInfo !== undefined) {
+                        setMsgInfo({
+                            msg: "Blueskyへのログインに成功しました！", isError: false
+                        })
+                    }
                 } else {
-                    // tokenが無効になっていた場合はlocalstorageをリセット
-                    setMsgInfo({
-                        msg: "Session disconnected. Login Again.", isError: true
-                    })
+                    if (setMsgInfo !== undefined) {
+                        setMsgInfo({
+                            msg: "セッションが終了しました。再ログインしてください。", isError: true
+                        })
+                    }
                     reset_Jwt()
                 }
             } catch (e) {
@@ -50,13 +54,7 @@ export const Component = ({
     }, [])
 
     return (
-        <>
-            <svg className={load_circle({ size: "l" })} viewBox="-30 -30 160 160" xmlns="http://www.w3.org/2000/svg">
-                <path d="M94,50 a44,44,0,1,1,-44,-44"
-                    stroke="#7dd3fc" fill="none"
-                    strokeWidth="14" strokeLinecap="round" />
-            </svg>
-        </>
+        <></>
     )
 }
 

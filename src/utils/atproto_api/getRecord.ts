@@ -22,9 +22,7 @@ export const api = async ({
                 'Content-Type': 'application/json'
             },
         }).then((response) => response.json()
-        ).catch(() => {
-            console.log("error");
-        })
+        ).catch(() => {})
 
 }
 

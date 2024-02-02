@@ -11,7 +11,7 @@ import Blanklayout from "@/layouts/Blanklayout.astro";
 ---
 
 <Blanklayout cardPath={cardPath} pageTitle={pageTitle} robots={robots}>
-    <Header slot="header" />
+    <Header hideLoader={false} slot="header" />
     <slot />
     <Fotter slot="footer" />
 </Blanklayout>

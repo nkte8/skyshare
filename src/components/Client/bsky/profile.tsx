@@ -1,9 +1,14 @@
-import { useState, useContext, useEffect } from "react"
-import { Session_context, Msg_context } from "../contexts"
-import { link } from "../tailwind_variants";
+import { useState, useContext, useEffect, Dispatch, SetStateAction } from "react"
+import { Session_context } from "../common/contexts"
+import { link } from "../common/tailwind_variants";
 import getProfile from "@/utils/atproto_api/getProfile";
+import { type msgInfo } from "../common/contexts"
 
-export const Component = () => {
+export const Component = ({
+    setMsgInfo,
+}: {
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
+}) => {
     const [, setLoad] = useState<boolean>(false)
     const [profref, setProfref] = useState<string>("")
     const [profinfo, setProfinfo] = useState<{
@@ -12,7 +17,6 @@ export const Component = () => {
         avatar: string,
     } | null>(null)
     const { session } = useContext(Session_context)
-    const { setMsgInfo } = useContext(Msg_context)
 
     const handleLoad = async () => {
         setLoad(true)
@@ -29,7 +33,7 @@ export const Component = () => {
                 setProfref(res.handle)
             } else {
                 setMsgInfo({
-                    msg: "Login failed...",
+                    msg: "プロフィールの読み込みを失敗しました。",
                     isError: true,
                 })
             }
@@ -46,8 +50,8 @@ export const Component = () => {
             <div className="w-fit mx-auto p-1 rounded-lg mb-1 border-2 max-w-fit">
                 <img src={profinfo?.avatar} className="w-10 h-10 mr-2 inline-block rounded-full" />
                 <span className="mx-1 text-wrap">{profinfo?.displayName}
-                    <a href={new URL(profref,"https://bsky.app/profile/").toString()}
-                        className={link({class: "m-1"})}>
+                    <a href={new URL(profref, "https://bsky.app/profile/").toString()}
+                        className={link({ class: "m-1" })}>
                         @{profinfo?.handle}
                     </a>
                 </span>

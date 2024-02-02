@@ -21,8 +21,6 @@ export const api = async ({
         },
         body: blob,
     }).then((response) => response.json()
-    ).catch(() => {
-        console.log("error");
-    })
+    ).catch(() => {})
 
 export default api

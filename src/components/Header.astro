@@ -1,7 +1,14 @@
 ---
 // thanks for https://tailblocks.cc/
-import { baseurl, github_url, abouturl, posturl } from "@/utils/vars";
+import { baseurl, github_url, abouturl } from "@/utils/vars";
 import { link } from "@/utils/tailwind_variants";
+import App from "@/components/Client/app";
+import Loadingcircle from "./loadingcircle.astro";
+
+interface Props {
+    hideLoader: boolean;
+}
+const { hideLoader = false } = Astro.props;
 ---
 
 <header class="bg-opacity-90 text-gray-600 body-font bg-white">
@@ -21,14 +28,10 @@ import { link } from "@/utils/tailwind_variants";
                 <a href={abouturl} class={link({ class: "mx-2" })}>About</a>
                 <a href={github_url} class={link({ class: "mx-2" })}>Github</a>
             </div>
-
-            <a
-                href={posturl}
-                class={link({
-                    class: "bg-white border-2 py-1 px-3 focus:outline-none hover:bg-sky-200 mx-2 inline-flex rounded-full transition-colors",
-                })}
-                >ログイン
-            </a>
+            <div id="hload">
+                {!hideLoader && <Loadingcircle size="s" />}
+            </div>
+            <App client:only />
         </nav>
     </div>
 </header>

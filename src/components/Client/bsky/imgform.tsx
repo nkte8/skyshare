@@ -1,19 +1,19 @@
 import React, { useRef, Dispatch, SetStateAction } from "react"
-import { button_base } from "../tailwind_variants"
 import { compressImage } from "@/utils/compressimage"
+import ProcButton from "../common/procButton"
 
 const mimetypes: Array<string> = [
     "image/png", "image/jpeg"
 ]
-const extensions: Array<string> =[
-    "png","jpeg","jpg"
+const extensions: Array<string> = [
+    "png", "jpeg", "jpg"
 ]
 
 const get_mimetype = (name: string): boolean => {
     let result = false
     mimetypes.forEach((value) => {
         if (name === value) {
-            result = true   
+            result = true
         }
     })
     return result
@@ -35,7 +35,7 @@ const Component = ({ disabled, setImageFile }: {
         if (!filelist || filelist?.length === 0) {
             reset(); return
         }
-        let files: Array<Promise<File>> = [] ;
+        let files: Array<Promise<File>> = [];
         Array.from(filelist).forEach((value, index) => {
             if (index >= 4) {
                 return
@@ -60,9 +60,10 @@ const Component = ({ disabled, setImageFile }: {
                     style={{ display: "none" }}
                     onChange={handleFilechanged}
                     multiple />
-                <button className={button_base({ class: "m-1", mode: !disabled })}
-                    type="button" disabled={disabled}
-                    onClick={handleClick}>画像を選択</button>
+                <ProcButton handler={handleClick}
+                    isProcessing={disabled}
+                    context="画像を選択"
+                    showAnimation={false} />
             </div>
         </>
     )
