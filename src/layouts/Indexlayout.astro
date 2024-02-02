@@ -2,14 +2,15 @@
 interface Props {
     pageTitle: string;
     cardPath: string;
+    robots: string[];
 }
-const { cardPath, pageTitle } = Astro.props;
+const { cardPath, pageTitle, robots } = Astro.props;
 import Header from "@/components/Header.astro";
 import Fotter from "@/components/Fotter.astro";
 import Blanklayout from "@/layouts/Blanklayout.astro";
 ---
 
-<Blanklayout cardPath={cardPath} pageTitle={pageTitle}>
+<Blanklayout cardPath={cardPath} pageTitle={pageTitle} robots={robots}>
     <Header slot="header" />
     <slot />
     <Fotter slot="footer" />

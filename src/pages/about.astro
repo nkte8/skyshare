@@ -10,14 +10,21 @@ import { Picture } from "astro:assets";
 import ogp_example from "@/images/ogp_nlla.bsky.jpg";
 import link_img from "@/images/link.svg";
 import { github_url } from "@/utils/vars";
+const robots = ["nofollow", "noarchive", "noimageindex"];
 ---
 
-<Pagelayout cardPath="/materials/ogp_main.png" pageTitle="About - BskyLinx">
+<Pagelayout
+	cardPath="/materials/ogp_main.png"
+	pageTitle="About - BskyLinx"
+	robots={robots}
+>
 	<div class="mb-8">
 		<h2 class={subject({ size: "xl" })}>Bluesky Link-𝕏</h2>
 		<div class="mb-4">
 			<div>
-				BskyLinXは、青空（Bluesky）の民が地に落ちた青い鳥（Twitter,現𝕏）の民を救うべく生まれたWebサービスです。「ブルースカイ リンクス」と読みます。</div>
+				BskyLinXは、青空（Bluesky）の民が地に落ちた青い鳥（Twitter,現𝕏）の民を救うべく生まれたWebサービスです。「ブルースカイ
+				リンクス」と読みます。
+			</div>
 		</div>
 		<div>
 			Bluesky Link-𝕏

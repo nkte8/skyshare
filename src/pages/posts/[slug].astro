@@ -21,9 +21,14 @@ if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
     });
 }
 const imgs = getpage_res.imgs;
+const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 ---
 
-<Pagelayout cardPath={getpage_res.ogp} pageTitle={`${author} Post - BskyLinX`}>
+<Pagelayout
+    cardPath={getpage_res.ogp}
+    pageTitle={`${author} Post - BskyLinX`}
+    robots={robots}
+>
     <div
         class="p-6 mx-auto
           bg-white rounded-xl shadow-lg
