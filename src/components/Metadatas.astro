@@ -2,8 +2,9 @@
 interface Props {
     pageTitle: string;
     cardPath: string;
+    robots: string[];
 }
-const { cardPath, pageTitle } = Astro.props;
+const { cardPath, pageTitle, robots } = Astro.props;
 
 const url = Astro.url;
 const cardUrl = new URL(cardPath, Astro.url);
@@ -27,7 +28,7 @@ const description =
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="generator" content={Astro.generator} />
-<meta name="robots" content="noindex,nofollow,noarchive,noimageindex" />
+<meta name="robots" content={robots.join(",")} />
 <script
     type="text/partytown"
     async

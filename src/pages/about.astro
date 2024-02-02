@@ -7,23 +7,28 @@ import { Picture } from "astro:assets";
 import ogp_example from "@/images/ogp_nlla.bsky.jpg";
 import link_img from "@/images/link.svg";
 import { github_url } from "@/utils/vars";
+const robots = ["nofollow", "noarchive", "noimageindex"];
 ---
 
-<Pagelayout cardPath="/materials/ogp_main.png" pageTitle="About - BskyLinx">
+<Pagelayout
+	cardPath="/materials/ogp_main.png"
+	pageTitle="About - BskyLinx"
+	robots={robots}
+>
 	<div class="mb-8">
 		<h2 class={subject({ size: "xl" })}>Bluesky Link-𝕏</h2>
 		<div class="mb-4">
 			<div>
-				BskyLinXは、青空（Bluesky）の民が地に落ちた青い鳥（Twitter,現𝕏）の民を救うべく生まれたWebサービスです。「ブルースカイ リンクス」と読みます。</div>
+				BskyLinXは、青空（Bluesky）の民が地に落ちた青い鳥（Twitter,現𝕏）の民を救うべく生まれたWebサービスです。「ブルースカイ
+				リンクス」と読みます。
+			</div>
 		</div>
 		<div>
 			Bluesky Link-𝕏
 			は、Bluesky投稿専用クライアント、およびOGPジェネレータです。
 		</div>
 		<div>
-			<b
-				>本サービスはBluesky・𝕏への同時投稿を簡略化します。</b
-			>
+			<b>本サービスはBluesky・𝕏への同時投稿を簡略化します。</b>
 		</div><div>
 			これにより、Blueskyを軸に添えた活動への移行を補助します。
 		</div>
@@ -99,7 +104,10 @@ import { github_url } from "@/utils/vars";
 			<div class="">
 				Zennへ本サービスの開発について執筆を予定してます。
 				気になる方はぜひ...
-				<div>気にならない方は...ぜひサービスを使ってください。Goodbye X... Hello Bluesky!</div>
+				<div>
+					気にならない方は...ぜひサービスを使ってください。Goodbye
+					X... Hello Bluesky!
+				</div>
 			</div>
 		</div>
 	</div>

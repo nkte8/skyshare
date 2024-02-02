@@ -2,8 +2,13 @@
 export const prerender = false;
 import Pagelayout from "@/layouts/Pagelayout.astro";
 import Client from "@/components/Client/app";
+const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 ---
 
-<Pagelayout cardPath="/materials/ogp_main.png" pageTitle="App - BskyLinX">
+<Pagelayout
+    cardPath="/materials/ogp_main.png"
+    pageTitle="App - BskyLinX"
+    robots={robots}
+>
     <Client client:load />
 </Pagelayout>

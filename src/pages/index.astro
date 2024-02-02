@@ -7,6 +7,7 @@ import { github_url, abouturl, posturl } from "@/utils/vars";
 const svgbsky_url = `url('/materials/bluesky.svg')`;
 const svgtag_url = `url('/materials/tag.svg')`;
 const svgtwi_url = `url('/materials/twitter.svg')`;
+const robots = ["index", "follow", "noarchive", "noimageindex"];
 ---
 
 <style define:vars={{ svgbsky_url, svgtwi_url, svgtag_url }}>
@@ -31,7 +32,11 @@ const svgtwi_url = `url('/materials/twitter.svg')`;
 		font-size: min(4vw, 28px);
 	}
 </style>
-<Pagelayout cardPath="/materials/ogp_main.png" pageTitle="BskyLinX">
+<Pagelayout
+	cardPath="/materials/ogp_main.png"
+	pageTitle="BskyLinX"
+	robots={robots}
+>
 	<div class="absolute overflow-hidden bottom-20 w-1/2 -z-10 left-1/2">
 		<img src={cloud.src} class="lg:max-w-4xl md:max-w-3xl w-max max-w-md" />
 	</div>
@@ -45,7 +50,10 @@ const svgtwi_url = `url('/materials/twitter.svg')`;
 			<div
 				class="tag aspect-auto[135/73] top-2/3 left-3/4 max-w-32 w-1/5 font-mono absolute leading-none font-extrabold rotate-12"
 			>
-				<span class="block top-0 bottom-0 left-3 right-0 m-auto w-min h-min absolute text-gray-700">&nbsp;*Beta</span>
+				<span
+					class="block top-0 bottom-0 left-3 right-0 m-auto w-min h-min absolute text-gray-700"
+					>&nbsp;*Beta</span
+				>
 			</div>
 		</div>
 		<div class="max-w-3xl my-8 text-2xl font-normal">

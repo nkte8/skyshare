@@ -1,9 +1,11 @@
 ---
 import { subject, link } from "@/utils/tailwind_variants";
 import Pagelayout from "@/layouts/Pagelayout.astro";
+const robots = ["nofollow", "noarchive", "noimageindex"];
 ---
 
 <Pagelayout
+    robots={robots}
     cardPath="/materials/ogp_main.png"
     pageTitle="Privacy Policy - BskyLinx"
 >

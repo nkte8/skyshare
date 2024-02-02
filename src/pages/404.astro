@@ -1,9 +1,14 @@
 ---
 import Pagelayout from "@/layouts/Pagelayout.astro";
 import { subject } from "@/utils/tailwind_variants";
+const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 ---
 
-<Pagelayout cardPath="/materials/ogp_main.png" pageTitle="404 - BskyLinX">
+<Pagelayout
+    cardPath="/materials/ogp_main.png"
+    pageTitle="404 - BskyLinX"
+    robots={robots}
+>
     <h1 class={subject({ size: "xl" })}>404 not found.</h1>
     Sorry but the page seems removed.
 </Pagelayout>
