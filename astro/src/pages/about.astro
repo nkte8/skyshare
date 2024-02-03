@@ -5,7 +5,7 @@ import {
 	pagesPrefix,
 	servicename,
 	github_url,
-	zenn_profile,
+	zenn_url,
 } from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const example_url = new URL(
@@ -128,9 +128,9 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 			<div>
 				当サイトはもちろんサービスとしてあったらいいなという想いから制作しましたが、
 				これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。
-				<a href={zenn_profile} class={link()}
-					>Zennへ当サイトの開発についての技術的な解説等の執筆</a
-				>を予定してます。
+				<a href={zenn_url} class={link()}
+					>Zennにて当サイトの制作について</a
+				>すこし記載しています。
 			</div>
 		</div>
 	</div>
