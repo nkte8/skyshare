@@ -52,7 +52,7 @@ import Loadingcircle from "@/components/loadingcircle.astro";
         </div>
         {
             imgs.map((value) => {
-                return <img src={value.thumb} alt={value.alt} />;
+                return <img src={value.thumb} alt={value.alt} class="mx-auto" />;
             })
         }
     </div>
