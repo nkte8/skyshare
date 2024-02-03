@@ -6,7 +6,7 @@ import ProcButton from "./common/procButton"
 import LogoutButton from "./bsky/logout"
 import Form from "./form"
 import LoadSession from "./bsky/loadsession"
-import PageControl from "./bskylinx/pagecontrol"
+import PageControl from "./pagedb/pagecontrol"
 
 const Component = ({
     portalonly = false

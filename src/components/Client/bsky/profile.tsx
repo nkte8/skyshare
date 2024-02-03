@@ -1,14 +1,9 @@
-import { useState, useContext, useEffect, Dispatch, SetStateAction } from "react"
+import { useState, useContext, useEffect } from "react"
 import { Session_context } from "../common/contexts"
 import { link } from "../common/tailwind_variants";
 import getProfile from "@/utils/atproto_api/getProfile";
-import { type msgInfo } from "../common/contexts"
 
-export const Component = ({
-    setMsgInfo,
-}: {
-    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
-}) => {
+export const Component = () => {
     const [, setLoad] = useState<boolean>(false)
     const [profref, setProfref] = useState<string>("")
     const [profinfo, setProfinfo] = useState<{

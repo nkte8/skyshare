@@ -2,7 +2,7 @@ import { useState, } from "react"
 import { type msgInfo, type Session_info } from "./common/contexts"
 import Login from "./bsky/login"
 import PostForm from "./bsky/postform"
-import PagesForm from "./bskylinx/pageform"
+import PagesForm from "./pagedb/pageform"
 import MsgLabel from "./common/msglabel"
 import ModeButton from "./common/modeselect"
 import { type modes } from "./common/types"
@@ -30,7 +30,7 @@ const Component = ({
         {
             session.accessJwt !== null ? (
                 <>
-                    <Profile setMsgInfo={setMsgInfo} />
+                    <Profile />
                     {Forms(mode)}
                     <div className="flex justify-center">
                         <ModeButton mode={mode} setMode={setMode} />
