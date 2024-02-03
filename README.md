@@ -1,4 +1,4 @@
-![](./public/materials/longlogo.svg)
+![](./astro/public/materials/longlogo.svg)
 
 [Skyshare](https://skyshare.uk/) is web application that BlueSky user saves their time of boring SNS X.com(Twitter).
 
@@ -9,30 +9,36 @@ for twitter, because of X taxes, Skyshare present Post Link: [Like that](https:/
 
 ## AT Protocol
 
-Because of bluesky official typescript client seems not available works on React, Skyshare uses REST API directry by fetch API.  
+Because of bluesky official typescript client seems not available works on React, Skyshare uses REST API directry by fetch API like that...  
 
-## Build
+```ts:src/utils/atproto_api/createSession.ts
+import endpoint_url, { com_atproto } from "./base"
+import mtype from "./models/createSession.json"
+import etype from "./models/error.json"
+const endpoint = endpoint_url(com_atproto.server.createSession)
 
-Setup node_modules:
-```sh
-docker run --rm -v $PWD:/src -w /src -u `id -u`:`id -g` -p 80:4321 -it node:18.17.1 npm install
+export const api = async ({
+    identifier,
+    password,
+}:{
+    identifier: string,
+    password: string,
+}): Promise<typeof mtype & typeof etype> => fetch(endpoint,
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+            {
+                identifier: identifier,
+                password: password,
+            })
+    }).then((response) => response.json()
+    ).catch(() => {})
+
+export default api
 ```
-Into node container:
-```sh
-docker run --rm -v $PWD:/src -w /src -u `id -u`:`id -g` -p 80:4321 -it node:18.17.1 /bin/bash
-```
 
-setup .env:
-```sh
-GETPAGES_ENDPOINT="getpages_endpoint"
-PUBLIC_CREATEPAGES_ENDPOINT="createpages_endpoint"
-```
+## more info
 
-```sh
-# astro develop server
-npm run dev
-```
+Documentation in progress for Japanese Developer at [Zenn](https://zenn.dev/nkte8).  
 
-## Deploy 
-
-This application works as SSR mode in cloudflare, no support by SSG.
