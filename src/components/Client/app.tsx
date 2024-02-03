@@ -8,7 +8,11 @@ import Form from "./form"
 import LoadSession from "./bsky/loadsession"
 import PageControl from "./bskylinx/pagecontrol"
 
-const Component = () => {
+const Component = ({
+    portalonly = false
+}:{
+    portalonly?: boolean
+}) => {
     const [isLoad, setIsLoad] = useState<boolean>(false)
     const [session, setSession] = useState<Session_info>({
         did: null,
@@ -65,7 +69,7 @@ const Component = () => {
                 )
             }
             {
-                isLoad && (
+                !portalonly && isLoad && (
                     session?.accessJwt !== null ? (
                         <>
                             <ProcButton handler={handleClick}

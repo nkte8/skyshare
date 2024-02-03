@@ -1,7 +1,10 @@
 import { useState } from "react"
+import { posturl } from "@/utils/vars"
 import MsgLabel from "../common/msglabel"
 import { type msgInfo, type Session_info } from "../common/contexts"
 import PageDeleteButton from "./pagedelete"
+import ProcButton from "../common/procButton"
+
 const Component = ({
     id,
     session,
@@ -10,11 +13,24 @@ const Component = ({
     session: Session_info,
 }) => {
     const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
-
+    const handleClick = () => {
+        location.href = posturl
+    }
     return (
         <div className="justify-center">
-            <MsgLabel msgInfo={msgInfo} />
-            <PageDeleteButton id={id} session={session} setMsgInfo={setMsgInfo} />
+            {
+                session?.accessJwt !== null ? (
+                    <>
+                        <PageDeleteButton id={id} session={session} setMsgInfo={setMsgInfo} />
+                        <MsgLabel msgInfo={msgInfo} />
+                    </>
+                ) : (
+                    <ProcButton handler={handleClick}
+                        isProcessing={false}
+                        showAnimation={false}
+                        context="ログイン"/>
+                )
+            }
         </div>
     )
 }

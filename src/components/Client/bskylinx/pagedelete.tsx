@@ -42,6 +42,7 @@ const Component = ({
                 switch (resDeletePage.error) {
                     case "Unauthorized":
                         msg = "認証に失敗しました。元投稿が削除されていませんか？"
+                        break
                     default:
                         msg = "Unexpected error"
                 }

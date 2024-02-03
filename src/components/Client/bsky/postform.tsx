@@ -87,6 +87,7 @@ const Component = ({
                 switch (rec_res.error) {
                     case "BlobTooLarge":
                         message =  "画像の圧縮が上手くいきませんでした。"
+                        break
                     default:
                         message =  "Unexpected error"
                 }

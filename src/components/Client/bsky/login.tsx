@@ -30,12 +30,12 @@ export const Component = ({
                     refreshJwt: res.refreshJwt
                 })
                 setMsgInfo({
-                    msg: "Blueskyへのログインに成功しました！",
+                    msg: "ログインに成功しました！",
                     isError: false,
                 })
             } else {
                 setMsgInfo({
-                    msg: "Blueskyへのログインに失敗しました。",
+                    msg: "ログインに失敗しました。",
                     isError: true,
                 })
             }
