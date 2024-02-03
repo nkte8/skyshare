@@ -36,14 +36,14 @@ const Component = ({
                 setList(error)
                 setMsgInfo({
                     isError: true,
-                    msg: "投稿一覧の読み込みに失敗しました。"
+                    msg: "投稿一覧の読み込みに失敗しました..."
                 })
                 return
             }
 
             setMsgInfo({
                 isError: false,
-                msg: "投稿一覧を読み込みました！"
+                msg: "投稿一覧を読み込みました!"
             })
             setList(
                 <div className="mx-auto">
@@ -68,7 +68,7 @@ const Component = ({
             setList(error)
             setMsgInfo({
                 isError: true,
-                msg: "Unexpected error"
+                msg: "Unexpected error..."
             })
         }
     }

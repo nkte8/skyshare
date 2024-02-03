@@ -1,11 +1,11 @@
 import { load_circle, button_base } from "./tailwind_variants"
-
+import { ReactNode } from "react"
 const Component = ({
     handler, isProcessing, context, showAnimation = true, className
 }: {
     handler: () => void,
     isProcessing: boolean,
-    context: string,
+    context: ReactNode,
     showAnimation?: boolean,
     className?: string
 }) => {

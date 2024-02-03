@@ -34,12 +34,12 @@ export const Component = ({
             reset_Jwt()
             if (setMsgInfo !== undefined) {
                 setMsgInfo({
-                    msg: "ログアウトに成功しました！",
+                    msg: "ログアウトしました!",
                     isError: false,
                 })
             }
         } catch (error) {
-            alert("Unknow error, sorry...")
+            alert("Unexpected error...")
             window.location.reload()
         }
         setLoad(false)

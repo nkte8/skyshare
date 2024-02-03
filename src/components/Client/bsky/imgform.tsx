@@ -1,7 +1,7 @@
 import React, { useRef, Dispatch, SetStateAction } from "react"
 import { compressImage } from "@/utils/compressimage"
 import ProcButton from "../common/procButton"
-
+import pic from "@/images/image.svg"
 const mimetypes: Array<string> = [
     "image/png", "image/jpeg"
 ]
@@ -54,17 +54,22 @@ const Component = ({ disabled, setImageFile }: {
     const acceptlist = extensions.join(",")
     return (
         <>
-            <div>
-                <input type="file" accept={acceptlist}
-                    ref={inputRef}
-                    style={{ display: "none" }}
-                    onChange={handleFilechanged}
-                    multiple />
-                <ProcButton handler={handleClick}
-                    isProcessing={disabled}
-                    context="画像を選択"
-                    showAnimation={false} />
-            </div>
+            <input type="file" accept={acceptlist}
+                ref={inputRef}
+                style={{ display: "none" }}
+                onChange={handleFilechanged}
+                multiple />
+            <ProcButton handler={handleClick}
+                isProcessing={disabled}
+                context={
+                    <>
+                        <div className="align-middle">
+                            <img src={pic.src} className="w-4 h-4 inline-block mr-1 my-auto align-middle" />
+                            <span className="align-middle">画像を選択</span>
+                        </div>
+                    </>}
+                showAnimation={false} />
+
         </>
     )
 }

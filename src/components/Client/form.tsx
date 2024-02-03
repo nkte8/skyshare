@@ -27,7 +27,6 @@ const Component = ({
 
     const [mode, setMode] = useState<modes>("bsky")
     return (<>
-        <MsgLabel msgInfo={msgInfo} />
         {
             session.accessJwt !== null ? (
                 <>
@@ -37,6 +36,8 @@ const Component = ({
                         <ModeButton mode={mode} setMode={setMode} />
                         <LogoutButton setMsgInfo={setMsgInfo} reload={false} />
                     </div>
+                    <MsgLabel msgInfo={msgInfo} />
+
                 </>
             ) : (
                 <Login setMsgInfo={setMsgInfo} />

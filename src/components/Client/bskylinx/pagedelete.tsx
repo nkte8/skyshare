@@ -34,14 +34,14 @@ const Component = ({
                 resDeletePage.result === "ok") {
                 setMsgInfo({
                     isError: false,
-                    msg: "ページの削除に成功しました。"
+                    msg: "ページを削除しました!"
                 })
                 window.location.reload()
             } else {
                 let msg:string = ""
                 switch (resDeletePage.error) {
                     case "Unauthorized":
-                        msg = "認証に失敗しました。元投稿が削除されていませんか？"
+                        msg = "認証に失敗しました。Blueskyの投稿を確認してください。"
                         break
                     default:
                         msg = "Unexpected error"
@@ -54,7 +54,7 @@ const Component = ({
         } catch (e) {
             setMsgInfo({
                 isError: true,
-                msg: "Unexpected error"
+                msg: "Unexpected error..."
             })
         }
         setProcessing(false)

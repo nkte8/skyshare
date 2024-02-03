@@ -45,11 +45,15 @@ const Component = ({
                         blob: new Uint8Array(await imageFiles[i].arrayBuffer())
                     }))
                 }
+                setMsgInfo({
+                    msg:  "画像のアップロード中...",
+                    isError: false
+                })
                 const blob_res = await Promise.all(res_que)
                 for (let value of blob_res) {
                     if (typeof value.blob.ref.$link === "undefined") {
                         setMsgInfo({
-                            msg: "Unexpected Error",
+                            msg: "画像のアップロードに失敗しました...",
                             isError: true
                         })
                         setLoad(false)
@@ -77,6 +81,10 @@ const Component = ({
                     }
                 }
             }
+            setMsgInfo({
+                msg:  "Blueskyへ投稿中...",
+                isError: false
+            })
             const rec_res = await createRecord({
                 repo: session.did,
                 accessJwt: session.accessJwt,
@@ -86,10 +94,10 @@ const Component = ({
                 let message: string = ""
                 switch (rec_res.error) {
                     case "BlobTooLarge":
-                        message =  "画像の圧縮が上手くいきませんでした。"
+                        message =  "画像の圧縮に失敗しました..."
                         break
                     default:
-                        message =  "Unexpected error"
+                        message =  "Unexpected error..."
                 }
                 setMsgInfo({
                     msg: message,
@@ -97,17 +105,21 @@ const Component = ({
                 })
             } else {
                 setMsgInfo({
-                    msg:  "Blueskyへの投稿に成功しました！",
+                    msg:  "Blueskyへ投稿しました!",
                     isError: false
                 })
                 if (imageFiles !== null) {
+                    setMsgInfo({
+                        msg:  "Twitter用ページ生成中...",
+                        isError: false
+                    })
                     const get_res = await createPage({
                         accessJwt: session.accessJwt,
                         uri: rec_res.uri
                     })
                     if (typeof get_res.uri !== "undefined") {
                         setMsgInfo({
-                            msg: "Twitter用リンクの生成に成功しました！",
+                            msg: "Twitter用リンクを生成しました!",
                             isError: false
                         })
                         const [id, rkey] = get_res.uri.split("/")
@@ -123,7 +135,7 @@ const Component = ({
             }
         } catch {
             setMsgInfo({
-                msg: "Unexpected error",
+                msg: "Unexpected error...",
                 isError: true
             })
         }
@@ -134,13 +146,14 @@ const Component = ({
         <>
             <MemoImageView
                 imageFiles={imageFiles} />
+
+            <TextForm
+                post={post}
+                setPost={setPost} />
             <ImageForm
                 disabled={loading}
                 setImageFile={setImageFile}
             />
-            <TextForm
-                post={post}
-                setPost={setPost} />
             <ProcButton
                 handler={handlePost}
                 isProcessing={loading}

@@ -31,11 +31,6 @@ export const Component = ({
             if (typeof res.avatar !== "undefined") {
                 setProfinfo(res)
                 setProfref(res.handle)
-            } else {
-                setMsgInfo({
-                    msg: "プロフィールの読み込みを失敗しました。",
-                    isError: true,
-                })
             }
         } catch (error) {
         }
