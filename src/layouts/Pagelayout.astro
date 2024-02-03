@@ -4,14 +4,26 @@ interface Props {
     cardPath: string;
     robots: string[];
     hideLoader?: boolean;
+    hidePostButton: boolean;
 }
-const { cardPath, pageTitle, robots, hideLoader = false } = Astro.props;
+const {
+    cardPath,
+    pageTitle,
+    robots,
+    hideLoader = false,
+    hidePostButton,
+} = Astro.props;
 import Header from "@/components/Header.astro";
 import Fotter from "@/components/Fotter.astro";
 import Blanklayout from "@/layouts/Blanklayout.astro";
 ---
 
-<Blanklayout cardPath={cardPath} pageTitle={pageTitle} robots={robots}>
+<Blanklayout
+    cardPath={cardPath}
+    pageTitle={pageTitle}
+    robots={robots}
+    hidePostButton={hidePostButton}
+>
     <Header hideLoader={hideLoader} slot="header" />
     <div class="container mx-auto p-3 max-w-5xl">
         <div class="bg-white bg-opacity-80 p-2 sm:p-8 rounded-lg">

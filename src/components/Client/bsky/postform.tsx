@@ -2,7 +2,7 @@ import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context, type msgInfo } from "../common/contexts"
 import createRecord from "@/utils/atproto_api/createRecord";
 import uploadBlob from "@/utils/atproto_api/uploadBlob";
-import createPage from "@/utils/bskylinx_api/createPage";
+import createPage from "@/utils/backend_api/createPage";
 import model_uploadBlob from "@/utils/atproto_api/models/uploadBlob.json";
 
 import ProcButton from "../common/procButton"

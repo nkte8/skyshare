@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 import { pagesPrefix, siteurl } from "@/utils/vars"
-import getIds from "@/utils/bskylinx_api/geIds"
+import getIds from "@/utils/backend_api/geIds"
 import { Session_context, type msgInfo } from "../common/contexts"
 import { load_circle, link } from "../common/tailwind_variants"
 

@@ -1,9 +1,9 @@
 ---
 export const prerender = false;
 import Pagelayout from "@/layouts/Postlayout.astro";
-import getPage from "@/utils/bskylinx_api/getPage";
+import getPage from "@/utils/backend_api/getPage";
 import { subject, link } from "@/utils/tailwind_variants";
-import { posturl, siteurl } from "@/utils/vars";
+import { posturl, siteurl, servicename } from "@/utils/vars";
 
 const { slug } = Astro.params;
 if (typeof slug === "undefined") {
@@ -21,6 +21,7 @@ if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
         statusText: "Not found",
     });
 }
+const title = `${author} Post - ${servicename}`
 const imgs = getpage_res.imgs;
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 import Loadingcircle from "@/components/loadingcircle.astro";
@@ -28,7 +29,7 @@ import Loadingcircle from "@/components/loadingcircle.astro";
 
 <Pagelayout
     cardPath={getpage_res.ogp}
-    pageTitle={`${author} Post - BskyLinX`}
+    pageTitle={title}
     robots={robots}
     hideLoader={true}
 >
@@ -62,22 +63,6 @@ import Loadingcircle from "@/components/loadingcircle.astro";
         </div>
         <space id="page" pageid={slug}></space>
     </div>
-    <a href={posturl} class="sm:hidden block">
-        <div
-            class="fixed bottom-8 right-4 rounded-full bg-white p-4 border-4 border-sky-400 hover:scale-125 transition-all"
-        >
-            <svg
-                class="w-8 h-8"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 200.013 200"
-                ><g class="fill-sky-400" transform="translate(-14.183 -263.559)"
-                    ><path
-                        d="M205.117,272.643a31.052,31.052,0,0,0-41.815-1.894l43.7,43.7a31.052,31.052,0,0,0-1.889-41.811Zm-51.257,3.493L19.5,410.5l-3.948,50.526-1.368,1.368,1.274-.1-.11,1.265,1.368-1.368,50.535-3.938L201.612,323.891Zm.779,33.858,13.117,13.117-62.734,62.734L91.905,372.728Z"
-                        transform="translate(0 0)"></path></g
-                ></svg
-            >
-        </div>
-    </a>
     <div slot="outofcontainer" class="text-center my-2">
         <a
             href={siteurl}

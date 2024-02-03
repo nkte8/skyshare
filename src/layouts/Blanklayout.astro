@@ -1,5 +1,5 @@
 ---
-import { baseurl } from "@/utils/vars";
+import { baseurl, posturl } from "@/utils/vars";
 import Metadatas from "@/components/Metadatas.astro";
 // import "@/styles/global.css";
 const favicon = baseurl + "favicon.svg";
@@ -7,8 +7,9 @@ interface Props {
     pageTitle: string;
     cardPath: string;
     robots: string[];
+    hidePostButton: boolean;
 }
-const { cardPath, pageTitle, robots } = Astro.props;
+const { cardPath, pageTitle, robots, hidePostButton } = Astro.props;
 ---
 
 <html lang="ja">
@@ -23,6 +24,29 @@ const { cardPath, pageTitle, robots } = Astro.props;
         <div class="flex-grow">
             <slot />
         </div>
+        {
+            !hidePostButton && (
+                <a href={posturl} class="sm:hidden block">
+                    <div class="fixed bottom-8 right-4 rounded-full bg-white p-4 border-4 border-sky-400 hover:scale-125 transition-all">
+                        <svg
+                            class="w-8 h-8"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 200.013 200"
+                        >
+                            <g
+                                class="fill-sky-400"
+                                transform="translate(-14.183 -263.559)"
+                            >
+                                <path
+                                    d="M205.117,272.643a31.052,31.052,0,0,0-41.815-1.894l43.7,43.7a31.052,31.052,0,0,0-1.889-41.811Zm-51.257,3.493L19.5,410.5l-3.948,50.526-1.368,1.368,1.274-.1-.11,1.265,1.368-1.368,50.535-3.938L201.612,323.891Zm.779,33.858,13.117,13.117-62.734,62.734L91.905,372.728Z"
+                                    transform="translate(0 0)"
+                                />
+                            </g>
+                        </svg>
+                    </div>
+                </a>
+            )
+        }
         <slot name="footer" />
     </body>
 </html>

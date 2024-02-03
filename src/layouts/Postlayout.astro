@@ -11,7 +11,7 @@ import Blanklayout from "@/layouts/Blanklayout.astro";
 import App from "@/components/Client/app";
 ---
 
-<Blanklayout cardPath={cardPath} pageTitle={pageTitle} robots={robots}>
+<Blanklayout cardPath={cardPath} pageTitle={pageTitle} robots={robots}, hidePostButton={false}>
     <div class="container mx-auto p-2 max-w-5xl">
         <div class="bg-white bg-opacity-80 p-2 rounded-lg">
             <slot />

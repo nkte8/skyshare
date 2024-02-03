@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react"
-import deletePage from "@/utils/bskylinx_api/deletePage"
+import deletePage from "@/utils/backend_api/deletePage"
 import ProcButton from "../common/procButton"
 import { type Session_info, type msgInfo } from "../common/contexts"
 
