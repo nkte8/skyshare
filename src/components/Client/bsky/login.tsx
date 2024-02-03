@@ -30,12 +30,12 @@ export const Component = ({
                     refreshJwt: res.refreshJwt
                 })
                 setMsgInfo({
-                    msg: "ログインに成功しました！",
+                    msg: "ログインしました!",
                     isError: false,
                 })
             } else {
                 setMsgInfo({
-                    msg: "ログインに失敗しました。",
+                    msg: "ログイン出来ませんでした...",
                     isError: true,
                 })
             }

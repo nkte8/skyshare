@@ -32,13 +32,13 @@ export const Component = ({
                     })
                     if (setMsgInfo !== undefined) {
                         setMsgInfo({
-                            msg: "Blueskyへのログインに成功しました！", isError: false
+                            msg: "ログインしました!", isError: false
                         })
                     }
                 } else {
                     if (setMsgInfo !== undefined) {
                         setMsgInfo({
-                            msg: "セッションが終了しました。再ログインしてください。", isError: true
+                            msg: "再ログインしてください。", isError: true
                         })
                     }
                     reset_Jwt()
