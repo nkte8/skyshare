@@ -1,8 +1,9 @@
 ---
 export const prerender = false;
-import Pagelayout from "@/layouts/Pagelayout.astro";
+import Pagelayout from "@/layouts/Postlayout.astro";
 import getPage from "@/utils/bskylinx_api/getPage";
 import { subject, link } from "@/utils/tailwind_variants";
+import { posturl, siteurl } from "@/utils/vars";
 
 const { slug } = Astro.params;
 if (typeof slug === "undefined") {
@@ -11,8 +12,8 @@ if (typeof slug === "undefined") {
         statusText: "Server Error",
     });
 }
-const [author, rkey] = slug.split("_");
-const getpage_res = await getPage({ slug: slug });
+const [author, rkey] = slug.split(/(_|@)/);
+const getpage_res = await getPage({ id: slug });
 
 if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
     return new Response(null, {
@@ -22,19 +23,16 @@ if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
 }
 const imgs = getpage_res.imgs;
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
+import Loadingcircle from "@/components/loadingcircle.astro";
 ---
 
 <Pagelayout
     cardPath={getpage_res.ogp}
     pageTitle={`${author} Post - BskyLinX`}
     robots={robots}
+    hideLoader={true}
 >
-    <div
-        class="p-6 mx-auto
-          bg-white rounded-xl shadow-lg
-            md:w-xl w-full max-w-xl
-            items-center text-center"
-    >
+    <div class="items-center text-center">
         <div class={subject({ size: "m", class: "text-center" })}>
             <a
                 href={new URL(`${author}`, "https://bsky.app/profile/")}
@@ -57,5 +55,35 @@ const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
                 return <img src={value.thumb} alt={value.alt} />;
             })
         }
+    </div>
+    <div class="m-auto w-fit my-4 items-center text-center">
+        <div id="pload">
+            <Loadingcircle size="l" />
+        </div>
+        <space id="page" pageid={slug}></space>
+    </div>
+    <a href={posturl} class="sm:hidden block">
+        <div
+            class="fixed bottom-8 right-4 rounded-full bg-white p-4 border-4 border-sky-400 hover:scale-125 transition-all"
+        >
+            <svg
+                class="w-8 h-8"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200.013 200"
+                ><g class="fill-sky-400" transform="translate(-14.183 -263.559)"
+                    ><path
+                        d="M205.117,272.643a31.052,31.052,0,0,0-41.815-1.894l43.7,43.7a31.052,31.052,0,0,0-1.889-41.811Zm-51.257,3.493L19.5,410.5l-3.948,50.526-1.368,1.368,1.274-.1-.11,1.265,1.368-1.368,50.535-3.938L201.612,323.891Zm.779,33.858,13.117,13.117-62.734,62.734L91.905,372.728Z"
+                        transform="translate(0 0)"></path></g
+                ></svg
+            >
+        </div>
+    </a>
+    <div slot="outofcontainer" class="text-center my-2">
+        <a
+            href={siteurl}
+            class={link({
+                class: "text-center p-2 rounded-lg bg-white opacity-80",
+            })}>トップへ戻る</a
+        >
     </div>
 </Pagelayout>

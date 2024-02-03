@@ -2,6 +2,12 @@ import { tv } from "tailwind-variants";
 
 export const link = tv({
 	base: "text-sky-500 hover:text-red-300",
+	variants: {
+		enabled: {
+			true: "",
+			false: "text-sky-700 hover:text-sky-700"
+		}
+	}
 });
 
 export const inputtext_base = tv({
@@ -9,11 +15,12 @@ export const inputtext_base = tv({
 });
 
 export const button_base = tv({
-	base: "border-2 rounded-md px-3 py-1 ",
+	base: "border-2 rounded-md px-3 py-1 mx-px",
 	variants: {
-		mode: {
-			true: "hover:bg-gray-200",
-			false: "bg-gray-200",
+		enabled: {
+			true: "hover:bg-gray-200 cursor-pointer",
+			false: "bg-gray-200 cursor-progress",
+			bad: "bg-gray-200 cursor-not-allowed"
 		}
 	}
 })

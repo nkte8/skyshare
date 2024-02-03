@@ -1,15 +1,17 @@
 import etype from "./models/error.json";
-const endpoint_url = import.meta.env.PUBLIC_CREATEPAGES_ENDPOINT
+const endpoint_url = import.meta.env.PUBLIC_DELETEPAGE_ENDPOINT
 
 type output = {
-    uri: string
+    result: string
 }
 
 export const api = async ({
-    uri,
-    accessJwt,
+    id,
+    did,
+    accessJwt
 }: {
-    uri: string,
+    id: string
+    did: string,
     accessJwt: string
 }): Promise<output & typeof etype> => {
     return fetch(endpoint_url,
@@ -20,7 +22,8 @@ export const api = async ({
             },
             body: JSON.stringify(
                 {
-                    uri: uri,
+                    id: id,
+                    did: did,
                     accessJwt: accessJwt
                 })
         }).then((response) => response.json()

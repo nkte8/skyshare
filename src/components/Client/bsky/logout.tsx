@@ -1,13 +1,20 @@
-import { useState, useContext } from "react"
-import { Session_context, Msg_context } from "../contexts"
+import { useState, useContext, Dispatch, SetStateAction } from "react"
+import { Session_context, type msgInfo } from "../common/contexts"
 import deleteSession from "@/utils/atproto_api/deleteSession";
 import { reset_Jwt } from "@/utils/localstorage";
-import ProcButton from "../procButton"
+import ProcButton from "../common/procButton"
 
-export const Component = () => {
+export const Component = ({
+    className,
+    setMsgInfo,
+    reload
+}: {
+    className?: string,
+    setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
+    reload: boolean
+}) => {
     const [loading, setLoad] = useState<boolean>(false)
     const { session, setSession } = useContext(Session_context)
-    const { setMsgInfo } = useContext(Msg_context)
 
     const handleLogout = async () => {
         setLoad(true)
@@ -25,40 +32,29 @@ export const Component = () => {
                 handle: null,
             })
             reset_Jwt()
-            setMsgInfo({
-                msg: "Logout successed",
-                isError: false,
-            })
-
-            // if (typeof res?.error === "undefined") {
-            //     setSession({
-            //         did: null,
-            //         accessJwt: null,
-            //         refreshJwt: null
-            //     })
-            //     reset_Jwt()
-            //     setMsgInfo({
-            //         msg: "Logout successed",
-            //         isError: false,
-            //     })
-            // } else {
-            //     setMsgInfo({
-            //         msg: "Logout failed...",
-            //         isError: true,
-            //     })
-            // }
+            if (setMsgInfo !== undefined) {
+                setMsgInfo({
+                    msg: "ログアウトに成功しました！",
+                    isError: false,
+                })
+            }
         } catch (error) {
             alert("Unknow error, sorry...")
             window.location.reload()
         }
         setLoad(false)
+        if (reload) {
+            window.location.reload()
+        }
     }
 
     return (
         <ProcButton
             handler={handleLogout}
             isProcessing={loading}
-            context="Logout" />
+            context="ログアウト"
+            showAnimation={true}
+            className={className} />
     )
 }
 

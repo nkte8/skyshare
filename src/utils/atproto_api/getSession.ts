@@ -15,8 +15,6 @@ export const api = async ({
             'Authorization': `Bearer ${accessJwt}`
         },
     }).then((response) => response.json()
-    ).catch(() => {
-        console.log("error");
-    })
+    ).catch(() => {})
 
 export default api

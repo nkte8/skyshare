@@ -1,5 +1,5 @@
 ---
-import { baseurl } from "@/utils/vars";
+import { baseurl, siteurl } from "@/utils/vars";
 
 const ref_privacy = baseurl + "privacypolicy/";
 import { link } from "@/utils/tailwind_variants";
@@ -12,6 +12,9 @@ import { link } from "@/utils/tailwind_variants";
                 >プライバシーポリシー</a
             >
         </div>
-        <div>2024 © BskyLinX</div>
+        <div>
+            2024 © <a href={siteurl} class={link()}
+                >BskyLinX</a>
+        </div>
     </div>
 </div>

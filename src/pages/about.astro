@@ -1,8 +1,8 @@
 ---
-import { baseurl, siteurl } from "@/utils/vars";
+import { baseurl, siteurl, pagesPrefix } from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const example_url = new URL(
-	baseurl + "posts/nlla.bsky.social_3kk7qzpffl22n/",
+	baseurl + pagesPrefix + "/nlla.bsky.social_3kk7qzpffl22n/",
 	siteurl,
 );
 import { subject, link } from "@/utils/tailwind_variants";
@@ -77,6 +77,34 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 				href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。&url=${example_url}`}
 				>投稿リンクの例です（投稿用の本文付きで𝕏が開きます）</a
 			>
+		</div>
+	</div>
+
+	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>OGP/生成ページの有効期限について</h3>
+		<div>
+			<div class="mb-4 font-medium">2024/02/02(Beta): 新規記載</div>
+			<div>
+				DB容量の節約のため、生成したOGPおよびOGPに紐づけられたWebページは180日後削除されます。
+				また、本規約の制定より前に投稿されたページについても規約制定より180日後に削除させていただきます。
+				OGPおよびOGPに紐づけられたWebページは、180日後データベースからは削除されますが、BlueskyおよびXの投稿は残ります。
+				ページの有効期限を延ばす仕組みについては今後用意する予定です。
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>生成ページの削除機能について</h3>
+		<div>
+			<div class="mb-4 font-medium">2024/02/03(Beta): 新規記載</div>
+			<div>
+				Twitter用に生成したページを削除できるようになりました。ログインした状態でページを開くと「ページを削除」ボタンが表示されるので
+				これを押していただけば削除可能です。
+			</div>
+			<div>
+				生成ページがユーザの投稿であるかを判定するため、Blueskyの元のポストを参照しています。元ポストが削除されている場合はページ削除は
+				出来ませんので、申し訳ありませんが自動削除をお待ちください。
+			</div>
 		</div>
 	</div>
 

@@ -1,15 +1,18 @@
-import mtype from "./models/db.json";
 import etype from "./models/error.json";
 const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT
-const object = "page"
+const object = "user"
+
+type output = {
+    ids: Array<string>
+}
 
 export const api = async ({
-    id
+    handle
 }: {
-    id: string
-}): Promise<typeof mtype & typeof etype> => {
+    handle: string
+}): Promise<output & typeof etype> => {
     const url = new URL(
-        object + "/" + encodeURIComponent(id),
+        object + "/" + encodeURIComponent(handle),
         endpoint_url)
     return fetch(url,
         {

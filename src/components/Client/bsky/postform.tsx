@@ -1,30 +1,33 @@
-import { memo, useState, useContext } from "react"
-import { Session_context, Msg_context } from "../contexts"
+import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
+import { Session_context, type msgInfo } from "../common/contexts"
 import createRecord from "@/utils/atproto_api/createRecord";
 import uploadBlob from "@/utils/atproto_api/uploadBlob";
 import createPage from "@/utils/bskylinx_api/createPage";
 import model_uploadBlob from "@/utils/atproto_api/models/uploadBlob.json";
 
-import ProcButton from "../procButton"
-import LogoutButton from "./logout"
-import Profile from "./profile"
+import ProcButton from "../common/procButton"
 import ImageForm from "./imgform"
 import ImgView from "./imgview"
 import TextForm from "./textform"
-import Twiurl from "./twiurl"
+import Twiurl from "./twibutton"
 
 const MemoImageView = memo(ImgView)
-const Component = () => {
+const Component = ({
+    setMsgInfo
+}: {
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
+}) => {
     const [loading, setLoad] = useState<boolean>(false)
     const [imageFiles, setImageFile] = useState<File[] | null>(null);
     const [post, setPost] = useState<string>("")
     const [twimsg, setTwimsg] = useState<string>("")
     const [twiurl, setTwiref] = useState<string | null>(null)
     const { session } = useContext(Session_context)
-    const { setMsgInfo } = useContext(Msg_context)
 
     const handlePost = async () => {
         setLoad(true)
+        setTwiref(null)
+        setTwimsg("")
         let record: object = {
             text: post,
             createdAt: new Date(),
@@ -46,7 +49,7 @@ const Component = () => {
                 for (let value of blob_res) {
                     if (typeof value.blob.ref.$link === "undefined") {
                         setMsgInfo({
-                            msg: "Unexpected upload image error",
+                            msg: "Unexpected Error",
                             isError: true
                         })
                         setLoad(false)
@@ -83,9 +86,10 @@ const Component = () => {
                 let message: string = ""
                 switch (rec_res.error) {
                     case "BlobTooLarge":
-                        message = "Image compression failed to bsky limit. Sorry..."
+                        message =  "画像の圧縮が上手くいきませんでした。"
+                        break
                     default:
-                        message = "Unexpected upload error"
+                        message =  "Unexpected error"
                 }
                 setMsgInfo({
                     msg: message,
@@ -93,7 +97,7 @@ const Component = () => {
                 })
             } else {
                 setMsgInfo({
-                    msg: "Success post to Bluesky!",
+                    msg:  "Blueskyへの投稿に成功しました！",
                     isError: false
                 })
                 if (imageFiles !== null) {
@@ -103,12 +107,12 @@ const Component = () => {
                     })
                     if (typeof get_res.uri !== "undefined") {
                         setMsgInfo({
-                            msg: "Success build twiURL!",
+                            msg: "Twitter用リンクの生成に成功しました！",
                             isError: false
                         })
                         const [id, rkey] = get_res.uri.split("/")
                         setTwimsg(post)
-                        setTwiref(`${id}_${rkey}`)
+                        setTwiref(`${id}@${rkey}`)
                     }
                 } else {
                     setTwimsg(post)
@@ -128,24 +132,21 @@ const Component = () => {
 
     return (
         <>
-            <Profile />
             <MemoImageView
                 imageFiles={imageFiles} />
             <ImageForm
                 disabled={loading}
                 setImageFile={setImageFile}
             />
-            <Twiurl context={twimsg} twiurl={twiurl} />
             <TextForm
                 post={post}
                 setPost={setPost} />
-            <div className="mt-2 inline">
-                <ProcButton
-                    handler={handlePost}
-                    isProcessing={loading}
-                    context="Post" />
-                <LogoutButton />
-            </div>
+            <ProcButton
+                handler={handlePost}
+                isProcessing={loading}
+                context="Blueskyへ投稿"
+                showAnimation={true} />
+            <Twiurl context={twimsg} twiurl={twiurl} />
         </>
     );
 }

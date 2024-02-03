@@ -17,7 +17,3 @@ export type msgInfo = {
     msg: string,
     isError: boolean,
 }
-export const Msg_context = createContext({} as {
-    msgInfo: msgInfo
-    setMsgInfo: React.Dispatch<React.SetStateAction<msgInfo>>
-})

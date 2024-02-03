@@ -1,17 +1,20 @@
-import { useState, useContext } from "react"
-import { inputtext_base, link } from "../tailwind_variants"
-import { Session_context, Msg_context } from "../contexts"
+import { useState, useContext, Dispatch, SetStateAction } from "react"
+import { inputtext_base, link } from "../common/tailwind_variants"
+import { Session_context, type msgInfo } from "../common/contexts"
 import createSession from "@/utils/atproto_api/createSession";
 import { write_Jwt } from "@/utils/localstorage"
-import ProcButton from "../procButton"
-import Tooltip from "../toolctip"
+import ProcButton from "../common/procButton"
+import Tooltip from "../common/toolctip"
 
-export const Component = () => {
+export const Component = ({
+    setMsgInfo,
+}: {
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+}) => {
     const [loading, setLoad] = useState<boolean>(false)
     const [identifier, setIdentifer] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const { setSession } = useContext(Session_context)
-    const { setMsgInfo } = useContext(Msg_context)
 
     const handleLogin = async () => {
         setLoad(true)
@@ -27,17 +30,17 @@ export const Component = () => {
                     refreshJwt: res.refreshJwt
                 })
                 setMsgInfo({
-                    msg: "Login successed!",
+                    msg: "ログインに成功しました！",
                     isError: false,
                 })
             } else {
                 setMsgInfo({
-                    msg: "Login failed...",
+                    msg: "ログインに失敗しました。",
                     isError: true,
                 })
             }
         } catch (error) {
-            alert("Unknow error, sorry...")
+            alert((<div>Unexpected error</div>))
             window.location.reload()
         }
         setLoad(false)
@@ -63,7 +66,8 @@ export const Component = () => {
                 <ProcButton
                     handler={handleLogin}
                     isProcessing={loading}
-                    context="Bluesky Login" />
+                    context="Blueskyアカウントでログイン"
+                    showAnimation={true} />
             </div>
             <Tooltip tooltip={
                 <div className="flex flex-col sm:flex-row">
