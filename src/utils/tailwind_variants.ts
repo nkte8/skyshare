@@ -27,3 +27,7 @@ export const load_circle = tv({
 		}
 	}
 })
+
+export const box = tv({
+	base: "bg-white bg-opacity-80 rounded-lg w-fit px-4 py-2 m-auto"
+})

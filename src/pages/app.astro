@@ -2,14 +2,17 @@
 export const prerender = false;
 import Pagelayout from "@/layouts/Pagelayout.astro";
 import Loadingcircle from "@/components/loadingcircle.astro";
+import { servicename } from "@/utils/vars"
+const title = `${servicename}`
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 ---
 
 <Pagelayout
     cardPath="/materials/ogp_main.png"
-    pageTitle="App - BskyLinX"
+    pageTitle={title}
     robots={robots}
     hideLoader={true}
+    hidePostButton={true}
 >
     <div class="p-0 mx-auto
             items-center text-center">

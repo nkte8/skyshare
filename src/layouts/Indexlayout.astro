@@ -10,7 +10,7 @@ import Fotter from "@/components/Fotter.astro";
 import Blanklayout from "@/layouts/Blanklayout.astro";
 ---
 
-<Blanklayout cardPath={cardPath} pageTitle={pageTitle} robots={robots}>
+<Blanklayout cardPath={cardPath} pageTitle={pageTitle} robots={robots} hidePostButton={false}>
     <Header hideLoader={false} slot="header" />
     <slot />
     <Fotter slot="footer" />

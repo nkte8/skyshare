@@ -1,5 +1,12 @@
 ---
-import { baseurl, siteurl, pagesPrefix } from "@/utils/vars";
+import {
+	baseurl,
+	siteurl,
+	pagesPrefix,
+	servicename,
+	github_url,
+	zenn_profile,
+} from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const example_url = new URL(
 	baseurl + pagesPrefix + "/nlla.bsky.social_3kk7qzpffl22n/",
@@ -9,44 +16,35 @@ import { subject, link } from "@/utils/tailwind_variants";
 import { Picture } from "astro:assets";
 import ogp_example from "@/images/ogp_nlla.bsky.jpg";
 import link_img from "@/images/link.svg";
-import { github_url } from "@/utils/vars";
+
+const title = `About - ${servicename}`;
 const robots = ["nofollow", "noarchive", "noimageindex"];
 ---
 
 <Pagelayout
 	cardPath="/materials/ogp_main.png"
-	pageTitle="About - BskyLinx"
+	pageTitle={title}
 	robots={robots}
+	hidePostButton={true}
 >
 	<div class="mb-8">
-		<h2 class={subject({ size: "xl" })}>Bluesky Link-𝕏</h2>
-		<div class="mb-4">
-			<div>
-				BskyLinXは、青空（Bluesky）の民が地に落ちた青い鳥（Twitter,現𝕏）の民を救うべく生まれたWebサービスです。「ブルースカイ
-				リンクス」と読みます。
-			</div>
-		</div>
-		<div>
-			Bluesky Link-𝕏
-			は、Bluesky投稿専用クライアント、およびOGPジェネレータです。
-		</div>
-		<div>
-			<b>本サービスはBluesky・𝕏への同時投稿を簡略化します。</b>
-		</div><div>
-			これにより、Blueskyを軸に添えた活動への移行を補助します。
+		<h2 class={subject({ size: "xl" })}>{servicename}</h2>
+		<div class={subject({ size: "m" })}>
+			{
+				servicename
+			}は、Bluesky投稿専用クライアント、およびOGP/リンクジェネレータです。
 		</div>
 	</div>
 	<div class="mb-8">
 		<h3 class={subject({ size: "l" })}>詳しい仕組み</h3>
 		<div>
 			<div>
-				本サービスからポストを行うと、Blueskyへの投稿と同時に、
+				当サイトからポストを行うと、Blueskyへの投稿と同時に、
 				OGPカードおよび画像が設定されたWebページを生成します。
 			</div>
 			<div>
-				本Webサービスを実行すると
 				<a class={link()} href={example_url}>
-					このようなページが生成されます。
+					例としてはこのようなページが生成されます。
 				</a>
 				ツイートしようとすると、以下のような画像(1200x630px)がツイートに添付されます。
 			</div><div>
@@ -58,16 +56,12 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 					src={ogp_example}
 					alt=""
 				/>
-			</div><div>
-				OGPが生成されたWebページはグローバルに利用が可能です。
-			</div><div>
-				あなたのBluesky投稿から生成されたWebページをTwitterにて投稿していただくことで、両SNSへの投稿をサポートします。
 			</div>
 			<div>
-				「投稿後に自分でTwitter開くの面倒くさいな...」という方も安心してください。
+				Bluesky投稿から生成されたWebページをTwitterにて投稿していただくことで、両SNSへの投稿を疑似的にサポートする、というサービスとなります。
 			</div>
 			<div class="mb-4">
-				以下のような一瞬で投稿を生成する投稿リンクを払い出しますので、あなたは𝕏アプリ上で投稿ボタンを押すだけです！
+				Bluesky投稿後、以下のような投稿を生成する投稿リンクを払い出されるので、Twitterへの投稿もスムーズです。
 			</div>
 			<img class="w-4 inline-block" src={link_img.src} />
 
@@ -75,7 +69,7 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 				target="_blank"
 				class={link()}
 				href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。&url=${example_url}`}
-				>投稿リンクの例です（投稿用の本文付きで𝕏が開きます）</a
+				>投稿リンクの例（投稿用の本文付きで𝕏が開きます）</a
 			>
 		</div>
 	</div>
@@ -121,6 +115,7 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 				<a href={github_url} class={link()}
 					>フロントエンドのソースコードを公開しています。
 				</a>
+				バックエンド側のコード公開は、本リリースまでお待ちいただければ幸いです。
 			</div>
 			<div>
 				ATProtocolの習熟や、サービスの開発に役立てていただければ幸いです。
@@ -131,13 +126,12 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 	<div class="mb-8">
 		<div>
 			<h2 class={subject({ size: "l" })}>もっと詳しく</h2>
-			<div class="">
-				Zennへ本サービスの開発について執筆を予定してます。
-				気になる方はぜひ...
-				<div>
-					気にならない方は...ぜひサービスを使ってください。Goodbye
-					X... Hello Bluesky!
-				</div>
+			<div>
+				当サイトはもちろんサービスとしてあったらいいなという想いから制作しましたが、
+				これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。
+				<a href={zenn_profile} class={link()}
+					>Zennへ当サイトの開発についての技術的な解説等の執筆</a
+				>を予定してます。
 			</div>
 		</div>
 	</div>
