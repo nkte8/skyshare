@@ -38,7 +38,7 @@ const Component = ({
                 })
                 window.location.reload()
             } else {
-                let msg:string = ""
+                let msg: string = ""
                 switch (resDeletePage.error) {
                     case "Unauthorized":
                         msg = "認証に失敗しました。Blueskyの投稿を確認してください。"

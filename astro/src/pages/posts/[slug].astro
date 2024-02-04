@@ -21,7 +21,7 @@ if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
         statusText: "Not found",
     });
 }
-const title = `${author} Post - ${servicename}`
+const title = `${author} Post - ${servicename}`;
 const imgs = getpage_res.imgs;
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 import Loadingcircle from "@/components/loadingcircle.astro";
@@ -53,7 +53,9 @@ import Loadingcircle from "@/components/loadingcircle.astro";
         </div>
         {
             imgs.map((value) => {
-                return <img src={value.thumb} alt={value.alt} class="mx-auto" />;
+                return (
+                    <img src={value.thumb} alt={value.alt} class="mx-auto" />
+                );
             })
         }
     </div>
