@@ -11,7 +11,7 @@ const Component = ({ mode, setMode }: {
     const swichLabel = () => {
         switch (mode) {
             case "bsky":
-                setLabel("生成ページ一覧へ")
+                setLabel("OGPページ一覧へ")
                 break
             case "pagedb":
                 setLabel("SNS投稿画面へ")

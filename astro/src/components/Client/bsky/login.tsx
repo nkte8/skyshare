@@ -49,15 +49,15 @@ export const Component = ({
     return (
         <>
             <div className="my-16">
-                <div>
-                    <label className="w-32 inline-block">
+                <div className="align-middle">
+                    <label className="w-32 inline-block my-auto">
                         Email or ID:
                     </label>
                     <input onChange={(event) => setIdentifer(event.target.value)}
                         className={inputtext_base({ class: "max-w-48 w-full" })} type="text" />
                 </div>
-                <div>
-                    <label className="w-32 inline-block">
+                <div className="align-middle">
+                    <label className="w-32 inline-block my-auto">
                         AppPassword※:
                     </label>
                     <input onChange={(event) => setPassword(event.target.value)}

@@ -11,7 +11,13 @@ export const link = tv({
 });
 
 export const inputtext_base = tv({
-	base: "border-2 rounded-md px-1 focus:outline-none",
+	base: "border-2 rounded-md px-1 my-1 focus:outline-none text-xl md:text-lg",
+	variants: {
+		disabled: {
+			true: "bg-gray-200 text-gray-600",
+			false: ""
+		}
+	}
 });
 
 export const button_base = tv({
