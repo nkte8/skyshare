@@ -77,7 +77,12 @@ const Component = ({
                                 showAnimation={false}
                                 context="投稿する"
                                 className={buttonstyle} />
-                            <LogoutButton className={buttonstyle} reload={true} />
+                            <LogoutButton
+                                className={buttonstyle}
+                                reload={true}
+                                disabled={isLoad}
+                                setDisabled={setIsLoad}
+                            />
                         </>
                     ) : (
                         <ProcButton handler={handleClick}

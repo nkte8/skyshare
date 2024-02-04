@@ -14,11 +14,14 @@ import Twiurl from "./twibutton"
 
 const MemoImageView = memo(ImgView)
 const Component = ({
-    setMsgInfo
+    setMsgInfo,
+    loading,
+    setLoad
 }: {
+    loading: boolean,
+    setLoad: Dispatch<SetStateAction<boolean>>,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
-    const [loading, setLoad] = useState<boolean>(false)
     const [imageFiles, setImageFile] = useState<File[] | null>(null);
     const [post, setPost] = useState<string>("")
     const [count, setCount] = useState<number>(0)
