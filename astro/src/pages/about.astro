@@ -105,19 +105,23 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 		<h2 class={subject({ size: "l" })}>ソースコードについて</h2>
 		<div>
 			<div>
-				Blueskyを操作するAPIである
-				ATProtocolは開発段階であるため、マニュアルや前例が少なく
+				Blueskyを操作するAPIであるAT
+				Protocolは開発段階であるため前例が少なく、
 				まだまだハードルが高い内容となっています。
 			</div>
 			<div>
 				開発者がもっと低い敷居で参加できたらという想いから、
-				当サイトではBlueskyのAPI操作を行っている部分も含め、
-				<a href={github_url} class={link()}
-					>全てのソースコードを公開しています。
-				</a>
+				当サイトはOSSの体をとっています。
 			</div>
 			<div>
-				ATProtocolの習熟や、サービスの開発に役立てていただければ幸いです。
+				<a href={github_url} class={link()}
+					>こちらで全てのソースコードを閲覧・使用することができます(BSD-3-Clause
+					license)
+				</a>
+			</div>
+
+			<div>
+				ATProtocolの習熟や、その他サービスの開発に役立てていただければ幸いです。
 			</div>
 		</div>
 	</div>
@@ -130,7 +134,7 @@ const robots = ["nofollow", "noarchive", "noimageindex"];
 				これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。
 				<a href={zenn_url} class={link()}
 					>Zennにて当サイトの制作について</a
-				>すこし記載しています。
+				>記載しています。技術記事というよりは読み物としてお楽しみください。
 			</div>
 		</div>
 	</div>
