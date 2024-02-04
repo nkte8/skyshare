@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react"
 import { inputtext_base } from "../common/tailwind_variants"
 
 const Component = ({ post, onChange, onfocus, onblur }: {

@@ -1,4 +1,4 @@
-import { link, button_base } from "../common/tailwind_variants"
+import { button_base } from "../common/tailwind_variants"
 import { siteurl, pagesPrefix } from "@/utils/vars"
 export const Component = ({
     twiurl, context
