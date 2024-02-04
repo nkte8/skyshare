@@ -1,6 +1,7 @@
 import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context, Hidden_context, type msgInfo } from "../common/contexts"
 import createRecord from "@/utils/atproto_api/createRecord";
+import detectFacets from "@/utils/atproto_api/detectFacets";
 import uploadBlob from "@/utils/atproto_api/uploadBlob";
 import createPage from "@/utils/backend_api/createPage";
 import model_uploadBlob from "@/utils/atproto_api/models/uploadBlob.json";
@@ -30,9 +31,21 @@ const Component = ({
         setLoad(true)
         setTwiref(null)
         setTwimsg("")
+
+        setMsgInfo({
+            msg: "レコードに変換中...",
+            isError: false
+        })
         let record: object = {
             text: post,
             createdAt: new Date(),
+        }
+        let facets = await detectFacets({ text: post })
+        if (facets.length > 0) {
+            record = {
+                ...record,
+                facets: facets
+            }
         }
         try {
             if (session.accessJwt === null || session.did === null) {

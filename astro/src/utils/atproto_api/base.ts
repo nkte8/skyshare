@@ -17,6 +17,10 @@ export namespace com_atproto {
         export const getSession = `${com_atproto.server.url}.getSession`
         export const refreshSession = `${com_atproto.server.url}.refreshSession`
     }
+    export namespace identity {
+        export const url = `${com_atproto.url}.identity`
+        export const resolveHandle = `${com_atproto.identity.url}.resolveHandle`
+    }
 }
 
 export namespace app_bsky {
