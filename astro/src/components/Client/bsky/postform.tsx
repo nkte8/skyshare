@@ -31,6 +31,8 @@ const Component = ({
         setLoad(true)
         setTwiref(null)
         setTwimsg("")
+        // Postを押したら強制的にフォーカスアウトイベントを発火
+        handleOnBlur()
 
         setMsgInfo({
             msg: "レコードに変換中...",
@@ -181,6 +183,7 @@ const Component = ({
                 onfocus={handleOnFocus}
                 onblur={handleOnBlur}
                 post={post}
+                disabled={loading}
                 onChange={handleOnChange} />
             <div className="mx-auto mb-4 sm:max-w-80">
                 <div className="flex">
