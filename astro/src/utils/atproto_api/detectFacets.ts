@@ -90,7 +90,6 @@ const createMentionFacet = async ({
             continue
         }
         result.push({
-            $type: "app.bsky.richtext.facet",
             index: link.index,
             features: [
                 {
@@ -133,7 +132,6 @@ namespace facet {
         ]
     }
     export type mention = {
-        $type: "app.bsky.richtext.facet"
         index: {
             byteStart: number,
             byteEnd: number,
