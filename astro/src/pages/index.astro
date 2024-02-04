@@ -42,6 +42,7 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 			<img
 				src="/materials/longlogo.svg"
 				class="max-w-2xl mb-8 mx-auto w-11/12"
+				alt={servicename}
 			/>
 			{
 				/* 
@@ -58,20 +59,23 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 		</div>
 		<div class="max-w-3xl my-8 text-2xl font-normal">
 			<div class="h-20">
-				<div
+				<img
+					src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAG3RFWHRTb2Z0d2FyZQBDZWxzeXMgU3R1ZGlvIFRvb2zBp+F8AAAACXBIWXMAABnWAAAZ1gEY0crtAAAAA1BMVEVHcEyC+tLSAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII="
 					class="bsky max-w-12 mx-4 w-full aspect-square my-auto inline-block align-middle"
-				>
-				</div>
+					alt="Bluesky"
+				/>
 				<span class="align-middle">と</span>
-				<div
+				<img
+					src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAG3RFWHRTb2Z0d2FyZQBDZWxzeXMgU3R1ZGlvIFRvb2zBp+F8AAAACXBIWXMAABnWAAAZ1gEY0crtAAAAA1BMVEVHcEyC+tLSAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII="
 					class="twi max-w-12 mx-4 w-full aspect-square inline-block align-middle"
-				>
-				</div>
-				<span class="block my-2 text-xl"
-					>同時投稿するためのウェブアプリです</span
-				>
+					alt="Twitter"
+				/>
 			</div>
+			<span class="block my-2 text-xl"
+				>同時投稿するためのウェブアプリです</span
+			>
 		</div>
+
 		<a
 			href={posturl}
 			class={link({
@@ -79,11 +83,11 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 			})}
 			>Blueskyへログイン
 		</a>
-	</div>
-	<div class="text-center mx-auto md:max-w-3xl my-5">
-		<div class={box()}>
-			<a href={abouturl} class={link({ class: "mx-2" })}>About</a>
-			<a href={github_url} class={link({ class: "mx-2" })}>Github</a>
+		<div class="text-center mx-auto md:max-w-3xl my-5">
+			<div class={box()}>
+				<a href={abouturl} class={link({ class: "mx-2" })}>About</a>
+				<a href={github_url} class={link({ class: "mx-2" })}>Github</a>
+			</div>
 		</div>
 	</div>
 </Pagelayout>
