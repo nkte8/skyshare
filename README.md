@@ -40,5 +40,4 @@ export default api
 
 ## more info
 
-Documentation in progress for Japanese Developer at [Zenn](https://zenn.dev/nkte8).  
-
+[Zenn article: for japanese developer](https://zenn.dev/nkte8/articles/2024-02-03-r01)
