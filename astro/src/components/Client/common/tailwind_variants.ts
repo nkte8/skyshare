@@ -5,7 +5,7 @@ export const link = tv({
 	variants: {
 		enabled: {
 			true: "",
-			false: "text-sky-700 hover:text-sky-700"
+			false: "text-gray-600 hover:text-gray-600"
 		}
 	}
 });
@@ -15,12 +15,23 @@ export const inputtext_base = tv({
 });
 
 export const button_base = tv({
-	base: "border-2 rounded-md px-3 py-1 mx-px",
+	base: "border-2 rounded-full px-6 py-1 mx-px font-medium sm:font-normal hover:bg-gray-200 text-black",
 	variants: {
+		color: {
+			blue: "bg-blue-500 hover:bg-blue-700 text-white",
+			sky: "bg-sky-400 hover:bg-sky-600 text-white"
+		},
 		enabled: {
-			true: "hover:bg-gray-200 cursor-pointer",
-			false: "bg-gray-200 cursor-progress",
-			bad: "bg-gray-200 cursor-not-allowed"
+			true: "cursor-pointer",
+			false: "hover:bg-gray-200 bg-gray-200 cursor-progress text-gray-700 hover:text-gray-700"
+		},
+		allowinput: {
+			true: "",
+			false: "cursor-not-allowed"
+		},
+		hidden: {
+			true: "hidden",
+			false: ""
 		}
 	}
 })

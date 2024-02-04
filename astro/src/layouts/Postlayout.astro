@@ -6,7 +6,7 @@ interface Props {
     hideLoader?: boolean;
 }
 const { cardPath, pageTitle, robots } = Astro.props;
-import Fotter from "@/components/Fotter.astro";
+import Footer from "@/components/Footer.astro";
 import Blanklayout from "@/layouts/Blanklayout.astro";
 import App from "@/components/Client/app";
 ---
@@ -19,5 +19,5 @@ import App from "@/components/Client/app";
         <App portalonly={true} client:only />
     </div>
     <slot name="outofcontainer" />
-    <Fotter slot="footer" />
+    <Footer slot="footer" />
 </Blanklayout>

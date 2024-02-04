@@ -10,8 +10,9 @@ export const Component = ({
         if (twiurl === null) {
             return
         }
+        const tweetext = encodeURIComponent(context)
         window.open(
-            `https://twitter.com/intent/tweet?text=${context}${(
+            `https://twitter.com/intent/tweet?text=${tweetext}${(
                 twiurl !== "" ? (
                     "&url=" + new URL(`${pagesPrefix}/${twiurl}/`, siteurl)
                 ) : (
@@ -22,11 +23,13 @@ export const Component = ({
     return (
         <>
             <button className={button_base({
-                enabled: twiurl !== null ? (true) : ("bad")
-            }) + " " + link({ enabled: (twiurl !== null) }) }
+                enabled: twiurl !== null,
+                allowinput: twiurl !== null,
+                color: "sky"
+            })}
                 onClick={handleClick} disabled={!(twiurl !== null)}>
                 <div>
-                    X.com(Twitter)へ投稿
+                    Xへポスト
                 </div>
             </button>
         </>

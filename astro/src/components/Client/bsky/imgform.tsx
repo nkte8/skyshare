@@ -19,9 +19,10 @@ const get_mimetype = (name: string): boolean => {
     return result
 }
 
-const Component = ({ disabled, setImageFile }: {
+const Component = ({ disabled, setImageFile, className }: {
     disabled: boolean
     setImageFile: Dispatch<SetStateAction<File[] | null>>
+    className?: string
 }) => {
     const inputRef = useRef<HTMLInputElement>(null!);
 
@@ -59,13 +60,23 @@ const Component = ({ disabled, setImageFile }: {
                 style={{ display: "none" }}
                 onChange={handleFilechanged}
                 multiple />
+            {/* <div className="m-auto">
+                <button
+                    onClick={handleClick}
+                    disabled={disabled}
+                    className={className}>
+                    <img src={pic.src}
+                        className="w-8 h-8 inline-block mx-4 my-auto align-middle" />
+                </button>
+            </div> */}
             <ProcButton handler={handleClick}
                 isProcessing={disabled}
+                className={className}
                 context={
                     <>
                         <div className="align-middle">
-                            <img src={pic.src} className="w-4 h-4 inline-block mr-1 my-auto align-middle" />
-                            <span className="align-middle">画像を選択</span>
+                            <img src={pic.src}
+                                className="w-7 h-7 p-0.5 inline-block align-middle" />
                         </div>
                     </>}
                 showAnimation={false} />

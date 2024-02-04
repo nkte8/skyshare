@@ -1,18 +1,34 @@
 import { load_circle, button_base } from "./tailwind_variants"
 import { ReactNode } from "react"
 const Component = ({
-    handler, isProcessing, context, showAnimation = true, className
+    handler,
+    isProcessing,
+    context,
+    showAnimation = true,
+    className,
+    disabled = false,
+    color,
+    hidden,
 }: {
     handler: () => void,
     isProcessing: boolean,
     context: ReactNode,
     showAnimation?: boolean,
-    className?: string
+    className?: string,
+    disabled?: boolean,
+    hidden?: boolean,
+    color?: "blue",
 }) => {
     return (
         <button onClick={handler}
-            className={button_base({ enabled: !isProcessing, class: "my-1 mx-px " + className })}
-            type="button" disabled={isProcessing}>
+            className={button_base({
+                enabled: !(isProcessing || disabled),
+                allowinput: !disabled,
+                class: "my-1 mx-px " + className,
+                color: color,
+                hidden: hidden,
+            })}
+            type="button" disabled={(isProcessing || disabled)}>
 
             {
                 isProcessing ? (
