@@ -1,10 +1,11 @@
 ---
 interface Props {
-    size: "s" | "l"
+    size: "s" | "l";
 }
 const { size } = Astro.props;
 import { load_circle } from "@/utils/tailwind_variants";
 ---
+
 <svg
     class={load_circle({ size: size })}
     viewBox="-30 -30 160 160"

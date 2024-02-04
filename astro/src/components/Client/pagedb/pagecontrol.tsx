@@ -28,7 +28,7 @@ const Component = ({
                     <ProcButton handler={handleClick}
                         isProcessing={false}
                         showAnimation={false}
-                        context="ログイン"/>
+                        context="ログイン" />
                 )
             }
         </div>

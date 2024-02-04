@@ -10,7 +10,7 @@ import PageControl from "./pagedb/pagecontrol"
 
 const Component = ({
     portalonly = false
-}:{
+}: {
     portalonly?: boolean
 }) => {
     const [isLoad, setIsLoad] = useState<boolean>(false)
