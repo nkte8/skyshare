@@ -7,16 +7,20 @@ import ProcButton from "../common/procButton"
 export const Component = ({
     className,
     setMsgInfo,
-    reload
+    reload,
+    disabled,
+    setDisabled
 }: {
     className?: string,
     setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
     reload: boolean
+    disabled: boolean,
+    setDisabled: Dispatch<SetStateAction<boolean>>
 }) => {
-    const [loading, setLoad] = useState<boolean>(false)
     const { session, setSession } = useContext(Session_context)
-
+    const [loading, setLoad] = useState<boolean>(false)
     const handleLogout = async () => {
+        setDisabled(true)
         setLoad(true)
         try {
             if (session.refreshJwt === null) {
@@ -42,6 +46,7 @@ export const Component = ({
             alert("Unexpected error...")
             window.location.reload()
         }
+        setDisabled(false)
         setLoad(false)
         if (reload) {
             window.location.reload()
@@ -51,9 +56,9 @@ export const Component = ({
     return (
         <ProcButton
             handler={handleLogout}
-            isProcessing={loading}
+            isProcessing={disabled}
             context="ログアウト"
-            showAnimation={true}
+            showAnimation={loading}
             className={className} />
     )
 }

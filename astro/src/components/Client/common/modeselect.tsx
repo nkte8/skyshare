@@ -2,7 +2,8 @@ import { Dispatch, SetStateAction, useState, useEffect } from "react"
 import { type modes } from "./types"
 import Button from "./procButton"
 
-const Component = ({ mode, setMode }: {
+const Component = ({ mode, setMode, disabled }: {
+    disabled: boolean
     mode: modes
     setMode: Dispatch<SetStateAction<modes>>
 }
@@ -35,7 +36,12 @@ const Component = ({ mode, setMode }: {
 
     return (
         <div>
-            <Button handler={handleClick} isProcessing={false} context={label} showAnimation={false} />
+            <Button
+                handler={handleClick}
+                isProcessing={false}
+                context={label}
+                showAnimation={false}
+                disabled={disabled} />
         </div>
     )
 }

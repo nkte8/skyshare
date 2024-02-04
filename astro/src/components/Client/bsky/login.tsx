@@ -23,7 +23,12 @@ export const Component = ({
                 identifier: identifier,
                 password: password
             })
-            if (typeof res.accessJwt !== "undefined") {
+            if (typeof res.error !== "undefined") {
+                setMsgInfo({
+                    msg: "ログイン出来ませんでした...",
+                    isError: true,
+                })
+            } else {
                 setSession(res)
                 // セッションをlocalstorageへ保存
                 write_Jwt({
@@ -33,14 +38,10 @@ export const Component = ({
                     msg: "ログインしました!",
                     isError: false,
                 })
-            } else {
-                setMsgInfo({
-                    msg: "ログイン出来ませんでした...",
-                    isError: true,
-                })
             }
+
         } catch (error) {
-            alert((<div>Unexpected error</div>))
+            alert("Unexpected error")
             window.location.reload()
         }
         setLoad(false)
@@ -48,7 +49,7 @@ export const Component = ({
 
     return (
         <>
-            <div className="my-16">
+            <div className="mt-16">
                 <div className="align-middle">
                     <label className="w-32 inline-block my-auto">
                         Email or ID:
@@ -68,6 +69,7 @@ export const Component = ({
                         handler={handleLogin}
                         isProcessing={loading}
                         context="Blueskyアカウントへログイン"
+                        disabled={!(identifier.length > 0 && password.length > 0)}
                         showAnimation={true} />
                 </div>
                 <Tooltip tooltip={

@@ -16,12 +16,13 @@ const Component = ({
 }
 ) => {
     const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
+    const [loading, setLoad] = useState<boolean>(false)
     const Forms = ({ mode }: {
         mode: modes
     }) => {
         switch (mode) {
             case "bsky":
-                return <PostForm setMsgInfo={setMsgInfo} />
+                return <PostForm setMsgInfo={setMsgInfo} loading={loading} setLoad={setLoad} />
             case "pagedb":
                 return <PagesForm setMsgInfo={setMsgInfo} />
         }
@@ -39,16 +40,24 @@ const Component = ({
                         <div className={
                             `flex justify-center ${hidden && "hidden"
                             }`}>
-                            <ModeButton mode={mode} setMode={setMode} />
-                            <LogoutButton setMsgInfo={setMsgInfo} reload={false} />
+                            <ModeButton mode={mode} setMode={setMode} disabled={loading} />
+                            <LogoutButton
+                                setMsgInfo={setMsgInfo}
+                                reload={false}
+                                disabled={loading}
+                                setDisabled={setLoad} />
                         </div>
-                        <MsgLabel msgInfo={msgInfo} />
+
                     </Hidden_context.Provider>
                 </>
             ) : (
                 <Login setMsgInfo={setMsgInfo} />
             )
         }
+        <MsgLabel msgInfo={msgInfo} />
+        <div className={session.accessJwt === null ?
+            ("mb-16") : ("")
+        }></div>
     </>)
 }
 export default Component
