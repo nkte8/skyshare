@@ -11,9 +11,9 @@ interface Props {
 const { hideLoader = false } = Astro.props;
 ---
 
-<header class="bg-opacity-90 text-gray-600 body-font bg-white">
+<header id="header" class="bg-opacity-90 text-gray-600 body-font bg-white">
     <div
-        class="container mx-auto max-w-5xl flex p-3 flex-row items-center"
+        class="container mx-auto max-w-5xl flex p-1 flex-row items-center sm:h-16 h-14"
     >
         <a
             href={baseurl}

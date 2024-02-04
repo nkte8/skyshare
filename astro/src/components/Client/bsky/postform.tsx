@@ -1,10 +1,10 @@
 import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
-import { Session_context, type msgInfo } from "../common/contexts"
+import { Session_context, Hidden_context, type msgInfo } from "../common/contexts"
 import createRecord from "@/utils/atproto_api/createRecord";
 import uploadBlob from "@/utils/atproto_api/uploadBlob";
 import createPage from "@/utils/backend_api/createPage";
 import model_uploadBlob from "@/utils/atproto_api/models/uploadBlob.json";
-
+import { link } from "../common/tailwind_variants";
 import ProcButton from "../common/procButton"
 import ImageForm from "./imgform"
 import ImgView from "./imgview"
@@ -20,8 +20,10 @@ const Component = ({
     const [loading, setLoad] = useState<boolean>(false)
     const [imageFiles, setImageFile] = useState<File[] | null>(null);
     const [post, setPost] = useState<string>("")
+    const [count, setCount] = useState<number>(0)
     const [twimsg, setTwimsg] = useState<string>("")
     const [twiurl, setTwiref] = useState<string | null>(null)
+    const { hidden, setHidden } = useContext(Hidden_context)
     const { session } = useContext(Session_context)
 
     const handlePost = async () => {
@@ -46,7 +48,7 @@ const Component = ({
                     }))
                 }
                 setMsgInfo({
-                    msg:  "画像のアップロード中...",
+                    msg: "画像のアップロード中...",
                     isError: false
                 })
                 const blob_res = await Promise.all(res_que)
@@ -82,7 +84,7 @@ const Component = ({
                 }
             }
             setMsgInfo({
-                msg:  "Blueskyへ投稿中...",
+                msg: "Blueskyへ投稿中...",
                 isError: false
             })
             const rec_res = await createRecord({
@@ -94,10 +96,10 @@ const Component = ({
                 let message: string = ""
                 switch (rec_res.error) {
                     case "BlobTooLarge":
-                        message =  "画像の圧縮に失敗しました..."
+                        message = "画像の圧縮に失敗しました..."
                         break
                     default:
-                        message =  "Unexpected error..."
+                        message = "Unexpected error..."
                 }
                 setMsgInfo({
                     msg: message,
@@ -105,12 +107,12 @@ const Component = ({
                 })
             } else {
                 setMsgInfo({
-                    msg:  "Blueskyへ投稿しました!",
+                    msg: "Blueskyへ投稿しました!",
                     isError: false
                 })
                 if (imageFiles !== null) {
                     setMsgInfo({
-                        msg:  "Twitter用ページ生成中...",
+                        msg: "Twitter用ページ生成中...",
                         isError: false
                     })
                     const get_res = await createPage({
@@ -130,8 +132,7 @@ const Component = ({
                     setTwimsg(post)
                     setTwiref("")
                 }
-                setImageFile(null)
-                setPost("")
+                handlerCancel()
             }
         } catch {
             setMsgInfo({
@@ -141,25 +142,64 @@ const Component = ({
         }
         setLoad(false)
     }
+    const handlerCancel = () => {
+        setImageFile(null)
+        setPost("")
+        setCount(0)
+    }
+    const handleOnFocus = () => {
+        setHidden(true)
+    }
+    const handleOnBlur = () => {
+        setHidden(false)
+    }
+    const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setPost(event.target.value)
+        const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
+        const segments = segmenterJa.segment(event.currentTarget.value)
+        setCount(Array.from(segments).length)
+    }
 
     return (
         <>
             <MemoImageView
                 imageFiles={imageFiles} />
-
             <TextForm
+                onfocus={handleOnFocus}
+                onblur={handleOnBlur}
                 post={post}
-                setPost={setPost} />
-            <ImageForm
-                disabled={loading}
-                setImageFile={setImageFile}
-            />
-            <ProcButton
-                handler={handlePost}
-                isProcessing={loading}
-                context="Blueskyへ投稿"
-                showAnimation={true} />
-            <Twiurl context={twimsg} twiurl={twiurl} />
+                onChange={handleOnChange} />
+            <div className="mx-auto mb-4 sm:max-w-80">
+                <div className="flex">
+                    <button
+                        onClick={handlerCancel}
+                        className={link({
+                            enabled: (post.length >= 1 || imageFiles !== null),
+                            class: "inline-block mx-2"
+                        })}
+                        disabled={!(post.length >= 1 || imageFiles !== null)}>
+                        キャンセル
+                    </button>
+                    <ImageForm
+                        disabled={loading}
+                        setImageFile={setImageFile}
+                        className="py-0"
+                    />
+                    <div className="flex-1"></div>
+                    <div className="align-middle my-auto mr-1">{count}/300</div>
+                    <ProcButton
+                        handler={handlePost}
+                        isProcessing={loading}
+                        context="Post"
+                        showAnimation={true}
+                        color="blue"
+                        disabled={!(post.length >= 1 || imageFiles !== null)} />
+                </div>
+                <div className={`flex sm:my-auto my-1 ${hidden && "hidden"}`}>
+                    <div className="flex-1 sm:inline-block"></div>
+                    <Twiurl context={twimsg} twiurl={twiurl} />
+                </div>
+            </div >
         </>
     );
 }

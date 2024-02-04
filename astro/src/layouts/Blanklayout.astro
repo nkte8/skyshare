@@ -18,7 +18,8 @@ const { cardPath, pageTitle, robots, hidePostButton } = Astro.props;
         <Metadatas cardPath={cardPath} pageTitle={pageTitle} robots={robots} />
     </head>
     <body
-        class="relative bg-fixed flex flex-col min-h-dvh bg-gradient-to-b from-transparent to-sky-300 text-gray-700 overflow-x-hidden max-w-dvw mx-auto"
+        class="relative bg-fixed flex flex-col h-auto bg-gradient-to-b from-transparent to-sky-300 text-gray-700 overflow-x-hidden max-w-dvw mx-auto"
+        style="min-height: 100dvh"
     >
         <slot name="header" />
         <div class="flex-grow">

@@ -1,5 +1,5 @@
 import { useState, } from "react"
-import { type msgInfo, type Session_info } from "./common/contexts"
+import { type msgInfo, type Session_info, Hidden_context } from "./common/contexts"
 import Login from "./bsky/login"
 import PostForm from "./bsky/postform"
 import PagesForm from "./pagedb/pageform"
@@ -16,7 +16,9 @@ const Component = ({
 }
 ) => {
     const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
-    const Forms = (mode: modes) => {
+    const Forms = ({ mode }: {
+        mode: modes
+    }) => {
         switch (mode) {
             case "bsky":
                 return <PostForm setMsgInfo={setMsgInfo} />
@@ -26,18 +28,22 @@ const Component = ({
     }
 
     const [mode, setMode] = useState<modes>("bsky")
+    const [hidden, setHidden] = useState<boolean>(false)
     return (<>
         {
             session.accessJwt !== null ? (
                 <>
-                    <Profile />
-                    {Forms(mode)}
-                    <div className="flex justify-center">
-                        <ModeButton mode={mode} setMode={setMode} />
-                        <LogoutButton setMsgInfo={setMsgInfo} reload={false} />
-                    </div>
-                    <MsgLabel msgInfo={msgInfo} />
-
+                    <Hidden_context.Provider value={{ hidden, setHidden }}>
+                        <Profile />
+                        {Forms({ mode })}
+                        <div className={
+                            `flex justify-center ${hidden && "hidden"
+                            }`}>
+                            <ModeButton mode={mode} setMode={setMode} />
+                            <LogoutButton setMsgInfo={setMsgInfo} reload={false} />
+                        </div>
+                        <MsgLabel msgInfo={msgInfo} />
+                    </Hidden_context.Provider>
                 </>
             ) : (
                 <Login setMsgInfo={setMsgInfo} />

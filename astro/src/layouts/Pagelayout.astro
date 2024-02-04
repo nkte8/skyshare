@@ -14,7 +14,7 @@ const {
     hidePostButton,
 } = Astro.props;
 import Header from "@/components/Header.astro";
-import Fotter from "@/components/Fotter.astro";
+import Footer from "@/components/Footer.astro";
 import Blanklayout from "@/layouts/Blanklayout.astro";
 ---
 
@@ -30,5 +30,5 @@ import Blanklayout from "@/layouts/Blanklayout.astro";
             <slot />
         </div>
     </div>
-    <Fotter slot="footer" />
+    <Footer slot="footer" />
 </Blanklayout>

@@ -17,3 +17,8 @@ export type msgInfo = {
     msg: string,
     isError: boolean,
 }
+
+export const Hidden_context = createContext({} as {
+    hidden: boolean
+    setHidden: React.Dispatch<React.SetStateAction<boolean>>
+})
