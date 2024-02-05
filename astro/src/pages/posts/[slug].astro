@@ -12,7 +12,7 @@ if (typeof slug === "undefined") {
         statusText: "Server Error",
     });
 }
-const [author, rkey] = slug.split(/(_|@)/);
+const [author, _, rkey] = slug.split(/(_|@)/);
 const getpage_res = await getPage({ id: slug });
 
 if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
@@ -39,8 +39,8 @@ import Loadingcircle from "@/components/loadingcircle.astro";
                 href={new URL(`${author}`, "https://bsky.app/profile/")}
                 class={link()}
             >
-                @{author}</a
-            > のポスト:
+                @{author} </a
+            >さんのポスト from 
             <a
                 href={new URL(
                     `${author}/post/${rkey}`,
@@ -48,7 +48,7 @@ import Loadingcircle from "@/components/loadingcircle.astro";
                 )}
                 class={link()}
             >
-                Bluesky
+                here
             </a>
         </div>
         {

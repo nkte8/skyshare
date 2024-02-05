@@ -6,6 +6,7 @@ export const subject = tv({
 			xl: "md:text-5xl text-4xl font-medium",
 			l: "md:text-3xl text-2xl font-medium",
 			m: "md:text-2xl text-xl",
+			s: "md:text-xl text-lg"
 		},
 	},
 });
