@@ -1,7 +1,6 @@
 {
   "name": "skyshare",
   "type": "module",
-  "version": "1.0.4",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
