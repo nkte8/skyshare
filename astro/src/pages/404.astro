@@ -1,13 +1,13 @@
 ---
 import Pagelayout from "@/layouts/Pagelayout.astro";
 import { subject } from "@/utils/tailwind_variants";
-import { servicename } from "@/utils/vars";
+import { servicename, version } from "@/utils/vars";
 const title = `404 Not found - ${servicename}`;
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 ---
 
 <Pagelayout
-    cardPath="/materials/ogp_main.png"
+    cardPath=`/materials/ogp_main.png?updated=${version}`
     pageTitle={title}
     robots={robots}
     hidePostButton={false}

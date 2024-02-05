@@ -2,13 +2,13 @@
 export const prerender = false;
 import Pagelayout from "@/layouts/Pagelayout.astro";
 import Loadingcircle from "@/components/loadingcircle.astro";
-import { servicename } from "@/utils/vars";
+import { servicename, version } from "@/utils/vars";
 const title = `${servicename}`;
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 ---
 
 <Pagelayout
-    cardPath="/materials/ogp_main.png"
+    cardPath=`/materials/ogp_main.png?updated=${version}`
     pageTitle={title}
     robots={robots}
     hideLoader={true}

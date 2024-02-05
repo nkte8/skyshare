@@ -1,7 +1,7 @@
 ---
 import Pagelayout from "@/layouts/Indexlayout.astro";
 import { box, link } from "@/utils/tailwind_variants";
-import { github_url, abouturl, posturl, servicename } from "@/utils/vars";
+import { github_url, abouturl, posturl, servicename, version } from "@/utils/vars";
 const title = `${servicename} - Share Bluesky to Twitter`;
 
 const svgbsky_url = `url('/materials/bluesky.svg')`;
@@ -33,7 +33,7 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 	}
 </style>
 <Pagelayout
-	cardPath="/materials/ogp_main.png"
+	cardPath=`/materials/ogp_main.png?updated=${version}`
 	pageTitle={title}
 	robots={robots}
 >
