@@ -1,0 +1,148 @@
+---
+import {
+	githuburl,
+	servicename,
+	abouturl,
+	version,
+} from "@/utils/vars";
+import Pagelayout from "@/layouts/Pagelayout.astro";
+
+import { subject, link } from "@/utils/tailwind_variants";
+
+const title = `About - ${servicename}`;
+const robots = ["index", "nofollow", "noarchive", "noimageindex"];
+---
+
+<Pagelayout
+	cardPath=`/materials/ogp_main.png?updated=${version}`
+	pageTitle={title}
+	robots={robots}
+	hidePostButton={true}
+>
+	<div class="mb-8">
+		<h2 class={subject({ size: "xl" })}>Q & A</h2>
+		<div class={subject({ size: "m" })}>
+			一応主要機能は完成したためリリースしましたが、まだまだおかしなところがあるかもしれません...
+		</div>
+		<div>
+			不具合報告はウェルカムです！見落とし、予想外、不安定、これらによるバグ、全然あると思います。
+			ねこの一人で作ってるため、デバッガ―は何人いても助かります！
+			もちろんGithubへの直接のプルリクエストも大歓迎です！
+		</div>
+	</div>
+	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>ログインできません...</h3>
+		<div>
+			<div class={subject({ size: "s" })}>
+				Email or
+				IDの入力はあっていますか？IDの場合は@は含める必要はありません！
+			</div>
+			<div class={subject({ size: "s" })}>
+				AppPasswordの入力はあっていますか？非推奨ですがBluesky公式アプリにログインするパスワードも使えます。
+			</div>
+			<div>
+				ログインの仕組み自体はBlueskyのAPIに準拠しています。
+				そのため入力内容でログインできない場合は、他のサードパーティクライアントや、
+				Bluesky公式アプリへのログインさえもできないかもしれません。
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>
+			Xへポストボタンが押しても反応しない...
+		</h3>
+		<div>
+			<div class={subject({ size: "s" })}>
+				コンテンツブロッカーの影響で（報告事例だと280blocker）Javascriptによるポップアップを制限しているなど、
+				Xへポストボタンが機能しない場合があるみたいです。
+			</div>
+			<div>
+				<a class={link()} href={abouturl}>About</a
+				>にもすこし記載していますが、当サイトはあったらいいなを形にしたいという想い、
+				AT
+				Protocolの開発事例として、そしてねこのの技術習得学習の一環としてのみ構築されているので
+				広告等でのマネタイズを行う気は今後含めて一切ありません。
+				安心してホワイトリストへの追加、またはブロッカーの停止を行ってください。
+			</div>
+			<div>
+				・・・代わりに各種クラウドサービスの無料範囲での稼働を目指すため、画像やページの保存期間や制限を課したり、
+				（現在は実施する見込みはありませんが）計画停止などで不便をおかけする可能性があります。ご理解お願いします。
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>
+			OGPカード(Twitter側の画像サムネイル)が表示されない
+		</h3>
+		<div>
+			<div class={subject({ size: "s" })}>
+				Twitter側のOGPカードの読み込みが間に合っていないのが原因です。
+			</div>
+			<div class={subject({ size: "s" })}>
+				投稿してからしばらく待つ、心配な場合は投稿前にカードが読み込まれるのをお待ちください。
+			</div>
+			<div>
+				同時多発的に発生した場合はまちがいなくバグですが、他の人のSkyshareの投稿は画像が表示されてるのに！
+				という状況な場合、TwitterがOGPの読み込みに時間がかかっています。よくあります。Twitterはそういうところあります...
+			</div>
+			<div>
+				数十分たってもなかなか読み込まれない場合はOGP生成に失敗している場合が
+				（ほとんどの場合ありませんが）無いとは言い切れないため、問い合わせしていただければと思います。
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>画像って一枚しか対応してないの？</h3>
+		<div>
+			<div class={subject({ size: "s" })}>
+				いいえ、ちゃんと４枚まで対応してます！OGPは画像を分割したような形で生成されます。
+			</div>
+			<div class={subject({ size: "s" })}>
+				iOSの場合はアルバムから選択する際に複数枚にチェックを、
+				PCのブラウザの場合は「Ctrl」キーを押しながら画像を選択する・ドラッグで範囲選択する等で、
+				複数画像を一度に選択してください。
+			</div>
+			<div>
+				ここのUIわかりずらい様子なので、改善すべきとしてマークしてます。
+				より優しいUIにしていきたいと思っているため、アップデートをお待ちください。
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>
+			URLの埋め込みって対応していないの？
+		</h3>
+		<div>
+			<div class={subject({ size: "s" })}>
+				未対応です...が、今後対応したいと思っています。
+			</div>
+			<div>
+				対応する場合、画像投稿とURLの埋め込みは同時に使うことはできない見込みです。
+				これは、Twitterへの投稿にOGPページを利用しているため、複数のURLを含むツイートに対して
+				画像側のURLを確実にOGPにできる保証がないためです。
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-8">
+		<div>
+			<div class={subject({ size: "s" })}>それでも解決しない場合...</div>
+			<div>
+				この辺を読んでもだめそうでしたら<a
+					class={link()}
+					href="https://bsky.app/profile/nlla.bsky.social"
+					>@nlla.bsky.social</a
+				>に問い合わせください。ベストエフォートで回答します。
+			</div>
+			<div>
+				もちろん<a class={link()} href={githuburl}>
+					SkyshareはOSS
+				</a>ですから、ソースコードを読んで理解したり、プルリクエストで修正を提案してくださるのもウェルカムです！
+			</div>
+		</div>
+	</div>
+</Pagelayout>

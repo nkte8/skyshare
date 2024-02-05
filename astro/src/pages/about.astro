@@ -4,9 +4,10 @@ import {
 	siteurl,
 	pagesPrefix,
 	servicename,
-	github_url,
-	zenn_url,
-	version
+	githuburl,
+	zennurl,
+	version,
+	qaurl,
 } from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const example_url = new URL(
@@ -33,7 +34,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 		<div class={subject({ size: "m" })}>
 			{
 				servicename
-			}は、Bluesky投稿専用クライアント、およびOGP/リンクジェネレータです。
+			}は、Bluesky投稿専用クライアント、およびOGPカード/ページジェネレータです。
 		</div>
 	</div>
 	<div class="mb-8">
@@ -115,7 +116,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 				当サイトはOSSの体をとっています。
 			</div>
 			<div>
-				<a href={github_url} class={link()}
+				<a href={githuburl} class={link()}
 					>こちらで全てのソースコードを閲覧・使用することができます(BSD-3-Clause
 					license)
 				</a>
@@ -128,12 +129,24 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
+		<h3 class={subject({ size: "l" })}>困ったときは</h3>
+		<a href={qaurl} class={link()}>QAを作成しました</a
+		>ので、役立ててください。それでもダメそうだったら
+		<a class={link()} href="https://bsky.app/profile/nlla.bsky.social"
+			>@nlla.bsky.social</a
+		>に連絡してください。
+		<div>
+			それでもそれでも...って感じだったら...ちょっとずつ直していくのでお待ちくださいT_T
+		</div>
+	</div>
+
+	<div class="mb-8">
 		<div>
 			<h2 class={subject({ size: "l" })}>もっと詳しく</h2>
 			<div>
 				当サイトはもちろんサービスとしてあったらいいなという想いから制作しましたが、
 				これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。
-				<a href={zenn_url} class={link()}
+				<a href={zennurl} class={link()}
 					>Zennにて当サイトの制作について</a
 				>記載しています。技術記事というよりは読み物としてお楽しみください。
 			</div>
