@@ -3,7 +3,7 @@ import resolveHandle from "./resolveHandle"
 // 本家はinputは RichText型であるが、text型でなんとかする
 
 type regexResult = {
-    text: string,
+    encoded: string,
     index: {
         byteStart: number,
         byteEnd: number,
@@ -12,34 +12,43 @@ type regexResult = {
 const regexSeacrh = ({
     array,
     regex,
-    text,
+    encoded,
     cursor = 0
 }: {
     array: Array<regexResult>,
     regex: RegExp
-    text: string,
+    encoded: string,
     cursor?: number
 }) => {
-    const regexedlink = regex.exec(text)
-    if (regexedlink === null) {
-        cursor = -1
+    // 文字を取得するために使用
+    const regexedText = regex.exec(encoded)
+    // バイト数を数えるために使用
+    const replacedText = regex.exec(encoded.replace(/%../g, "*"))
+    if (regexedText === null || replacedText === null) {
         return
     }
-    const regexedStart = regexedlink.index
-    const linkref = regexedlink[1]
-    const regexedEnd = regexedStart + linkref.length
-    array.push({
-        text: linkref,
+
+    console.log(encoded)
+    console.log(regexedText)
+    console.log(replacedText)
+
+    const regexedStart = replacedText.index
+    const linkref = decodeURI(regexedText[1])
+    const regexedEnd = regexedStart + replacedText[1].length
+    const sliceEnd = regexedText.index + regexedText[1].length
+    const Item = {
+        encoded: linkref,
         index: {
             byteStart: cursor + regexedStart,
             byteEnd: cursor + regexedEnd
         }
-    })
+    }
+    array.push(Item)
     regexSeacrh({
         array,
         regex,
-        text: text.slice(regexedEnd),
-        cursor: cursor + regexedEnd
+        encoded: encoded.slice(sliceEnd),
+        cursor: cursor + regexedEnd,
     })
 }
 
@@ -51,10 +60,12 @@ const createLinkFacet = ({
     const Regex = /(https?:\/\/[^ ]*) ?/i
     let facet: Array<facet.link> = []
     let regexResult: Array<regexResult> = []
+    // 区切り文字の半角スペース以外はエンコード
+    const encoded = encodeURI(text).replace(/%20/g, " ")
     regexSeacrh({
         array: regexResult,
         regex: Regex,
-        text: text,
+        encoded: encoded,
     })
     for (let link of regexResult) {
         facet.push({
@@ -62,7 +73,7 @@ const createLinkFacet = ({
             features: [
                 {
                     $type: "app.bsky.richtext.facet#link",
-                    uri: link.text
+                    uri: link.encoded
                 }
             ]
         })
@@ -78,13 +89,15 @@ const createMentionFacet = async ({
     const Regex = /(@[^ ]*) ?/i
     let result: Array<facet.mention> = []
     let regexResult: Array<regexResult> = []
+    // 区切り文字の半角スペース以外はエンコード
+    const encoded = encodeURI(text).replace(/%20/g, " ")
     regexSeacrh({
         array: regexResult,
         regex: Regex,
-        text: text,
+        encoded: encoded,
     })
     for (let link of regexResult) {
-        const resResolve = await resolveHandle({ handle: link.text.slice(1) })
+        const resResolve = await resolveHandle({ handle: link.encoded.slice(1) })
         // 存在しないハンドルの場合はfacetから除外
         if (typeof resResolve?.error !== "undefined") {
             continue
@@ -110,7 +123,6 @@ const detectFacets = async ({
     let facets: Array<
         facet.link | facet.mention
     > = []
-
     facets = facets.concat(createLinkFacet({ text }))
     facets = facets.concat(await createMentionFacet({ text }))
 

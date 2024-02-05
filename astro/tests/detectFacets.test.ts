@@ -49,7 +49,6 @@ describe('detectFacets Test', () => {
         expect(result).toEqual(
             expect.arrayContaining([
                 {
-                    $type: "app.bsky.richtext.facet",
                     index: {
                         byteStart: 4,
                         byteEnd: 21
@@ -62,7 +61,6 @@ describe('detectFacets Test', () => {
                     ]
                 },
                 {
-                    $type: "app.bsky.richtext.facet",
                     index: {
                         byteStart: 25,
                         byteEnd: 34
@@ -76,8 +74,7 @@ describe('detectFacets Test', () => {
                 },
             ])
         )
-    },100000) // long timeouf
-
+    }, 100000) // long timeouf
 
     test('mention and link facets', async () => {
         const result = await detectFacets({
@@ -86,7 +83,6 @@ describe('detectFacets Test', () => {
         expect(result).toEqual(
             expect.arrayContaining([
                 {
-                    $type: "app.bsky.richtext.facet",
                     index: {
                         byteStart: 6,
                         byteEnd: 15
@@ -112,6 +108,75 @@ describe('detectFacets Test', () => {
                 },
             ])
         )
-    },100000) // long timeouf
+    }, 100000) // long timeouf
+
+    // byteStart,byteEnd seems decided by UTF-8 characode
+    test('Link facets including Japanese', async () => {
+        const result = await detectFacets({
+            text: "にほんご https://link1"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 13,
+                        byteEnd: 26
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#link",
+                            uri: "https://link1"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
+
+    // japanese link
+    test('Link facets including Japanese-domain', async () => {
+        const result = await detectFacets({
+            text: "https://日本語.jp here"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 0,
+                        byteEnd: 20
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#link",
+                            uri: "https://日本語.jp"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
+
+    // newline is 1 byte
+    test('Link facets including Newline', async () => {
+        const result = await detectFacets({
+            text: "test post\nhttps://hogehoge/"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 10,
+                        byteEnd: 27
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#link",
+                            uri: "https://hogehoge/"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
 
 })
