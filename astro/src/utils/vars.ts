@@ -8,4 +8,9 @@ export const abouturl = baseurl + "about/"
 export const qaurl = baseurl + "qa/"
 export const pagesPrefix = "posts"
 export const servicename = "Skyshare"
-export const version = "v1.0.8"
+
+import fs from 'node:fs/promises';
+const url = new URL('../../package.json', import.meta.url);
+const json = await fs.readFile(url, 'utf-8');
+const data = JSON.parse(json);
+export const version = `v${data.version}`
