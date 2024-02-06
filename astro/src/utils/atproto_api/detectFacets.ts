@@ -27,11 +27,6 @@ const regexSeacrh = ({
     if (regexedText === null || replacedText === null) {
         return
     }
-
-    console.log(encoded)
-    console.log(regexedText)
-    console.log(replacedText)
-
     const regexedStart = replacedText.index
     const linkref = decodeURI(regexedText[1])
     const regexedEnd = regexedStart + replacedText[1].length
@@ -53,15 +48,13 @@ const regexSeacrh = ({
 }
 
 const createLinkFacet = ({
-    text,
+    encoded,
 }: {
-    text: string,
+    encoded: string,
 }): Array<facet.link> => {
     const Regex = /(https?:\/\/[^ ]*) ?/i
     let facet: Array<facet.link> = []
     let regexResult: Array<regexResult> = []
-    // 区切り文字の半角スペース以外はエンコード
-    const encoded = encodeURI(text).replace(/%20/g, " ")
     regexSeacrh({
         array: regexResult,
         regex: Regex,
@@ -82,15 +75,13 @@ const createLinkFacet = ({
 }
 
 const createMentionFacet = async ({
-    text,
+    encoded,
 }: {
-    text: string,
+    encoded: string,
 }): Promise<Array<facet.mention>> => {
     const Regex = /(@[^ ]*) ?/i
     let result: Array<facet.mention> = []
     let regexResult: Array<regexResult> = []
-    // 区切り文字の半角スペース以外はエンコード
-    const encoded = encodeURI(text).replace(/%20/g, " ")
     regexSeacrh({
         array: regexResult,
         regex: Regex,
@@ -123,9 +114,9 @@ const detectFacets = async ({
     let facets: Array<
         facet.link | facet.mention
     > = []
-    facets = facets.concat(createLinkFacet({ text }))
-    facets = facets.concat(await createMentionFacet({ text }))
-
+    const encoded = encodeURI(text).replace(/%(20|0A)/g, " ")
+    facets = facets.concat(createLinkFacet({ encoded }))
+    facets = facets.concat(await createMentionFacet({ encoded }))
     return facets
 }
 

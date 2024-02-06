@@ -1,4 +1,4 @@
-import { describe } from "node:test";
+import { describe, test, expect } from "@jest/globals";
 import detectFacets from "../src/utils/atproto_api/detectFacets"
 
 describe('detectFacets Test', () => {
@@ -157,7 +157,7 @@ describe('detectFacets Test', () => {
     })
 
     // newline is 1 byte
-    test('Link facets including Newline', async () => {
+    test('Link facets including text after Newline', async () => {
         const result = await detectFacets({
             text: "test post\nhttps://hogehoge/"
         })
@@ -172,6 +172,28 @@ describe('detectFacets Test', () => {
                         {
                             $type: "app.bsky.richtext.facet#link",
                             uri: "https://hogehoge/"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
+
+    test('Link facets including text before Newline', async () => {
+        const result = await detectFacets({
+            text: "https://hogehoge\ntest post"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 0,
+                        byteEnd: 16
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#link",
+                            uri: "https://hogehoge"
                         }
                     ]
                 },
