@@ -8,8 +8,7 @@ import version from "@/utils/version";
 // changelog.mdを読み込み
 import fs from "node:fs/promises";
 import markdownit from "markdown-it";
-const url = new URL("../../CHANGELOG.md", import.meta.url);
-const markdownString = await fs.readFile(url, "utf-8");
+const markdownString = await fs.readFile("./CHANGELOG.md", "utf-8");
 const html = markdownit().render(markdownString);
 ---
 

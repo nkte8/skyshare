@@ -1,8 +1,4 @@
-// package.jsonから自動でバージョンを取得
-// SSRモードのページでは動かない
-import fs from 'node:fs/promises';
-const url = new URL('./package.json', import.meta.url);
-const json = await fs.readFile(url, 'utf-8');
-const data = JSON.parse(json);
-export const version = `v${data.version}`
+// Cloudflareだとファイル読み込みできない様子...アダプタの影響？
+// npmへ環境変数を渡して作成してみる
+export const version = `v${import.meta.env.PUBLIC_VERSION}`
 export default version
