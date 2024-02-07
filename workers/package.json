@@ -1,6 +1,6 @@
 {
-  "name": "api_dbs",
-  "version": "1.0.9",
+  "name": "workers",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
@@ -13,7 +13,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@upstash/redis": "^1.28.1",
-    "wrangler": "^3.26.0"
+    "@upstash/redis": "^1.28.1"
   }
 }
