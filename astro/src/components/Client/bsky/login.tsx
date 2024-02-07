@@ -55,6 +55,7 @@ export const Component = ({
                         Email or ID:
                     </label>
                     <input onChange={(event) => setIdentifer(event.target.value)}
+                        placeholder="example.bsky.social"
                         className={inputtext_base({ class: "max-w-48 w-full" })} type="text" />
                 </div>
                 <div className="align-middle">
@@ -62,6 +63,7 @@ export const Component = ({
                         AppPassword※:
                     </label>
                     <input onChange={(event) => setPassword(event.target.value)}
+                        placeholder="this-isex-ampl-epwd"
                         className={inputtext_base({ class: "max-w-48 w-full" })} type="password" />
                 </div>
                 <div className="my-2">

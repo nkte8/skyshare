@@ -1,15 +1,16 @@
 ---
 import Pagelayout from "@/layouts/Indexlayout.astro";
-import { box, link } from "@/utils/tailwind_variants";
+import { box } from "@/utils/tailwind_variants";
 import {
 	githuburl,
 	abouturl,
 	posturl,
 	servicename,
 	qaurl,
-	version,
+	changeurl,
 } from "@/utils/vars";
 const title = `${servicename} - Share Bluesky to Twitter`;
+import version from "@/utils/version";
 
 const svgbsky_url = `url('/materials/bluesky.svg')`;
 const svgtag_url = `url('/materials/tag.svg')`;
@@ -90,16 +91,16 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 
 		<a
 			href={posturl}
-			class={link({
-				class: "bg-white text-xl bg-opacity-80 border-0 py-4 px-10 focus:outline-none hover:bg-sky-200 inline-flex rounded-full transition-colors",
-			})}
+			class="bg-white text-xl bg-opacity-80 border-0 py-4 px-10 focus:outline-none hover:bg-sky-200 inline-flex rounded-full transition-colors"
 			>Blueskyへログイン
 		</a>
 		<div class="text-center mx-auto md:max-w-3xl my-5">
 			<div class={box()}>
-				<a href={abouturl} class={link({ class: "mx-2" })}>About</a>
-				<a href={qaurl} class={link({ class: "mx-2" })}>Q&A</a>
-				<a href={githuburl} class={link({ class: "mx-2" })}>Github</a>
+				<a href={abouturl} class="mx-2">About</a>
+				<a href={changeurl} class="mx-2">Changelog</a
+				>
+				<a href={qaurl} class="mx-2">Q&A</a>
+				<a href={githuburl} class="mx-2">Github</a>
 			</div>
 		</div>
 	</div>

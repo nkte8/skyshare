@@ -1,7 +1,6 @@
 ---
 // thanks for https://tailblocks.cc/
-import { baseurl, githuburl, qaurl, abouturl } from "@/utils/vars";
-import { link } from "@/utils/tailwind_variants";
+import { baseurl, githuburl, qaurl, abouturl, changeurl } from "@/utils/vars";
 import App from "@/components/Client/app";
 import Loadingcircle from "./loadingcircle.astro";
 
@@ -13,7 +12,7 @@ const { hideLoader = false } = Astro.props;
 
 <header id="header" class="bg-opacity-90 text-gray-600 body-font bg-white">
     <div
-        class="container mx-auto max-w-5xl flex p-1 flex-row items-center sm:h-16 h-14"
+        class="container mx-auto max-w-5xl flex p-1 flex-row items-center sm:h-16 h-14 mb-0"
     >
         <a
             href={baseurl}
@@ -23,9 +22,11 @@ const { hideLoader = false } = Astro.props;
         </a>
         <nav class="ml-auto flex items-center text-base justify-center">
             <div class="sm:block hidden">
-                <a href={abouturl} class={link({ class: "mx-2" })}>About</a>
-				<a href={qaurl} class={link({ class: "mx-2" })}>Q&A</a>
-                <a href={githuburl} class={link({ class: "mx-2" })}>Github</a>
+                <a href={abouturl} class="mx-2">About</a>
+                <a href={changeurl} class="mx-2">Changelog</a
+                >
+                <a href={qaurl} class="mx-2">Q&A</a>
+                <a href={githuburl} class="mx-2">Github</a>
             </div>
             <div id="hload">
                 {!hideLoader && <Loadingcircle size="s" />}

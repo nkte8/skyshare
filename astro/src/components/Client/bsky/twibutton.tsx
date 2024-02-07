@@ -29,9 +29,7 @@ export const Component = ({
                 color: "sky"
             })}
                 onClick={handleClick} disabled={!(twiurl !== null)}>
-                <div>
                     Xへポスト
-                </div>
             </button>
         </>
     )

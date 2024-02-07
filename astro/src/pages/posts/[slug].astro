@@ -2,7 +2,6 @@
 export const prerender = false;
 import Pagelayout from "@/layouts/Postlayout.astro";
 import getPage from "@/utils/backend_api/getPage";
-import { subject, link } from "@/utils/tailwind_variants";
 import { siteurl, servicename } from "@/utils/vars";
 
 const { slug } = Astro.params;
@@ -34,23 +33,19 @@ import Loadingcircle from "@/components/loadingcircle.astro";
     hideLoader={true}
 >
     <div class="items-center text-center">
-        <div class={subject({ size: "m", class: "text-center" })}>
-            <a
-                href={new URL(`${author}`, "https://bsky.app/profile/")}
-                class={link()}
-            >
-                @{author} </a
-            >さんのポスト from 
+        <h3>
+            <a href={new URL(`${author}`, "https://bsky.app/profile/")}>
+                @{author}
+            </a>さんのポスト from
             <a
                 href={new URL(
                     `${author}/post/${rkey}`,
                     "https://bsky.app/profile/",
                 )}
-                class={link()}
             >
                 here
             </a>
-        </div>
+        </h3>
         {
             imgs.map((value) => {
                 return (
@@ -66,11 +61,8 @@ import Loadingcircle from "@/components/loadingcircle.astro";
         <space id="page" pageid={slug}></space>
     </div>
     <div slot="outofcontainer" class="text-center my-2">
-        <a
-            href={siteurl}
-            class={link({
-                class: "text-center p-2 rounded-lg bg-white opacity-80",
-            })}>トップへ戻る</a
+        <a href={siteurl} class="text-center p-2 rounded-lg bg-white opacity-80"
+            >トップへ戻る</a
         >
     </div>
 </Pagelayout>

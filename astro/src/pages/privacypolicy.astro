@@ -1,9 +1,9 @@
 ---
-import { servicename, version } from "@/utils/vars";
-import { subject, link } from "@/utils/tailwind_variants";
+import { servicename, authorlink, authorname } from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const title = `Privacy Policy - ${servicename}`;
 const robots = ["index", "nofollow", "noarchive", "noimageindex"];
+import version from "@/utils/version";
 ---
 
 <Pagelayout
@@ -12,9 +12,9 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
     pageTitle={title}
     hidePostButton={true}
 >
-    <h2 class={subject({ size: "l" })}>プライバシーポリシー</h2>
+    <h1>プライバシーポリシー</h1>
     <div class="mb-8">
-        <h2 class={subject({ size: "m" })}>個人情報の収集・利用</h2>
+        <h3>個人情報の収集・利用</h3>
         <div class="mb-4">
             BskyLinX（以下、当サイト）は、サービスの提供のために以下の情報を収集・利用します。
         </div>
@@ -32,14 +32,14 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
         それ以外の目的では利用いたしません。
     </div>
     <div class="mb-8">
-        <h2 class={subject({ size: "m" })}>データの第三者提供について</h2>
+        <h3>データの第三者提供について</h3>
         <div class="mb-4">
             当サイトでは法令及びガイドラインに別段の定めがある場合を除き、
             同意を得ないで第三者に個人情報を提供することはいたしません。
         </div>
     </div>
     <div class="mb-8">
-        <h2 class={subject({ size: "m" })}>アクセス解析ツールについて</h2>
+        <h3>アクセス解析ツールについて</h3>
         <div class="mb-4">
             <div>
                 当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。
@@ -52,7 +52,6 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
             <div>
                 Googleのプライバシーポリシーについては
                 <a
-                    class={link()}
                     href="https://policies.google.com/technologies/partner-sites"
                 >
                     こちらをご覧ください。</a
@@ -62,26 +61,21 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
     </div>
 
     <div class="mb-8">
-        <h2 class={subject({ size: "m" })}>運営者情報</h2>
+        <h3>運営者情報</h3>
         <div>
             当サイトは、ねこの（blueskyID:
-            <a class={link()} href="https://bsky.app/profile/nlla.bsky.social"
-                >@nlla.bsky.social</a
-            >）によって 個人的に開発・運営されています。
+            <a href={authorlink}>{authorname}</a>）によって
+            個人的に開発・運営されています。
         </div>
         <div>
             メールでのご連絡の場合は
-            <a class={link()} href="mailto: nkte8@outlook.jp">
-                nkte8@outlook.jp
-            </a>
+            <a href="mailto: nkte8@outlook.jp"> nkte8@outlook.jp</a>
             へお願いします。
         </div>
     </div>
 
     <div class="mb-8">
-        <h2 class={subject({ size: "m" })}>
-            プライバシーポリシーの変更について
-        </h2>
+        <h3>プライバシーポリシーの変更について</h3>
         <div>
             当サイトは、個人情報に関して適用される日本の法令を遵守するとともに、
             本ポリシーの内容を適宜見直しその改善に努めます。

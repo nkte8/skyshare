@@ -3,11 +3,12 @@ import {
 	githuburl,
 	servicename,
 	abouturl,
-	version,
+	zennurl,
+	authorlink,
+	authorname,
 } from "@/utils/vars";
 import Pagelayout from "@/layouts/Pagelayout.astro";
-
-import { subject, link } from "@/utils/tailwind_variants";
+import version from "@/utils/version";
 
 const title = `About - ${servicename}`;
 const robots = ["index", "nofollow", "noarchive", "noimageindex"];
@@ -20,10 +21,10 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	hidePostButton={true}
 >
 	<div class="mb-8">
-		<h2 class={subject({ size: "xl" })}>Q & A</h2>
-		<div class={subject({ size: "m" })}>
+		<h1>Q & A</h1>
+		<h3>
 			一応主要機能は完成したためリリースしましたが、まだまだおかしなところがあるかもしれません...
-		</div>
+		</h3>
 		<div>
 			不具合報告はウェルカムです！見落とし、予想外、不安定、これらによるバグ、全然あると思います。
 			ねこの一人で作ってるため、デバッガ―は何人いても助かります！
@@ -31,58 +32,73 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 		</div>
 	</div>
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>ログインできません...</h3>
+		<h2>ログインできません...</h2>
 		<div>
-			<div class={subject({ size: "s" })}>
-				Email or
-				IDの入力はあっていますか？IDの場合は@は含める必要はありません！
-			</div>
-			<div class={subject({ size: "s" })}>
-				AppPasswordの入力はあっていますか？非推奨ですがBluesky公式アプリにログインするパスワードも使えます。
-			</div>
+			<h4>
+				<div>
+					Email or
+					IDの入力はあっていますか？IDの場合は@は含める必要はありません！
+					<b
+						>また、IDは".bsky.social"を含めてください（ドメインまで含めてID扱いです）</b
+					>
+				</div>
+				<div>
+					AppPasswordの入力はあっていますか？非推奨ですがBluesky公式アプリにログインするパスワードも使えます。
+				</div>
+				<div class="font-medium">
+					PCブラウザの場合、拡張機能が悪さしている可能性があります（ありました）
+				</div>
+			</h4>
 			<div>
 				ログインの仕組み自体はBlueskyのAPIに準拠しています。
 				そのため入力内容でログインできない場合は、他のサードパーティクライアントや、
 				Bluesky公式アプリへのログインさえもできないかもしれません。
 			</div>
+
+			<div>
+				Chromeにてログインできないという報告を受けた際に拡張機能が原因ではと被疑し、
+				Edgeで実施したらログインできたといった話がありました。拡張機能のどれがダメか等の特定は難しいのですが、
+				そういったところで使用出来ない、という場合もあります。
+			</div>
 		</div>
 	</div>
 
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>
-			Xへポストボタンが押しても反応しない...
-		</h3>
+		<h2>Xへポストボタンが押しても反応しない...</h2>
 		<div>
-			<div class={subject({ size: "s" })}>
+			<h4>
 				コンテンツブロッカーの影響で（報告事例だと280blocker）Javascriptによるポップアップを制限しているなど、
 				Xへポストボタンが機能しない場合があるみたいです。
+			</h4>
+			<div>
+				コンテンツブロッカーをオフにするか、ホワイトリストへの追加をお願いします。
 			</div>
 			<div>
-				<a class={link()} href={abouturl}>About</a
+				<a href={abouturl}>About</a
 				>にもすこし記載していますが、当サイトはあったらいいなを形にしたいという想い、
 				AT
 				Protocolの開発事例として、そしてねこのの技術習得学習の一環としてのみ構築されているので
-				広告等でのマネタイズを行う気は今後含めて一切ありません。
+				<b>広告等でのマネタイズを行う気は今後含めて一切ありません</b>。
 				安心してホワイトリストへの追加、またはブロッカーの停止を行ってください。
 			</div>
 			<div>
-				・・・代わりに各種クラウドサービスの無料範囲での稼働を目指すため、画像やページの保存期間や制限を課したり、
-				（現在は実施する見込みはありませんが）計画停止などで不便をおかけする可能性があります。ご理解お願いします。
+				・・・代わりに各種クラウドサービスの無料範囲での稼働を目指すため、画像やページの保存期間や制限を課したり
+				（現在は実施する見込みはありませんが）計画停止・投稿数制限などで不便をおかけする可能性があります。ご理解お願いします。
 			</div>
 		</div>
 	</div>
 
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>
-			OGPカード(Twitter側の画像サムネイル)が表示されない
-		</h3>
+		<h2>OGPカード(Twitter側の画像サムネイル)が表示されない</h2>
 		<div>
-			<div class={subject({ size: "s" })}>
-				Twitter側のOGPカードの読み込みが間に合っていないのが原因です。
-			</div>
-			<div class={subject({ size: "s" })}>
-				投稿してからしばらく待つ、心配な場合は投稿前にカードが読み込まれるのをお待ちください。
-			</div>
+			<h4>
+				<div>
+					Twitter側のOGPカードの読み込みが間に合っていないのが原因です。
+				</div>
+				<div>
+					投稿してからしばらく待つ、心配な場合は投稿前にカードが読み込まれるのをお待ちください。
+				</div>
+			</h4>
 			<div>
 				同時多発的に発生した場合はまちがいなくバグですが、他の人のSkyshareの投稿は画像が表示されてるのに！
 				という状況な場合、TwitterがOGPの読み込みに時間がかかっています。よくあります。Twitterはそういうところあります...
@@ -95,16 +111,18 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>画像って一枚しか対応してないの？</h3>
+		<h2>画像って一枚しか対応してないの？</h2>
 		<div>
-			<div class={subject({ size: "s" })}>
-				いいえ、ちゃんと４枚まで対応してます！OGPは画像を分割したような形で生成されます。
-			</div>
-			<div class={subject({ size: "s" })}>
-				iOSの場合はアルバムから選択する際に複数枚にチェックを、
-				PCのブラウザの場合は「Ctrl」キーを押しながら画像を選択する・ドラッグで範囲選択する等で、
-				複数画像を一度に選択してください。
-			</div>
+			<h4>
+				<div>
+					いいえ、ちゃんと４枚まで対応してます！OGPは画像を分割したような形で生成されます。
+				</div>
+				<div>
+					iOSの場合はアルバムから選択する際に複数枚にチェックを、
+					PCのブラウザの場合は「Ctrl」キーを押しながら画像を選択する・ドラッグで範囲選択する等で、
+					複数画像を一度に選択してください。
+				</div>
+			</h4>
 			<div>
 				ここのUIわかりずらい様子なので、改善すべきとしてマークしてます。
 				より優しいUIにしていきたいと思っているため、アップデートをお待ちください。
@@ -113,13 +131,9 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>
-			URLの埋め込みって対応していないの？
-		</h3>
+		<h2>URLの埋め込みって対応していないの？</h2>
 		<div>
-			<div class={subject({ size: "s" })}>
-				未対応です...が、今後対応したいと思っています。
-			</div>
+			<h4>未対応です...が、今後対応したいと思っています。</h4>
 			<div>
 				対応する場合、画像投稿とURLの埋め込みは同時に使うことはできない見込みです。
 				これは、Twitterへの投稿にOGPページを利用しているため、複数のURLを含むツイートに対して
@@ -129,17 +143,29 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
+		<h2>タイッツー対応は？Misskeyは？Mastdonは？</h2>
 		<div>
-			<div class={subject({ size: "s" })}>それでも解決しない場合...</div>
+			<h4>そもそもねこのが登録してないんです。ごめんね...</h4>
 			<div>
-				この辺を読んでもだめそうでしたら<a
-					class={link()}
-					href="https://bsky.app/profile/nlla.bsky.social"
-					>@nlla.bsky.social</a
+				<a href=`${zennurl}#動機`
+					>Zennにも記載していますが、当サイトの目的はあくまでTwitterユーザをBlueskyに連れていくことを目的とし、
+					Blueskyにコンテンツを増やすため</a
+				>に作られました。
+				ただ、基本の機能を損なわない、使い勝手としてもシンプルなまま追加できるのであれば、できることが
+				多いに越したことはないとは思うので「やりません」とは言い切りません。検討とさせてください。
+			</div>
+		</div>
+	</div>
+	<div class="mb-8">
+		<div>
+			<h4>それでも解決しない場合...</h4>
+			<div>
+				この辺を読んでもだめそうでしたら<a href={authorlink}
+					>{authorname}</a
 				>に問い合わせください。ベストエフォートで回答します。
 			</div>
 			<div>
-				もちろん<a class={link()} href={githuburl}>
+				もちろん<a href={githuburl}>
 					SkyshareはOSS
 				</a>ですから、ソースコードを読んで理解したり、プルリクエストで修正を提案してくださるのもウェルカムです！
 			</div>
