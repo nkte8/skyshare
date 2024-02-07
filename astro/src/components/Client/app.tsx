@@ -80,7 +80,7 @@ const Component = ({
                             <LogoutButton
                                 className={buttonstyle}
                                 reload={true}
-                                disabled={isLoad}
+                                disabled={!isLoad}
                                 setDisabled={setIsLoad}
                             />
                         </>

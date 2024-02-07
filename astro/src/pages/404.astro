@@ -1,7 +1,8 @@
 ---
 import Pagelayout from "@/layouts/Pagelayout.astro";
-import { subject } from "@/utils/tailwind_variants";
-import { servicename, version } from "@/utils/vars";
+import { servicename } from "@/utils/vars";
+import version from "@/utils/version";
+
 const title = `404 Not found - ${servicename}`;
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
 ---
@@ -12,6 +13,6 @@ const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
     robots={robots}
     hidePostButton={false}
 >
-    <h1 class={subject({ size: "xl" })}>404 not found.</h1>
+    <h1>404 not found.</h1>
     Sorry but the page seems removed.
 </Pagelayout>

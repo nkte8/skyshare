@@ -6,15 +6,17 @@ import {
 	servicename,
 	githuburl,
 	zennurl,
-	version,
 	qaurl,
+	authorlink,
+	authorname,
 } from "@/utils/vars";
+import version from "@/utils/version";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const example_url = new URL(
 	baseurl + pagesPrefix + "/nlla.bsky.social_3kk7qzpffl22n/",
 	siteurl,
 );
-import { subject, link } from "@/utils/tailwind_variants";
+import { link } from "@/utils/tailwind_variants";
 import { Picture } from "astro:assets";
 import ogp_example from "@/images/ogp_nlla.bsky.jpg";
 import link_img from "@/images/link.svg";
@@ -30,15 +32,15 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	hidePostButton={true}
 >
 	<div class="mb-8">
-		<h2 class={subject({ size: "xl" })}>{servicename}</h2>
-		<div class={subject({ size: "m" })}>
+		<h1>{servicename}</h1>
+		<h3>
 			{
 				servicename
 			}は、Bluesky投稿専用クライアント、およびOGPカード/ページジェネレータです。
-		</div>
+		</h3>
 	</div>
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>詳しい仕組み</h3>
+		<h2>詳しい仕組み</h2>
 		<div>
 			<div>
 				当サイトからポストを行うと、Blueskyへの投稿と同時に、
@@ -77,9 +79,8 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>OGP/生成ページの有効期限について</h3>
+		<h2>OGP/生成ページの有効期限について</h2>
 		<div>
-			<div class="mb-4 font-medium">2024/02/03(Beta): 新規記載</div>
 			<div>
 				DB容量の節約のため、生成したOGPおよびOGPに紐づけられたWebページは90日後削除されます。
 				また、本規約の制定より前に投稿されたページについても規約制定より90日後に削除させていただきます。
@@ -89,9 +90,8 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>生成ページの削除機能について</h3>
+		<h2>生成ページの削除機能について</h2>
 		<div>
-			<div class="mb-4 font-medium">2024/02/03(Beta): 新規記載</div>
 			<div>
 				Twitter用に生成したページを削除できるようになりました。ログインした状態でページを開くと「ページを削除」ボタンが表示されるので
 				これを押していただけば削除可能です。
@@ -104,7 +104,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
-		<h2 class={subject({ size: "l" })}>ソースコードについて</h2>
+		<h2>ソースコードについて</h2>
 		<div>
 			<div>
 				Blueskyを操作するAPIであるAT
@@ -129,12 +129,10 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 	</div>
 
 	<div class="mb-8">
-		<h3 class={subject({ size: "l" })}>困ったときは</h3>
+		<h2>困ったときは</h2>
 		<a href={qaurl} class={link()}>QAを作成しました</a
 		>ので、役立ててください。それでもダメそうだったら
-		<a class={link()} href="https://bsky.app/profile/nlla.bsky.social"
-			>@nlla.bsky.social</a
-		>に連絡してください。
+		<a class={link()} href={authorlink}>{authorname}</a>に連絡してください。
 		<div>
 			それでもそれでも...って感じだったら...ちょっとずつ直していくのでお待ちくださいT_T
 		</div>
@@ -142,7 +140,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 
 	<div class="mb-8">
 		<div>
-			<h2 class={subject({ size: "l" })}>もっと詳しく</h2>
+			<h2>もっと詳しく</h2>
 			<div>
 				当サイトはもちろんサービスとしてあったらいいなという想いから制作しましたが、
 				これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。

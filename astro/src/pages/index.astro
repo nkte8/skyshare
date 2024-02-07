@@ -7,9 +7,10 @@ import {
 	posturl,
 	servicename,
 	qaurl,
-	version,
+	changeurl,
 } from "@/utils/vars";
 const title = `${servicename} - Share Bluesky to Twitter`;
+import version from "@/utils/version";
 
 const svgbsky_url = `url('/materials/bluesky.svg')`;
 const svgtag_url = `url('/materials/tag.svg')`;
@@ -98,6 +99,7 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 		<div class="text-center mx-auto md:max-w-3xl my-5">
 			<div class={box()}>
 				<a href={abouturl} class={link({ class: "mx-2" })}>About</a>
+				<a href={changeurl} class={link({ class: "mx-2" })}>Changelog</a>
 				<a href={qaurl} class={link({ class: "mx-2" })}>Q&A</a>
 				<a href={githuburl} class={link({ class: "mx-2" })}>Github</a>
 			</div>
