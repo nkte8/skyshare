@@ -1,4 +1,4 @@
-# Skyshare changelog
+# Skyshare 更新履歴
 
 ## 1.0.9
 
