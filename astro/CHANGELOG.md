@@ -12,7 +12,7 @@
 - QAへ項目を追加しました。
 - ログイン画面のhandleおよびpasswordフォームに初期値を追加し、入力内容をわかりやすくしました。
 - その他tailwindCSS関連の設定値を整備しました。
-    - 具体的には本Changelogページの整形のため、markdown-itによりHTML化、これに対してtailwindCSSがスタイルを適応できるよう、tailwind-variantsの一部のコードを[tailwindCSSの機能（adding-base-style）](https://tailwindcss.com/docs/plugins#adding-base-styles)に置き換えるました。
+    - 具体的には本Changelogページの整形のため、markdown-itによりHTML化、これに対してtailwindCSSがスタイルを適応できるよう、tailwind-variantsの一部のコードを[tailwindCSSの機能（adding-base-style）](https://tailwindcss.com/docs/plugins#adding-base-styles)に置き換えました。
 
 ## 1.0.8
 
