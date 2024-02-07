@@ -1,6 +1,5 @@
 ---
 import { servicename, authorlink, authorname } from "@/utils/vars";
-import { link } from "@/utils/tailwind_variants";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const title = `Privacy Policy - ${servicename}`;
 const robots = ["index", "nofollow", "noarchive", "noimageindex"];
@@ -53,7 +52,6 @@ import version from "@/utils/version";
             <div>
                 Googleのプライバシーポリシーについては
                 <a
-                    class={link()}
                     href="https://policies.google.com/technologies/partner-sites"
                 >
                     こちらをご覧ください。</a
@@ -66,14 +64,12 @@ import version from "@/utils/version";
         <h3>運営者情報</h3>
         <div>
             当サイトは、ねこの（blueskyID:
-            <a class={link()} href={authorlink}>{authorname}</a>）によって
+            <a href={authorlink}>{authorname}</a>）によって
             個人的に開発・運営されています。
         </div>
         <div>
             メールでのご連絡の場合は
-            <a class={link()} href="mailto: nkte8@outlook.jp">
-                nkte8@outlook.jp
-            </a>
+            <a href="mailto: nkte8@outlook.jp"> nkte8@outlook.jp</a>
             へお願いします。
         </div>
     </div>

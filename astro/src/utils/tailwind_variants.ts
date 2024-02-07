@@ -1,13 +1,4 @@
 import { tv } from "tailwind-variants";
-export const link = tv({
-	base: "text-sky-400 hover:text-blue-600 font-medium",
-	variants: {
-		x: {
-			true: "hover:text-gray-950"
-		}
-	}
-});
-
 export const load_circle = tv({
 	base: "animate-spin inline-block",
 	variants: {

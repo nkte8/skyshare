@@ -16,7 +16,6 @@ const example_url = new URL(
 	baseurl + pagesPrefix + "/nlla.bsky.social_3kk7qzpffl22n/",
 	siteurl,
 );
-import { link } from "@/utils/tailwind_variants";
 import { Picture } from "astro:assets";
 import ogp_example from "@/images/ogp_nlla.bsky.jpg";
 import link_img from "@/images/link.svg";
@@ -47,7 +46,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 				OGPカードおよび画像が設定されたWebページを生成します。
 			</div>
 			<div>
-				<a class={link()} href={example_url}>
+				<a href={example_url}>
 					例としてはこのようなページが生成されます。
 				</a>
 				ツイートしようとすると、以下のような画像(1200x630px)がツイートに添付されます。
@@ -71,7 +70,6 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 
 			<a
 				target="_blank"
-				class={link()}
 				href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。&url=${example_url}`}
 				>投稿リンクの例（投稿用の本文付きで𝕏が開きます）</a
 			>
@@ -116,7 +114,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 				当サイトはOSSの体をとっています。
 			</div>
 			<div>
-				<a href={githuburl} class={link()}
+				<a href={githuburl}
 					>こちらで全てのソースコードを閲覧・使用することができます(BSD-3-Clause
 					license)
 				</a>
@@ -130,9 +128,9 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 
 	<div class="mb-8">
 		<h2>困ったときは</h2>
-		<a href={qaurl} class={link()}>QAを作成しました</a
+		<a href={qaurl}>QAを作成しました</a
 		>ので、役立ててください。それでもダメそうだったら
-		<a class={link()} href={authorlink}>{authorname}</a>に連絡してください。
+		<a href={authorlink}>{authorname}</a>に連絡してください。
 		<div>
 			それでもそれでも...って感じだったら...ちょっとずつ直していくのでお待ちくださいT_T
 		</div>
@@ -144,8 +142,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 			<div>
 				当サイトはもちろんサービスとしてあったらいいなという想いから制作しましたが、
 				これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。
-				<a href={zennurl} class={link()}
-					>Zennにて当サイトの制作について</a
+				<a href={zennurl}>Zennにて当サイトの制作について</a
 				>記載しています。技術記事というよりは読み物としてお楽しみください。
 			</div>
 		</div>

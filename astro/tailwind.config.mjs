@@ -46,6 +46,13 @@ export default {
 				},
 				"div": {
 					marginBottom: "0.5rem"
+				},
+				"a": {
+					color: "rgb(56 189 248)",
+					fontWeight: theme("fontWeight.medium"),
+				},
+				"a:hover": {
+					color: "rgb(37 99 235)",
 				}
 			})
 		})

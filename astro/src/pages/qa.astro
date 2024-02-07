@@ -10,8 +10,6 @@ import {
 import Pagelayout from "@/layouts/Pagelayout.astro";
 import version from "@/utils/version";
 
-import { link } from "@/utils/tailwind_variants";
-
 const title = `About - ${servicename}`;
 const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 ---
@@ -76,7 +74,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 				コンテンツブロッカーをオフにするか、ホワイトリストへの追加をお願いします。
 			</div>
 			<div>
-				<a class={link()} href={abouturl}>About</a
+				<a href={abouturl}>About</a
 				>にもすこし記載していますが、当サイトはあったらいいなを形にしたいという想い、
 				AT
 				Protocolの開発事例として、そしてねこのの技術習得学習の一環としてのみ構築されているので
@@ -149,7 +147,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 		<div>
 			<h4>そもそもねこのが登録してないんです。ごめんね...</h4>
 			<div>
-				<a class={link()} href=`${zennurl}#動機`
+				<a href=`${zennurl}#動機`
 					>Zennにも記載していますが、当サイトの目的はあくまでTwitterユーザをBlueskyに連れていくことを目的とし、
 					Blueskyにコンテンツを増やすため</a
 				>に作られました。
@@ -162,13 +160,12 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 		<div>
 			<h4>それでも解決しない場合...</h4>
 			<div>
-				この辺を読んでもだめそうでしたら<a
-					class={link()}
-					href={authorlink}>{authorname}</a
+				この辺を読んでもだめそうでしたら<a href={authorlink}
+					>{authorname}</a
 				>に問い合わせください。ベストエフォートで回答します。
 			</div>
 			<div>
-				もちろん<a class={link()} href={githuburl}>
+				もちろん<a href={githuburl}>
 					SkyshareはOSS
 				</a>ですから、ソースコードを読んで理解したり、プルリクエストで修正を提案してくださるのもウェルカムです！
 			</div>
