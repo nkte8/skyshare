@@ -49,7 +49,7 @@ const Component = ({ disabled, setImageFile, className }: {
             reset()
             return
         }
-        setImageFile(await Promise.all(files))
+        setImageFile(await Promise.all<File>(files))
     }
 
     const acceptlist = extensions.join(",")

@@ -11,7 +11,6 @@ const Component = ({ post, onChange, onfocus, onblur, disabled }: {
         <div>
             <textarea onChange={onChange}
                 value={post}
-                maxLength={300}
                 onFocus={onfocus}
                 onBlur={onblur}
                 placeholder="最近どう？いまどうしてる？"

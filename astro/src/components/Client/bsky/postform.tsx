@@ -5,6 +5,7 @@ import detectFacets from "@/utils/atproto_api/detectFacets";
 import uploadBlob from "@/utils/atproto_api/uploadBlob";
 import createPage from "@/utils/backend_api/createPage";
 import model_uploadBlob from "@/utils/atproto_api/models/uploadBlob.json";
+import model_error from "@/utils/atproto_api/models/error.json";
 import { link } from "../common/tailwind_variants";
 import ProcButton from "../common/procButton"
 import ImageForm from "./imgform"
@@ -29,6 +30,7 @@ const Component = ({
     const [twiurl, setTwiref] = useState<string | null>(null)
     const { hidden, setHidden } = useContext(Hidden_context)
     const { session } = useContext(Session_context)
+    const countMax = 300
 
     const handlePost = async () => {
         setLoad(true)
@@ -58,8 +60,13 @@ const Component = ({
                 e.name = "Unexpected Error@postform.tsx"
                 throw e
             }
+            if (count > countMax) {
+                let e: Error = new Error("文字数制限を超えています。")
+                e.name = "postform.tsx"
+                throw e
+            }
             if (imageFiles !== null) {
-                let res_que: Array<Promise<typeof model_uploadBlob>> = []
+                let res_que: Array<Promise<typeof model_uploadBlob & typeof model_error>> = []
                 for (let i = 0; i < imageFiles.length; i++) {
                     res_que.push(uploadBlob({
                         accessJwt: session!.accessJwt,
@@ -72,14 +79,12 @@ const Component = ({
                     isError: false
                 })
                 const blob_res = await Promise.all(res_que)
+                // 画像アップロードに失敗したファイルが一つでも存在した場合停止する
                 for (let value of blob_res) {
-                    if (typeof value.blob.ref.$link === "undefined") {
-                        setMsgInfo({
-                            msg: "画像のアップロードに失敗しました...",
-                            isError: true
-                        })
-                        setLoad(false)
-                        return
+                    if (typeof value?.error !== "undefined") {
+                        let e: Error = new Error(value.message)
+                        e.name = value.error
+                        throw e
                     }
                 }
                 let images: Array<{
@@ -154,7 +159,7 @@ const Component = ({
             }
         } catch (error: unknown) {
             let msg: string = "Unexpected Unknown Error"
-            if(error instanceof Error) {
+            if (error instanceof Error) {
                 msg = error.name + ": " + error.message
             }
             setMsgInfo({
@@ -177,9 +182,15 @@ const Component = ({
     }
     const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPost(event.target.value)
-        const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
-        const segments = segmenterJa.segment(event.currentTarget.value)
-        setCount(Array.from(segments).length)
+        try {
+            const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
+            const segments = segmenterJa.segment(event.currentTarget.value)
+            setCount(Array.from(segments).length)
+        } catch (e) {
+            // Intl.Segmenterがfirefoxでは未対応であるため、やむをえずレガシーな方法で対処
+            // 絵文字のカウント数が想定より多く設定されてしまうため、firefox_v125までは非推奨ブラウザとする
+            setCount(event.currentTarget.value.length)
+        }
     }
 
     return (
@@ -209,7 +220,7 @@ const Component = ({
                         className="py-0"
                     />
                     <div className="flex-1"></div>
-                    <div className="align-middle my-auto mr-1">{count}/300</div>
+                    <div className={`align-middle my-auto mr-1 px-2 rounded-lg ${count > countMax && "bg-red-300"}`}>{count}/300</div>
                     <ProcButton
                         handler={handlePost}
                         isProcessing={loading}
@@ -219,7 +230,7 @@ const Component = ({
                         disabled={!(post.length >= 1 || imageFiles !== null)} />
                 </div>
                 <div className={`flex sm:my-auto my-1 ${hidden && "hidden"}`}>
-                    <div className="flex-1 sm:inline-block"></div>
+                    <div className="flex-1 sm:inline-block "></div>
                     <Twiurl context={twimsg} twiurl={twiurl} />
                 </div>
             </div >

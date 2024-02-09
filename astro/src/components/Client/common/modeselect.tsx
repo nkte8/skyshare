@@ -35,14 +35,12 @@ const Component = ({ mode, setMode, disabled }: {
     }, [mode])
 
     return (
-        <div>
-            <Button
-                handler={handleClick}
-                isProcessing={false}
-                context={label}
-                showAnimation={false}
-                disabled={disabled} />
-        </div>
+        <Button
+            handler={handleClick}
+            isProcessing={false}
+            context={label}
+            showAnimation={false}
+            disabled={disabled} />
     )
 }
 export default Component

@@ -13,7 +13,7 @@ export const compressImage = async (
     try {
         const compressedFile = await imageCompression(file, options);
         return compressedFile;
-    } catch (err) {
+    } catch (err: any) {
         return Promise.reject(new Error(`compress failed: ${err}`));
     }
 };

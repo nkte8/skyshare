@@ -23,20 +23,20 @@ export const api = async ({
                 'Content-Type': 'application/json'
             },
         }).then(async (response) => {
-            if(!response?.ok) {
-                let res:typeof etype = await response.json()
+            if (!response?.ok) {
+                let res: typeof etype = await response.json()
                 let e: Error = new Error(res.message)
                 e.name = apiName
                 throw e
             }
             return await response.json()
         }
-        ).catch((e:Error) => {
+        ).catch((e: Error) => {
             return {
                 error: e.name,
                 message: e.message
             }
-        })    
+        })
 }
 
 export default api
