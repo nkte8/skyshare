@@ -28,6 +28,7 @@ export const Component = () => {
                 setProfref(res.handle)
             }
         } catch (error) {
+            // プロフィール画像をよみこむだけなのでステータスを省略している
         }
         setLoad(false)
     }

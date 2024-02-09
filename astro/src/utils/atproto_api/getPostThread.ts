@@ -1,7 +1,8 @@
-import endpoint_url, { app_bsky } from "./base"
+import getEndpoint, { app_bsky } from "./base"
 import mtype from "./models/getPostThread.json"
 import etype from "./models/error.json"
-const endpoint = endpoint_url(app_bsky.feed.getPostThread)
+const apiName = app_bsky.feed.getPostThread
+const endpoint = getEndpoint(apiName)
 
 export const api = async ({
     accessJwt,
@@ -20,9 +21,21 @@ export const api = async ({
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessJwt}`
             },
-        }).then((response) => response.json()
-        ).catch(() => {})
-
+        }).then(async (response) => {
+            if(!response?.ok) {
+                let res:typeof etype = await response.json()
+                let e: Error = new Error(res.message)
+                e.name = apiName
+                throw e
+            }
+            return await response.json()
+        }
+        ).catch((e:Error) => {
+            return {
+                error: e.name,
+                message: e.message
+            }
+        })    
 }
 
 export default api

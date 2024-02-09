@@ -13,12 +13,12 @@ const Component = ({
         <>
             {
                 msgInfo.msg !== "" && (
-                    <div className="m-2">
-                        <span className={msgInfo.isError ?
+                    <div className="mx-auto w-fit">
+                        <div className={msgInfo.isError ?
                             "bg-red-300 px-5 py-1 text-white rounded-xl" :
-                            "bg-sky-200 px-5 py-1 rounded-xl"}>
+                            "bg-sky-200 px-5 py-1 rounded-xl w-fit"}>
                             {msgInfo.msg}
-                        </span>
+                        </div>
                     </div>
                 )
             }

@@ -1,7 +1,8 @@
-import endpoint_url, { com_atproto } from "./base"
+import getEndpoint, { com_atproto } from "./base"
 import mtype from "./models/uploadBlob.json"
 import etype from "./models/error.json"
-const endpoint = endpoint_url(com_atproto.repo.uploadBlob)
+const apiName = com_atproto.repo.uploadBlob
+const endpoint = getEndpoint(apiName)
 
 export const api = async ({
     accessJwt,
@@ -20,7 +21,20 @@ export const api = async ({
             'Authorization': `Bearer ${accessJwt}`
         },
         body: blob,
-    }).then((response) => response.json()
-    ).catch(() => {})
+    }).then(async (response) => {
+        if(!response?.ok) {
+            let res:typeof etype = await response.json()
+            let e: Error = new Error(res.message)
+            e.name = apiName
+            throw e
+        }
+        return await response.json()
+    }
+    ).catch((e:Error) => {
+        return {
+            error: e.name,
+            message: e.message
+        }
+    })
 
 export default api

@@ -1,7 +1,8 @@
-import endpoint_url,{ com_atproto } from "./base"
+import getEndpoint,{ com_atproto } from "./base"
 import mtype from "./models/refreshSession.json"
 import etype from "./models/error.json"
-const endpoint = endpoint_url(com_atproto.server.refreshSession)
+const apiName = com_atproto.server.refreshSession
+const endpoint = getEndpoint(apiName)
 
 export const api = async ({
     refreshJwt,
@@ -14,7 +15,20 @@ export const api = async ({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${refreshJwt}`
         },
-    }).then((response) => response.json()
-    ).catch(() => {})
+    }).then(async (response) => {
+        if(!response?.ok) {
+            let res:typeof etype = await response.json()
+            let e: Error = new Error(res.message)
+            e.name = apiName
+            throw e
+        }
+        return await response.json()
+    }
+    ).catch((e:Error) => {
+        return {
+            error: e.name,
+            message: e.message
+        }
+    })
 
 export default api

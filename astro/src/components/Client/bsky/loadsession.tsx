@@ -43,7 +43,17 @@ export const Component = ({
                     }
                     reset_Jwt()
                 }
-            } catch (e) {
+            } catch (error: unknown) {
+                let msg: string = "Unexpected Unknown Error"
+                if(error instanceof Error) {
+                    msg = error.name + ": " + error.message
+                }
+                if (setMsgInfo !== undefined) {
+                    setMsgInfo({
+                        msg: msg,
+                        isError: true
+                    })
+                }
                 reset_Jwt()
             }
         }

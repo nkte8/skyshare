@@ -1,7 +1,8 @@
-import endpoint_url, { com_atproto, app_bsky } from "./base"
+import getEndpoint, { com_atproto, app_bsky } from "./base"
 import mtype from "./models/createRecord.json"
 import etype from "./models/error.json"
-const endpoint = endpoint_url(com_atproto.repo.createRecord)
+const apiName = com_atproto.repo.createRecord
+const endpoint = getEndpoint(apiName)
 
 export const api = async ({
     repo,
@@ -24,7 +25,21 @@ export const api = async ({
                 repo: repo,
                 record: record
             })
-    }).then((response) => response.json()
-    ).catch(() => {})
+    }).then(async (response) => {
+        if(!response?.ok) {
+            let res:typeof etype = await response.json()
+            let e: Error = new Error(res.message)
+            e.name = apiName
+            throw e
+        }
+        return await response.json()
+    }
+    ).catch((e:Error) => {
+        return {
+            error: e.name,
+            message: e.message
+        }
+    })
+    
 
 export default api

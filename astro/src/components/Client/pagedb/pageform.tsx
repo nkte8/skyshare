@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
+import React, { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 import { pagesPrefix } from "@/utils/vars"
 const siteurl = location.origin
 import getIds from "@/utils/backend_api/geIds"
@@ -12,11 +12,12 @@ const Component = ({
 }) => {
     const { session } = useContext(Session_context)
 
-    const error: ReactNode = (
-        <>
-            <div>Failed to Load pages.</div>
-        </>
-    )
+    const error:ReactNode = (
+            <>
+                <div>Failed to load Pages</div>
+            </>
+        )
+        
     const [list, setList] = useState<ReactNode>(
         <>
             <svg className={load_circle({ size: "l" })} viewBox="-30 -30 160 160" xmlns="http://www.w3.org/2000/svg">
@@ -34,14 +35,10 @@ const Component = ({
             })
             if (typeof ids?.error != "undefined" ||
                 typeof ids?.message != "undefined") {
-                setList(error)
-                setMsgInfo({
-                    isError: true,
-                    msg: "投稿一覧の読み込みに失敗しました..."
-                })
-                return
+                let e: Error = new Error(ids.message)
+                e.name = ids.error
+                throw e
             }
-
             setMsgInfo({
                 isError: false,
                 msg: "投稿一覧を読み込みました!"
@@ -65,11 +62,15 @@ const Component = ({
                     </div>
                 </div>
             )
-        } catch (e) {
+        } catch (e:unknown) {
+            let msg: string = "Unexpected Unknown Error"
+            if(e instanceof Error) {
+                msg = e.name + ": " + e.message
+            }
             setList(error)
             setMsgInfo({
                 isError: true,
-                msg: "Unexpected error..."
+                msg: msg
             })
         }
     }

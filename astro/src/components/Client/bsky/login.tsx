@@ -24,10 +24,9 @@ export const Component = ({
                 password: password
             })
             if (typeof res.error !== "undefined") {
-                setMsgInfo({
-                    msg: "ログイン出来ませんでした...",
-                    isError: true,
-                })
+                let e: Error = new Error(res.message)
+                e.name = res.error
+                throw e
             } else {
                 setSession(res)
                 // セッションをlocalstorageへ保存
@@ -39,10 +38,15 @@ export const Component = ({
                     isError: false,
                 })
             }
-
-        } catch (error) {
-            alert("Unexpected error")
-            window.location.reload()
+        } catch (error: unknown) {
+            let msg: string = "Unexpected Unknown Error"
+            if(error instanceof Error) {
+                msg = error.name + ": " + error.message
+            }
+            setMsgInfo({
+                msg: msg,
+                isError: true
+            })
         }
         setLoad(false)
     }

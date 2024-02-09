@@ -1,6 +1,6 @@
-const xrpc_url = "https://bsky.social/xrpc";
-export const endpoint_url = (path: string): string => {
-    return `${xrpc_url}/${path}`
+const xrpcurl = "https://bsky.social/xrpc";
+export const getEndpoint = (path: string): string => {
+    return `${xrpcurl}/${path}`
 }
 export namespace com_atproto {
     export const url = "com.atproto"
@@ -35,4 +35,4 @@ export namespace app_bsky {
         export const getPostThread = `${app_bsky.feed.url}.getPostThread`
     }
 }
-export default endpoint_url
+export default getEndpoint

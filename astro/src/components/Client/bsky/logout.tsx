@@ -42,9 +42,17 @@ export const Component = ({
                     isError: false,
                 })
             }
-        } catch (error) {
-            alert("Unexpected error...")
-            window.location.reload()
+        } catch (error: unknown) {
+            let msg: string = "Unexpected Unknown Error"
+            if(error instanceof Error) {
+                msg = error.name + ": " + error.message
+            }
+            if (setMsgInfo !== undefined) {
+                setMsgInfo({
+                    msg: msg,
+                    isError: true
+                })
+            }
         }
         setDisabled(false)
         setLoad(false)

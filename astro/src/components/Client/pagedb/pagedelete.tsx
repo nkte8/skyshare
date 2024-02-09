@@ -18,12 +18,9 @@ const Component = ({
         setProcessing(true)
         try {
             if (session.did === null || session.accessJwt === null) {
-                setMsgInfo({
-                    isError: true,
-                    msg: "ログインしてください。"
-                })
-                setProcessing(false)
-                return
+                let e: Error = new Error("フロントエンドが想定していない操作が行われました。")
+                e.name = "Unexpected Error@pagedelete.tsx"
+                throw e
             }
             const resDeletePage = await deletePage({
                 id: id,
@@ -38,23 +35,18 @@ const Component = ({
                 })
                 window.location.reload()
             } else {
-                let msg: string = ""
-                switch (resDeletePage.error) {
-                    case "Unauthorized":
-                        msg = "認証に失敗しました。Blueskyの投稿を確認してください。"
-                        break
-                    default:
-                        msg = "Unexpected error"
-                }
-                setMsgInfo({
-                    isError: true,
-                    msg: msg
-                })
+                let e: Error = new Error(resDeletePage.message)
+                e.name = "pagedelete.tsx"
+                throw e
             }
-        } catch (e) {
+        } catch (error: unknown) {
+            let msg: string = "Unexpected Unknown Error"
+            if(error instanceof Error) {
+                msg = error.name + ": " + error.message
+            }
             setMsgInfo({
-                isError: true,
-                msg: "Unexpected error..."
+                msg: msg,
+                isError: true
             })
         }
         setProcessing(false)

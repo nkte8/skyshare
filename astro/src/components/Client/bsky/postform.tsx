@@ -54,7 +54,9 @@ const Component = ({
         }
         try {
             if (session.accessJwt === null || session.did === null) {
-                return
+                let e: Error = new Error("フロントエンドが想定していない操作が行われました。")
+                e.name = "Unexpected Error@postform.tsx"
+                throw e
             }
             if (imageFiles !== null) {
                 let res_que: Array<Promise<typeof model_uploadBlob>> = []
@@ -128,6 +130,7 @@ const Component = ({
                     msg: "Blueskyへ投稿しました!",
                     isError: false
                 })
+                setTwiref("")
                 if (imageFiles !== null) {
                     setMsgInfo({
                         msg: "Twitter用ページ生成中...",
@@ -143,18 +146,19 @@ const Component = ({
                             isError: false
                         })
                         const [id, rkey] = get_res.uri.split("/")
-                        setTwimsg(post)
                         setTwiref(`${id}@${rkey}`)
                     }
-                } else {
-                    setTwimsg(post)
-                    setTwiref("")
                 }
+                setTwimsg(post)
                 handlerCancel()
             }
-        } catch {
+        } catch (error: unknown) {
+            let msg: string = "Unexpected Unknown Error"
+            if(error instanceof Error) {
+                msg = error.name + ": " + error.message
+            }
             setMsgInfo({
-                msg: "Unexpected error...",
+                msg: msg,
                 isError: true
             })
         }
