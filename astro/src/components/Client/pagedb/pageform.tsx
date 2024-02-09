@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
+import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 import { pagesPrefix } from "@/utils/vars"
 const siteurl = location.origin
 import getIds from "@/utils/backend_api/geIds"
