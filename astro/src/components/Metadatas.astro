@@ -34,7 +34,6 @@ const description = `${servicename} is a web application helps bluesky users pos
 <meta name="robots" content={robots.join(",")} />
 <script
     type="text/partytown"
-    async
     src="https://www.googletagmanager.com/gtag/js?id=G-JDS7QWVYQB"></script>
 <script type="text/partytown">
     window.dataLayer = window.dataLayer || [];
@@ -42,6 +41,5 @@ const description = `${servicename} is a web application helps bluesky users pos
         dataLayer.push(arguments);
     }
     gtag("js", new Date());
-
     gtag("config", "G-JDS7QWVYQB");
 </script>
