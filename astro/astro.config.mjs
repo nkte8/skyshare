@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 import cloudflare from "@astrojs/cloudflare";
+import partytown from '@astrojs/partytown';
 
 // https://astro.build/config
 /** @type {import('tailwindcss').Config} */
@@ -15,7 +16,8 @@ export default defineConfig({
   },
   integrations: [
     react(), 
-    tailwind()
+    tailwind(),
+    partytown()
   ],
   output: "hybrid",
   adapter: cloudflare(),
