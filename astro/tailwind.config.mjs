@@ -48,11 +48,23 @@ export default {
 					marginBottom: "0.5rem"
 				},
 				"a": {
-					color: "rgb(56 189 248)",
+					color: "rgb(56 189 248)", // text-sky-400
 					fontWeight: theme("fontWeight.medium"),
 				},
 				"a:hover": {
-					color: "rgb(37 99 235)",
+					color: "rgb(37 99 235)", // text-blue-600
+				},
+				"code": {
+					backgroundColor: "rgb(229 231 235)", // bg-gray-200
+					borderRadius: theme("borderRadius.md"),
+					paddingLeft: "0.3rem",
+					paddingRight: "0.3rem",
+					fontSize: theme("fontSize.sm"),
+					fontFamily: theme("font-mono"), 
+					color: "black" 
+				},
+				"s": {
+					color: "rgb(156 163 175)"  // text-gray-400
 				}
 			})
 		})
