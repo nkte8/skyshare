@@ -34,7 +34,7 @@ const Component = ({
                     disabled={disabled}
                     className={inputtext_base({
                         kind: "inbound",
-                        class: "pt-2 w-full h-32 md:w-lg resize-none overflow-y-auto ",
+                        class: "pt-2 w-full md:w-lg resize-y overflow-y-auto h-48",
                         disabled: disabled
                     })}
                 />

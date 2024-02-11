@@ -11,7 +11,7 @@ export const link = tv({
 });
 
 export const inputtext_base = tv({
-	base: "my-1 focus:outline-none text-xl md:text-lg",
+	base: "my-1 focus:outline-none text-lg md:text-base",
 	variants: {
 		kind: {
 			outbound: "border-2 rounded-md bg-white",
