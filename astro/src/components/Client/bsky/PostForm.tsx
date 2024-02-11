@@ -224,10 +224,9 @@ const Component = ({
             }
             if (autoPop) {
                 XPopup(xContent)
-            } else {
-                setXcontent(xContent)
-                setMode("xcom")
             }
+            setXcontent(xContent)
+            setMode("xcom")
             handlerCancel()
         } catch (error: unknown) {
             let msg: string = "Unexpected Unknown Error"
