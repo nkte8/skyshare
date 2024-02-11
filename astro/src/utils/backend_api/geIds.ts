@@ -21,7 +21,12 @@ export const api = async ({
                 'Content-Type': 'application/json'
             },
         }).then((response) => response.json()
-        ).catch(() => {})
+        ).catch((e: Error) => {
+            return {
+                error: e.name,
+                message: e.message
+            }
+        })
 }
 
 export default api

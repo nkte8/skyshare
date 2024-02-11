@@ -44,14 +44,14 @@ describe('detectFacets Test', () => {
 
     test('mentions facets', async () => {
         const result = await detectFacets({
-            text: "iam @nlla.bsky.social at @bsky.app"
+            text: "iam @nekono.dev at @bsky.app"
         })
         expect(result).toEqual(
             expect.arrayContaining([
                 {
                     index: {
                         byteStart: 4,
-                        byteEnd: 21
+                        byteEnd: 15
                     },
                     features: [
                         {
@@ -62,8 +62,8 @@ describe('detectFacets Test', () => {
                 },
                 {
                     index: {
-                        byteStart: 25,
-                        byteEnd: 34
+                        byteStart: 19,
+                        byteEnd: 28
                     },
                     features: [
                         {

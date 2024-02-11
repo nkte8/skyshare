@@ -1,9 +1,10 @@
 import { useState } from "react"
-import { posturl } from "@/utils/vars"
-import MsgLabel from "../common/msglabel"
-import { type msgInfo, type Session_info } from "../common/contexts"
-import PageDeleteButton from "./pagedelete"
-import ProcButton from "../common/procButton"
+import { posturl } from "@/utils/envs"
+import InfoLabel from "../common/InfoLabel"
+import { type Session_info } from "../common/contexts"
+import { type msgInfo } from "../common/types"
+import PageDeleteButton from "./PageDeleteButton"
+import ProcButton from "../common/ProcButton"
 
 const Component = ({
     id,
@@ -22,7 +23,7 @@ const Component = ({
                 session?.accessJwt !== null ? (
                     <>
                         <PageDeleteButton id={id} session={session} setMsgInfo={setMsgInfo} />
-                        <MsgLabel msgInfo={msgInfo} />
+                        <InfoLabel msgInfo={msgInfo} />
                     </>
                 ) : (
                     <ProcButton handler={handleClick}

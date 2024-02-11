@@ -1,26 +1,27 @@
 import { useState, useContext, Dispatch, SetStateAction } from "react"
-import { Session_context, type msgInfo } from "../common/contexts"
+import { Session_context } from "../common/contexts"
+import { type msgInfo } from "../common/types"
 import deleteSession from "@/utils/atproto_api/deleteSession";
-import { reset_Jwt } from "@/utils/localstorage";
-import ProcButton from "../common/procButton"
+import { resetJwt } from "@/utils/localstorage";
+import ProcButton from "../common/ProcButton"
 
 export const Component = ({
     className,
     setMsgInfo,
     reload,
-    disabled,
-    setDisabled
+    processing,
+    setProcessing
 }: {
     className?: string,
     setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
     reload: boolean
-    disabled: boolean,
-    setDisabled: Dispatch<SetStateAction<boolean>>
+    processing: boolean,
+    setProcessing: Dispatch<SetStateAction<boolean>>
 }) => {
     const { session, setSession } = useContext(Session_context)
     const [loading, setLoad] = useState<boolean>(false)
     const handleLogout = async () => {
-        setDisabled(true)
+        setProcessing(true)
         setLoad(true)
         try {
             if (session.refreshJwt === null) {
@@ -35,7 +36,7 @@ export const Component = ({
                 refreshJwt: null,
                 handle: null,
             })
-            reset_Jwt()
+            resetJwt()
             if (setMsgInfo !== undefined) {
                 setMsgInfo({
                     msg: "ログアウトしました!",
@@ -54,7 +55,7 @@ export const Component = ({
                 })
             }
         }
-        setDisabled(false)
+        setProcessing(false)
         setLoad(false)
         if (reload) {
             window.location.reload()
@@ -64,7 +65,7 @@ export const Component = ({
     return (
         <ProcButton
             handler={handleLogout}
-            isProcessing={disabled}
+            isProcessing={processing}
             context="ログアウト"
             showAnimation={loading}
             className={className} />

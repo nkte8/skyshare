@@ -1,10 +1,13 @@
 import { useState, useContext, Dispatch, SetStateAction } from "react"
 import { inputtext_base, link } from "../common/tailwind_variants"
-import { Session_context, type msgInfo } from "../common/contexts"
+import { Session_context, Profile_context } from "../common/contexts"
+import { type msgInfo } from "../common/types"
 import createSession from "@/utils/atproto_api/createSession";
-import { write_Jwt } from "@/utils/localstorage"
-import ProcButton from "../common/procButton"
-import Tooltip from "../common/toolctip"
+import loadProfile from "./loadProfile";
+
+import { writeJwt } from "@/utils/localstorage"
+import ProcButton from "../common/ProcButton"
+import Tooltip from "../common/Tooltip"
 
 export const Component = ({
     setMsgInfo,
@@ -15,6 +18,7 @@ export const Component = ({
     const [identifier, setIdentifer] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const { setSession } = useContext(Session_context)
+    const { setProfile } = useContext(Profile_context)
 
     const handleLogin = async () => {
         setLoad(true)
@@ -30,17 +34,20 @@ export const Component = ({
             } else {
                 setSession(res)
                 // セッションをlocalstorageへ保存
-                write_Jwt({
-                    refreshJwt: res.refreshJwt
-                })
+                writeJwt(res.refreshJwt)
                 setMsgInfo({
                     msg: "ログインしました!",
                     isError: false,
                 })
+                // プロフィールを読み込み
+                await loadProfile({
+                    session: res,
+                    setProfile: setProfile
+                })
             }
         } catch (error: unknown) {
             let msg: string = "Unexpected Unknown Error"
-            if(error instanceof Error) {
+            if (error instanceof Error) {
                 msg = error.name + ": " + error.message
             }
             setMsgInfo({
@@ -54,13 +61,13 @@ export const Component = ({
     return (
         <>
             <div className="mt-16">
-                <div className="align-middle">
+                <div className="align-middle mb-0">
                     <label className="w-32 inline-block my-auto">
                         Email or ID:
                     </label>
                     <input onChange={(event) => setIdentifer(event.target.value)}
                         placeholder="example.bsky.social"
-                        className={inputtext_base({ class: "max-w-48 w-full" })} type="text" />
+                        className={inputtext_base({ class: "max-w-52 w-full px-2", kind: "outbound" })} type="text" />
                 </div>
                 <div className="align-middle">
                     <label className="w-32 inline-block my-auto">
@@ -68,7 +75,7 @@ export const Component = ({
                     </label>
                     <input onChange={(event) => setPassword(event.target.value)}
                         placeholder="this-isex-ampl-epwd"
-                        className={inputtext_base({ class: "max-w-48 w-full" })} type="password" />
+                        className={inputtext_base({ class: "max-w-52 w-full px-2", kind: "outbound" })} type="password" />
                 </div>
                 <div className="my-2">
                     <ProcButton

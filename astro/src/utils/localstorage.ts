@@ -1,35 +1,66 @@
 // localstorage関連  
-interface LocalStorageInfo {
-    refreshJwt: string;
+type Obj = {
+    [key: string]: string;
+};
+const LSKeyName: Obj = {
+    accessJwt: "accessJwt",
+    refreshJwt: "refreshJwt",
+    autoXPopup: "autoXPopup",
+    noGenerate: "noGenerate",
 }
 
-const Id_accessJwt = "accessJwt"
-const Id_refreshJwt = "refreshJwt"
-
-export const read_Jwt = (): LocalStorageInfo | null => {
-    const rjwt = get_ls_value(Id_refreshJwt)
-    if (rjwt !== null) {
-        return {
-            refreshJwt: rjwt
-        }
+export const readNoGenerate = (def: boolean): boolean => {
+    const value = get_ls_value(LSKeyName.noGenerate)
+    if (value !== null) {
+        return value === "true"
     }
-    rm_ls_value(Id_accessJwt)
-    rm_ls_value(Id_refreshJwt)
+    rm_ls_value(LSKeyName.noGenerate)
+    return def
+}
+
+export const setNoGenerate = (flag: boolean): void => {
+    set_ls_value(LSKeyName.noGenerate, flag.toString())
+}
+
+export const readAutoXPopup = (def: boolean): boolean => {
+    const value = get_ls_value(LSKeyName.autoXPopup)
+    if (value !== null) {
+        return value === "true"
+    }
+    rm_ls_value(LSKeyName.autoXPopup)
+    return def
+}
+
+export const setAutoXPopup = (flag: boolean): void => {
+    set_ls_value(LSKeyName.autoXPopup, flag.toString())
+}
+
+export const readJwt = (): string | null => {
+    const rjwt = get_ls_value(LSKeyName.refreshJwt)
+    if (rjwt !== null) {
+        return rjwt
+    }
+    rm_ls_value(LSKeyName.accessJwt)
+    rm_ls_value(LSKeyName.refreshJwt)
     return null
 }
 
-export const write_Jwt = ({
-    refreshJwt
-}: LocalStorageInfo): boolean => {
-    const rjwt = set_ls_value(Id_refreshJwt, refreshJwt)
+export const writeJwt = (refreshJwt: string): boolean => {
+    const rjwt = set_ls_value(LSKeyName.refreshJwt, refreshJwt)
     if (rjwt === true) {
         return true
     }
     return false
 }
 
-export const reset_Jwt = (): void => {
-    rm_ls_value(Id_refreshJwt)
+export const resetJwt = (): void => {
+    rm_ls_value(LSKeyName.refreshJwt)
+}
+
+export const resetAll = (): void => {
+    for (const key in LSKeyName) {
+        rm_ls_value(key)
+    }
 }
 
 const get_ls_value = (key: string): string | null => {

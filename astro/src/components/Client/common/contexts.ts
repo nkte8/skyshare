@@ -1,6 +1,7 @@
 import React, {
     createContext
 } from "react"
+import type getProfile from "@/utils/atproto_api/models/getProfile.json";
 
 export type Session_info = {
     did: string | null,
@@ -13,12 +14,7 @@ export const Session_context = createContext({} as {
     setSession: React.Dispatch<React.SetStateAction<Session_info>>
 })
 
-export type msgInfo = {
-    msg: string,
-    isError: boolean,
-}
-
-export const Hidden_context = createContext({} as {
-    hidden: boolean
-    setHidden: React.Dispatch<React.SetStateAction<boolean>>
+export const Profile_context = createContext({} as {
+    profile: typeof getProfile | null
+    setProfile: React.Dispatch<React.SetStateAction<typeof getProfile | null>>
 })

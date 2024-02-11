@@ -2,7 +2,8 @@
 export const prerender = false;
 import Pagelayout from "@/layouts/Postlayout.astro";
 import getPage from "@/utils/backend_api/getPage";
-import { siteurl, servicename } from "@/utils/vars";
+import { servicename } from "@/utils/vars";
+import { siteurl } from "@/utils/envs";
 
 const { slug } = Astro.params;
 if (typeof slug === "undefined") {

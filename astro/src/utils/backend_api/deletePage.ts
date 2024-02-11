@@ -27,7 +27,12 @@ export const api = async ({
                     accessJwt: accessJwt
                 })
         }).then((response) => response.json()
-        ).catch(() => { })
+        ).catch((e: Error) => {
+            return {
+                error: e.name,
+                message: e.message
+            }
+        })
 }
 
 export default api

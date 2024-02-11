@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useState } from "react"
 import deletePage from "@/utils/backend_api/deletePage"
-import ProcButton from "../common/procButton"
-import { type Session_info, type msgInfo } from "../common/contexts"
+import ProcButton from "../common/ProcButton"
+import { type Session_info } from "../common/contexts"
+import { type msgInfo } from "../common/types"
 
 const Component = ({
     id,

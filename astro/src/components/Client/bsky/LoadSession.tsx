@@ -3,9 +3,11 @@ import {
     Dispatch, SetStateAction,
     useContext, useEffect
 } from "react"
-import { Session_context, type msgInfo } from "../common/contexts"
-import { read_Jwt, reset_Jwt } from "@/utils/localstorage"
+import { Session_context, Profile_context } from "../common/contexts"
+import { type msgInfo } from "../common/types"
+import { readJwt, resetJwt } from "@/utils/localstorage"
 import refreshSession from "@/utils/atproto_api/refreshSession";
+import loadProfile from "./loadProfile";
 
 export const Component = ({
     setIsLoad,
@@ -15,14 +17,13 @@ export const Component = ({
     setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
 }) => {
     const { setSession } = useContext(Session_context)
-    setIsLoad(false)
-
+    const { setProfile } = useContext(Profile_context)
     const handleLoad = async () => {
-        const r_jwts = read_Jwt()
+        const r_jwts = readJwt()
         if (r_jwts !== null) {
             try {
                 // localstorageにsessionが存在していた場合はtokenをrefresh
-                const res = await refreshSession({ refreshJwt: r_jwts.refreshJwt })
+                const res = await refreshSession({ refreshJwt: r_jwts })
                 if (typeof res.accessJwt !== "undefined") {
                     setSession({
                         did: res.did,
@@ -35,13 +36,17 @@ export const Component = ({
                             msg: "ログインしました!", isError: false
                         })
                     }
+                    await loadProfile({
+                        session: res,
+                        setProfile: setProfile
+                    })
                 } else {
                     if (setMsgInfo !== undefined) {
                         setMsgInfo({
                             msg: "再ログインしてください。", isError: true
                         })
                     }
-                    reset_Jwt()
+                    resetJwt()
                 }
             } catch (error: unknown) {
                 let msg: string = "Unexpected Unknown Error"
@@ -54,7 +59,7 @@ export const Component = ({
                         isError: true
                     })
                 }
-                reset_Jwt()
+                resetJwt()
             }
         }
         setIsLoad(true)

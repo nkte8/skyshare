@@ -5,12 +5,12 @@ interface Props {
     robots: string[];
 }
 const { cardPath, pageTitle, robots } = Astro.props;
-import { servicename } from "@/utils/vars";
+import { servicename, servicedesc } from "@/utils/vars";
 
 const url = Astro.url;
 const cardUrl = new URL(cardPath, Astro.url);
 
-const description = `${servicename} is a web application helps bluesky users post to both bluesky or x.com.`;
+const description = servicedesc
 ---
 
 <title>{pageTitle}</title>

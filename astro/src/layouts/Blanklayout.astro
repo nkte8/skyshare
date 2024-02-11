@@ -1,5 +1,5 @@
 ---
-import { baseurl, posturl } from "@/utils/vars";
+import { baseurl, posturl } from "@/utils/envs";
 import Metadatas from "@/components/Metadatas.astro";
 const favicon = baseurl + "favicon.svg";
 interface Props {
@@ -27,7 +27,13 @@ const { cardPath, pageTitle, robots, hidePostButton } = Astro.props;
         {
             !hidePostButton && (
                 <a href={posturl} class="sm:hidden block">
-                    <div class="fixed bottom-8 right-4 rounded-full bg-white p-4 border-4 border-sky-400 hover:scale-125 transition-all">
+                    <div
+                        class="fixed bottom-8 
+                                right-4 rounded-full 
+                                bg-white p-4 border-4 
+                                border-sky-400 hover:scale-125 
+                                transition-all shadow-md"
+                    >
                         <svg
                             class="w-8 h-8"
                             xmlns="http://www.w3.org/2000/svg"
