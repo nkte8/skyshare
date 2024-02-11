@@ -78,6 +78,7 @@ export const compositeImages = async (
     }
     result = ogp.composite(compositeOptions)
     result = result.jpeg({
+        quality: 80,
         progressive: true,
         mozjpeg: true
     });

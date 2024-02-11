@@ -1,6 +1,6 @@
 import React, { useRef, Dispatch, SetStateAction } from "react"
 import { compressImage } from "@/utils/compressimage"
-import ProcButton from "../common/procButton"
+import ProcButton from "../common/ProcButton"
 import pic from "@/images/image.svg"
 const mimetypes: Array<string> = [
     "image/png", "image/jpeg"

@@ -3,18 +3,6 @@ interface Props {
     size: "s" | "l";
 }
 const { size } = Astro.props;
-import { load_circle } from "@/utils/tailwind_variants";
+import LoadingCircle from "@/components/Client/common/loadingcircle"
 ---
-
-<svg
-    class={load_circle({ size: size })}
-    viewBox="-30 -30 160 160"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M94,50 a44,44,0,1,1,-44,-44"
-        stroke="#7dd3fc"
-        fill="none"
-        stroke-width="14"
-        stroke-linecap="round"></path>
-</svg>
+<LoadingCircle size={size} />

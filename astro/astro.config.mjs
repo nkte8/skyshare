@@ -9,7 +9,6 @@ import partytown from '@astrojs/partytown';
 export default defineConfig({
   base: "/",
   site: "https://skyshare.uk/",
-  trailingSlash: "always",
   server: {
     port: 4321,
     host: true

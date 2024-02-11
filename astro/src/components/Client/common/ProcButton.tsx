@@ -22,8 +22,8 @@ const Component = ({
     return (
         <button onClick={handler}
             className={button_base({
-                enabled: !(isProcessing || disabled),
-                allowinput: !disabled,
+                disabled: (isProcessing || disabled),
+                regectinput: disabled,
                 class: "my-1 mx-px " + className,
                 color: color,
                 hidden: hidden,

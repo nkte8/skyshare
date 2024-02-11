@@ -11,8 +11,12 @@ export const link = tv({
 });
 
 export const inputtext_base = tv({
-	base: "border-2 rounded-md px-1 my-1 focus:outline-none text-xl md:text-lg",
+	base: "my-1 focus:outline-none text-lg md:text-base",
 	variants: {
+		kind: {
+			outbound: "border-2 rounded-md bg-white",
+			inbound: "m-0 px-3 py-1"
+		},
 		disabled: {
 			true: "bg-gray-200 text-gray-600",
 			false: ""
@@ -21,19 +25,19 @@ export const inputtext_base = tv({
 });
 
 export const button_base = tv({
-	base: "border-2 rounded-full px-6 py-1 mx-px font-medium sm:font-normal hover:bg-gray-200 text-black",
+	base: "border-2 rounded-full px-6 py-1 mx-px font-medium sm:font-normal bg-white hover:bg-gray-200 text-black",
 	variants: {
 		color: {
 			blue: "bg-blue-500 hover:bg-blue-700 text-white",
 			sky: "bg-sky-400 hover:bg-sky-600 text-white"
 		},
-		enabled: {
-			true: "cursor-pointer",
-			false: "hover:bg-gray-200 bg-gray-200 cursor-progress text-gray-700 hover:text-gray-700"
+		disabled: {
+			false: "cursor-pointer sm:shadow-md shadow transition-all",
+			true: "hover:bg-gray-200 bg-gray-200 cursor-progress text-gray-700 hover:text-gray-700"
 		},
-		allowinput: {
-			true: "",
-			false: "cursor-not-allowed"
+		regectinput: {
+			true: "cursor-not-allowed",
+			false: ""
 		},
 		hidden: {
 			true: "hidden",

@@ -1,17 +1,18 @@
 ---
-import { baseurl, siteurl, servicename } from "@/utils/vars";
+import { servicename } from "@/utils/vars";
+import { baseurl, siteurl } from "@/utils/envs";
 
 const ref_privacy = baseurl + "privacypolicy/";
 ---
 
 <div id="footer" class="text-center w-full mb-0">
-    <div class="bg-white bg-opacity-90 w-full py-2 m-auto">
-        <div>
+    <div class="bg-white bg-opacity-90 w-full py-2 m-auto mb-0">
+        <div class="mb-0">
             <a href={ref_privacy} class="mx-2"
                 >プライバシーポリシー</a
             >
         </div>
-        <div>
+        <div class="mb-0">
             2024 © <a href={siteurl}>{servicename}</a>
         </div>
     </div>

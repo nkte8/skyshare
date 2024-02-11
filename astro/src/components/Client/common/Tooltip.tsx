@@ -1,6 +1,6 @@
 import { memo, useRef, useEffect, ReactNode } from "react";
 
-export const Tooltip = ({
+export const Component = ({
     tooltip,
     children,
 }: {
@@ -40,5 +40,5 @@ export const Tooltip = ({
     );
 };
 
-const memoTooltip = memo(Tooltip)
+const memoTooltip = memo(Component)
 export default memoTooltip

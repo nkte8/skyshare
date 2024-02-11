@@ -1,14 +1,8 @@
 ---
 import Pagelayout from "@/layouts/Indexlayout.astro";
 import { box } from "@/utils/tailwind_variants";
-import {
-	githuburl,
-	abouturl,
-	posturl,
-	servicename,
-	qaurl,
-	changeurl,
-} from "@/utils/vars";
+import { servicename, githuburl } from "@/utils/vars";
+import { abouturl, posturl, qaurl, changeurl } from "@/utils/envs";
 const title = `${servicename} - Share Bluesky to X`;
 import version from "@/utils/version";
 
@@ -97,8 +91,7 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 		<div class="text-center mx-auto md:max-w-3xl my-5">
 			<div class={box()}>
 				<a href={abouturl} class="mx-2">About</a>
-				<a href={changeurl} class="mx-2">Changelog</a
-				>
+				<a href={changeurl} class="mx-2">Changelog</a>
 				<a href={qaurl} class="mx-2">Q&A</a>
 				<a href={githuburl} class="mx-2">Github</a>
 			</div>

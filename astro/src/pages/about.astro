@@ -1,15 +1,13 @@
 ---
 import {
-	baseurl,
-	siteurl,
 	pagesPrefix,
 	servicename,
 	githuburl,
 	zennurl,
-	qaurl,
 	authorlink,
 	authorname,
 } from "@/utils/vars";
+import { baseurl, siteurl, qaurl } from "@/utils/envs";
 import version from "@/utils/version";
 import Pagelayout from "@/layouts/Pagelayout.astro";
 const example_url = new URL(

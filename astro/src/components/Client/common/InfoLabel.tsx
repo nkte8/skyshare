@@ -1,6 +1,6 @@
 import {
     type msgInfo,
-} from "./contexts"
+} from "./types"
 
 const Component = ({
     msgInfo

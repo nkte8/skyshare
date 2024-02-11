@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useState, useEffect } from "react"
 import { type modes } from "./types"
-import Button from "./procButton"
+import ProcButton from "./ProcButton"
 
-const Component = ({ mode, setMode, disabled }: {
-    disabled: boolean
+const Component = ({ mode, setMode, processing }: {
+    processing: boolean
     mode: modes
     setMode: Dispatch<SetStateAction<modes>>
 }
@@ -12,10 +12,13 @@ const Component = ({ mode, setMode, disabled }: {
     const swichLabel = () => {
         switch (mode) {
             case "bsky":
-                setLabel("OGPページ一覧へ")
+                setLabel("OGPページ一覧")
                 break
             case "pagedb":
-                setLabel("SNS投稿画面へ")
+                setLabel("投稿画面へ戻る")
+                break
+            case "xcom":
+                setLabel("投稿画面へ戻る")
                 break
         }
     }
@@ -27,6 +30,9 @@ const Component = ({ mode, setMode, disabled }: {
             case "pagedb":
                 setMode("bsky")
                 break
+            case "xcom":
+                setMode("bsky")
+                break
         }
     }
 
@@ -35,12 +41,12 @@ const Component = ({ mode, setMode, disabled }: {
     }, [mode])
 
     return (
-        <Button
+        <ProcButton
             handler={handleClick}
             isProcessing={false}
             context={label}
             showAnimation={false}
-            disabled={disabled} />
+            disabled={processing} />
     )
 }
 export default Component
