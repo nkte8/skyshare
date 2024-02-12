@@ -59,6 +59,16 @@ const Component = ({
             <Profile_context.Provider value={{ profile, setProfile }}>
                 {/* Appページ向けコンポーネント */}
                 {
+                    !isLoaded && (
+                        <>
+                            <LoadSession
+                                setMsgInfo={setMsgInfo}
+                                setIsLoad={setIsLoad} />
+
+                        </>
+                    )
+                }
+                {
                     appElem !== null && (isLoaded ? (
                         ReactDOM.createPortal(<>
                             <AppForm processing={processing}
@@ -96,16 +106,6 @@ const Component = ({
                 )
             }
             {/* 本体のコンポーネント */}
-            {
-                !isLoaded && (
-                    <>
-                        <LoadSession
-                            setMsgInfo={setMsgInfo}
-                            setIsLoad={setIsLoad} />
-
-                    </>
-                )
-            }
             {
                 !portalonly && isLoaded && (
                     session?.accessJwt !== null ? (

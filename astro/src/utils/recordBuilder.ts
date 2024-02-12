@@ -171,6 +171,5 @@ export const attachImageToRecord = async ({
         ...base,
         embed
     }
-    console.log(recordResult)
     return recordResult
 }

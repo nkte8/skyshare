@@ -103,7 +103,6 @@ const Component = ({
                     imageFiles: imageFiles,
                     handleProcessing: setMsgInfo
                 })
-                console.log(record)
             }
             if (typeof record.facets !== "undefined" && record.facets.length > 0) {
                 let linkcardUrl: string | null = null

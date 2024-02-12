@@ -42,10 +42,15 @@ export const Component = ({
                 setMsgInfo({
                     msg: "セッションを再開しました!", isError: false
                 })
-                await loadProfile({
+                const resLoadProfile = await loadProfile({
                     session: refreshResult,
                     setProfile: setProfile
                 })
+                if (typeof resLoadProfile?.error !== "undefined") {
+                    let e: Error = new Error(resLoadProfile.message)
+                    e.name = resLoadProfile.error
+                    throw e
+                }
 
             } catch (error: unknown) {
                 let msg: string = "Unexpected Unknown Error"
