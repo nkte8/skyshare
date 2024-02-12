@@ -68,7 +68,7 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 
 			<a
 				target="_blank"
-				href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。&url=${example_url}`}
+				href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。${example_url}`}
 				>投稿リンクの例（投稿用の本文付きで𝕏が開きます）</a
 			>
 		</div>
@@ -93,8 +93,9 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 				これを押していただけば削除可能です。
 			</div>
 			<div>
-				生成ページがユーザの投稿であるかを判定するため、Blueskyの元のポストを参照しています。元ポストが削除されている場合はページ削除は
-				出来ませんので、申し訳ありませんが自動削除をお待ちください。
+				削除の際、生成ページが操作ユーザご自身の投稿であるかを判定するため、Blueskyの元のポストを参照しています。<b
+					>元ポストが削除されている場合はページ削除は出来ません</b
+				>ので、申し訳ありませんが自動削除をお待ちください。
 			</div>
 		</div>
 	</div>
@@ -106,8 +107,6 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"];
 				Blueskyを操作するAPIであるAT
 				Protocolは開発段階であるため前例が少なく、
 				まだまだハードルが高い内容となっています。
-			</div>
-			<div>
 				開発者がもっと低い敷居で参加できたらという想いから、
 				当サイトはOSSの体をとっています。
 			</div>

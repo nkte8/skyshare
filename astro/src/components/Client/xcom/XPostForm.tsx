@@ -17,7 +17,7 @@ export const Component = ({
     const [ogpUrl, setOgpUrl] = useState<string | null>(null)
     const [ogpMeta, setOgpMeta] = useState<ogpMeta | null>(null)
     const previewOgp = async () => {
-        if (xcontent.url !== "") {
+        if (xcontent.url !== null) {
             try {
                 let html = await fetch(
                     xcontent.url
@@ -70,7 +70,7 @@ export const Component = ({
                     </div>
                 </div>
                 <div className="block relative h-fit w-fit">
-                    {xcontent.url !== "" &&
+                    {xcontent.url !== null &&
                         <>
                             {
                                 ogpUrl !== null && (

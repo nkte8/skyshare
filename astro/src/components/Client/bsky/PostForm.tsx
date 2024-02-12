@@ -56,6 +56,8 @@ const Component = ({
     const { session } = useContext(Session_context)
     // Postの入力上限
     const countMax = 300
+    // PostのWarining上限
+    const countWarn = 140
 
     const initializePost = () => {
         setPostProcessing(true)
@@ -75,7 +77,7 @@ const Component = ({
                 createdAt: new Date()
             })
             let xContent: xContent = {
-                url: "",
+                url: null,
                 content: post
             }
             // ボタンはログインしている前提で表示される
@@ -114,7 +116,7 @@ const Component = ({
                     }
                 })
                 if (linkcardUrl !== null) {
-                    xContent.url = linkcardUrl
+                    xContent.url = new URL(linkcardUrl)
                 }
                 if (linkcardUrl !== null) {
                     // OGPを生成する必要がない場合(!noGenerate but noImageAttached)
@@ -124,7 +126,7 @@ const Component = ({
                         record = await attachExternalToRecord({
                             base: record,
                             session: sessionNecessary,
-                            externalUrl: linkcardUrl,
+                            externalUrl: new URL(linkcardUrl),
                             handleProcessing: setMsgInfo
                         })
                     }
@@ -164,9 +166,9 @@ const Component = ({
                         isError: false
                     })
                     const [id, rkey] = get_res.uri.split("/")
-                    const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl).toString()
+                    const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
                     xContent.url = ogpUrl
-                    xContent.content += `${xContent.content !== "" ? (" ") : ("")}${ogpUrl}`
+                    xContent.content += `${xContent.content !== "" ? (" ") : ("")}${ogpUrl.toString()}`
                 }
             }
             if (autoPop) {
@@ -238,7 +240,16 @@ const Component = ({
                     />
 
                     <div className="flex-1"></div>
-                    <div className={`align-middle my-auto mr-1 px-2 rounded-lg ${count > countMax && "bg-red-300"}`}>{count}/300</div>
+                    <div className={
+                        `align-middle my-auto mr-1 px-2 rounded-lg ${(
+                            count > countMax
+                        ) && "bg-red-300"
+                        } ${(
+                            count > countWarn && count <= countMax
+                        ) && "bg-amber-300"
+                        }`}>
+                        {count}/{countMax}
+                    </div>
 
                 </div>
 

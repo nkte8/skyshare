@@ -12,6 +12,17 @@ describe('detectFacets Test', () => {
             `https://skyshare.uk/materials/ogp_main.png?updated=${version}`
         )
     }, 100000) // long timeouf)
+    // CORS ERROR
+    // test('True Website youtube test', async () => {
+    //     let html = await fetch("https://www.youtube.com/watch?v=xitQ_oNTVvE").then((text) => text.text())
+    //     const result = getOgp({
+    //         content: html
+    //     })
+    //     expect(result).toEqual(
+    //         `https://i.ytimg.com/vi/xitQ_oNTVvE/hqdefault.jpg`
+    //     )
+    // }, 100000) // long timeouf)
+
     // faketest og:image only
     test('Fake og:image only page test', async () => {
         const result = getOgp({
