@@ -1,8 +1,12 @@
+export type ogpMeta = {
+    title: string,
+    description: string
+}
 const getMeta = ({
     content
 }: {
     content: string
-}): Array<string> => {
+}): ogpMeta => {
     let metas: Array<string> = []
 
     const titleFilter: Array<RegExp> = [
@@ -24,6 +28,9 @@ const getMeta = ({
         }
         metas.push(result)
     }
-    return metas
+    return {
+        title: metas[0],
+        description: metas[1],
+    }
 }
 export default getMeta

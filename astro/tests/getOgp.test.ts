@@ -84,15 +84,5 @@ describe('detectFacets Test', () => {
             `https://firebasestorage.googleapis.com/v0/b/ogp-generator-5f516.appspot.com/o/ogpdev%2Fnlla.bsky.social%2F3kl5ka3i2bt27?alt=media&token=5fe67771-922e-44ec-a3d4-cd94d6fe5885`
         )
     })
-    
-    test('Local True page test', async () => {
-        let html = await fetch("http://192.168.3.200:4321/posts/nlla.bsky.social@3kl5ka3i2bt27/").then((text) => text.text())
-        const result = getOgp({
-            content: html
-        })
-        expect(result).toEqual(
-            `https://firebasestorage.googleapis.com/v0/b/ogp-generator-5f516.appspot.com/o/ogpdev%2Fnlla.bsky.social%2F3kl5ka3i2bt27?alt=media&token=5fe67771-922e-44ec-a3d4-cd94d6fe5885`
-        )
-    }, 100000) // long timeouf)
 
 })

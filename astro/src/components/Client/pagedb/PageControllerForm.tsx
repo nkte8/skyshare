@@ -1,6 +1,5 @@
-import { useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { posturl } from "@/utils/envs"
-import InfoLabel from "../common/InfoLabel"
 import { type Session_info } from "../common/contexts"
 import { type msgInfo } from "../common/types"
 import PageDeleteButton from "./PageDeleteButton"
@@ -9,11 +8,12 @@ import ProcButton from "../common/ProcButton"
 const Component = ({
     id,
     session,
+    setMsgInfo
 }: {
     id: string,
     session: Session_info,
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
 }) => {
-    const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
     const handleClick = () => {
         location.href = posturl
     }
@@ -23,7 +23,6 @@ const Component = ({
                 session?.accessJwt !== null ? (
                     <>
                         <PageDeleteButton id={id} session={session} setMsgInfo={setMsgInfo} />
-                        <InfoLabel msgInfo={msgInfo} />
                     </>
                 ) : (
                     <ProcButton handler={handleClick}

@@ -1,4 +1,5 @@
 import resolveHandle from "./resolveHandle"
+import facets from "./facets"
 // atproto.detectFacets
 // 本家はinputは RichText型であるが、text型でなんとかする
 
@@ -51,9 +52,9 @@ const createLinkFacet = ({
     encoded,
 }: {
     encoded: string,
-}): Array<facet.link> => {
+}): Array<facets.link> => {
     const Regex = /(https?:\/\/[^ ]*) ?/i
-    let facet: Array<facet.link> = []
+    let facet: Array<facets.link> = []
     let regexResult: Array<regexResult> = []
     regexSeacrh({
         array: regexResult,
@@ -78,9 +79,9 @@ const createMentionFacet = async ({
     encoded,
 }: {
     encoded: string,
-}): Promise<Array<facet.mention>> => {
+}): Promise<Array<facets.mention>> => {
     const Regex = /(@[^ ]*) ?/i
-    let result: Array<facet.mention> = []
+    let result: Array<facets.mention> = []
     let regexResult: Array<regexResult> = []
     regexSeacrh({
         array: regexResult,
@@ -110,42 +111,14 @@ const detectFacets = async ({
     text
 }: {
     text: string
-}): Promise<Array<facet.link | facet.mention>> => {
+}): Promise<Array<facets.link | facets.mention>> => {
     let facets: Array<
-        facet.link | facet.mention
+        facets.link | facets.mention
     > = []
     const encoded = encodeURI(text).replace(/%(20|0A)/g, " ")
     facets = facets.concat(createLinkFacet({ encoded }))
     facets = facets.concat(await createMentionFacet({ encoded }))
     return facets
-}
-
-// 機能してそうなfacetの定義型
-namespace facet {
-    export type link = {
-        index: {
-            byteStart: number,
-            byteEnd: number,
-        }
-        features: [
-            {
-                $type: "app.bsky.richtext.facet#link",
-                uri: string
-            }
-        ]
-    }
-    export type mention = {
-        index: {
-            byteStart: number,
-            byteEnd: number,
-        }
-        features: [
-            {
-                $type: "app.bsky.richtext.facet#mention",
-                did: string
-            }
-        ]
-    }
 }
 
 export default detectFacets

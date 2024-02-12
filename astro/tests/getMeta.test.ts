@@ -10,10 +10,10 @@ describe('detectFacets Test', () => {
             content: html
         })
         expect(result).toEqual(
-            [
-                `${servicename} - Share Bluesky to X`,
-                servicedesc
-            ]
+            {
+                title: `${servicename} - Share Bluesky to X`,
+                description: servicedesc
+            }
         )
     }, 100000) // long timeouf)
     // faketest os:title or og:description only
@@ -26,10 +26,10 @@ describe('detectFacets Test', () => {
             </head></html>'
         })
         expect(result).toEqual(
-            [
-                "hoge",
-                "fuga"
-            ]
+            {
+                title: "hoge",
+                description: "fuga"
+            }
         )
     })
     // faketest og:title only
@@ -41,10 +41,10 @@ describe('detectFacets Test', () => {
             </head></html>'
         })
         expect(result).toEqual(
-            [
-                "hoge",
-                ""
-            ]
+            {
+                title: "hoge",
+                description: ""
+            }
         )
     })
     // faketest og:description only
@@ -56,10 +56,10 @@ describe('detectFacets Test', () => {
             </head></html>'
         })
         expect(result).toEqual(
-            [
-                "",
-                "fuga"
-            ]
+            {
+                title: "",
+                description: "fuga"
+            }
         )
     })
     // faketest twitter:title and og:description
@@ -72,10 +72,10 @@ describe('detectFacets Test', () => {
             </head></html>'
         })
         expect(result).toEqual(
-            [
-                "hoge",
-                "fuga"
-            ]
+            {
+                title: "hoge",
+                description: "fuga"
+            }
         )
     })
     // faketest twitter:description and og:title
@@ -88,10 +88,10 @@ describe('detectFacets Test', () => {
             </head></html>'
         })
         expect(result).toEqual(
-            [
-                "hoge",
-                "fuga"
-            ]
+            {
+                title: "hoge",
+                description: "fuga"
+            }
         )
     })
 

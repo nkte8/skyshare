@@ -4,7 +4,6 @@ import { type msgInfo, type modes, type xContent } from "./common/types"
 import LoginForm from "./bsky/LoginForm"
 import PostForm from "./bsky/PostForm"
 import PageViewForm from "./pagedb/PageViewForm"
-import InfoLabel from "./common/InfoLabel"
 import ModeSelectButton from "./common/ModeSelectButton"
 import LogoutButton from "./bsky/LogoutButton"
 import XForm from "./xcom/XPostForm"
@@ -12,14 +11,15 @@ import XForm from "./xcom/XPostForm"
 const Component = ({
     session,
     processing,
-    setProcessing
+    setProcessing,
+    setMsgInfo,
 }: {
     session: Session_info,
     processing: boolean
     setProcessing: Dispatch<SetStateAction<boolean>>
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }
 ) => {
-    const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
     const [xcontent, setXcontent] = useState<xContent>(null!)
     const Forms = ({ mode }: {
         mode: modes
@@ -64,11 +64,6 @@ const Component = ({
                 <LoginForm setMsgInfo={setMsgInfo} />
             )
         }
-
-        <InfoLabel msgInfo={msgInfo} />
-        <div className={session.accessJwt === null ?
-            ("mb-16") : ("")
-        }></div>
     </>)
 }
 export default Component

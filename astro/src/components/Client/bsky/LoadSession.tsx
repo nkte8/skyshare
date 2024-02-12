@@ -14,7 +14,7 @@ export const Component = ({
     setMsgInfo
 }: {
     setIsLoad: Dispatch<SetStateAction<boolean>>,
-    setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
 }) => {
     const { setSession } = useContext(Session_context)
     const { setProfile } = useContext(Profile_context)
@@ -23,34 +23,33 @@ export const Component = ({
         if (r_jwts !== null) {
             try {
                 // localstorageにsessionが存在していた場合はtokenをrefresh
-                const res = await refreshSession({ refreshJwt: r_jwts })
-                if (typeof res.accessJwt !== "undefined") {
-                    setSession({
-                        did: res.did,
-                        accessJwt: res.accessJwt,
-                        refreshJwt: res.refreshJwt,
-                        handle: res.handle,
-                    })
-                    if (setMsgInfo !== undefined) {
-                        setMsgInfo({
-                            msg: "ログインしました!", isError: false
-                        })
-                    }
-                    await loadProfile({
-                        session: res,
-                        setProfile: setProfile
-                    })
-                } else {
-                    if (setMsgInfo !== undefined) {
-                        setMsgInfo({
-                            msg: "再ログインしてください。", isError: true
-                        })
-                    }
+                setMsgInfo({
+                    msg: "セッションの再開中...", isError: false
+                })
+                const refreshResult = await refreshSession({ refreshJwt: r_jwts })
+                if (typeof refreshResult?.error !== "undefined") {
                     resetJwt()
+                    let e: Error = new Error(refreshResult.message)
+                    e.name = refreshResult.error
+                    throw e
                 }
+                setSession({
+                    did: refreshResult.did,
+                    accessJwt: refreshResult.accessJwt,
+                    refreshJwt: refreshResult.refreshJwt,
+                    handle: refreshResult.handle,
+                })
+                setMsgInfo({
+                    msg: "セッションを再開しました!", isError: false
+                })
+                await loadProfile({
+                    session: refreshResult,
+                    setProfile: setProfile
+                })
+
             } catch (error: unknown) {
                 let msg: string = "Unexpected Unknown Error"
-                if(error instanceof Error) {
+                if (error instanceof Error) {
                     msg = error.name + ": " + error.message
                 }
                 if (setMsgInfo !== undefined) {

@@ -36,7 +36,7 @@ export const Component = ({
                 // セッションをlocalstorageへ保存
                 writeJwt(res.refreshJwt)
                 setMsgInfo({
-                    msg: "ログインしました!",
+                    msg: "セッションを開始しました!",
                     isError: false,
                 })
                 // プロフィールを読み込み

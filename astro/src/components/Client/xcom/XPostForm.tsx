@@ -53,15 +53,11 @@ export const Component = ({
                 </div>
                 <div className="block relative h-fit w-fit">
                     {xcontent.url !== "" && (
-                        ogpUrl !== null ? (
+                        ogpUrl !== null && (
                             <>
                                 <img src={ogpUrl} className="w-full rounded-3xl" />
                                 <div className="absolute bottom-2 left-4 bg-opacity-70 rounded-md px-2 text-white bg-black">{profile?.handle} Post - {servicename}</div>
                             </>
-                        ) : (
-                            <div className="w-fit mx-auto">
-                                <LoadingCircle size="l" />
-                            </div>
                         )
                     )}
                 </div>

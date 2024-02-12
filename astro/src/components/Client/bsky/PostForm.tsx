@@ -2,19 +2,19 @@ import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context } from "../common/contexts"
 import { type msgInfo, type modes, type xContent } from "../common/types"
 
+import {
+    buildRecordBase,
+    attachImageToRecord,
+    attachExternalToRecord,
+    type SessionNecessary
+} from "@/utils/recordBuilder";
+
 import createRecord from "@/utils/atproto_api/createRecord";
-import detectFacets from "@/utils/atproto_api/detectFacets";
-import uploadBlob from "@/utils/atproto_api/uploadBlob";
 import createPage from "@/utils/backend_api/createPage";
-import model_uploadBlob from "@/utils/atproto_api/models/uploadBlob.json";
-import model_error from "@/utils/atproto_api/models/error.json";
 
 import { link } from "../common/tailwind_variants";
 
 import { pagesPrefix } from "@/utils/vars";
-import getOgp from "@/utils/getOgp"
-import getMeta from "@/utils/getMeta"
-
 import Tweetbox from "../common/Tweetbox"
 import ImgForm from "./ImgForm"
 import ImgViewBox from "./ImgViewBox"
@@ -69,125 +69,72 @@ const Component = ({
             msg: "レコードに変換中...",
             isError: false
         })
-        let record: object = {
-            text: post,
-            createdAt: new Date(),
-        }
-        let facets = await detectFacets({ text: post })
-        let xContent: xContent = {
-            url: "",
-            content: post
-        }
-        if (facets.length > 0) {
-            record = {
-                ...record,
-                facets: facets
-            }
-        }
         try {
+            let record = await buildRecordBase({
+                text: post,
+                createdAt: new Date()
+            })
+            let xContent: xContent = {
+                url: "",
+                content: post
+            }
+            // ボタンはログインしている前提で表示される
             if (session.accessJwt === null || session.did === null) {
                 let e: Error = new Error("フロントエンドが想定していない操作が行われました。")
                 e.name = "Unexpected Error@postform.tsx"
                 throw e
             }
+            const sessionNecessary: SessionNecessary = {
+                did: session.did,
+                accessJwt: session.accessJwt,
+            }
+            // 文字数が制限数を超えていた場合は終了
             if (count > countMax) {
                 let e: Error = new Error("文字数制限を超えています。")
                 e.name = "postform.tsx"
                 throw e
             }
-            // 画像のアップロードを行う場合の処理
-            if (!noGenerate && imageFiles !== null) {
-                let res_que: Array<Promise<typeof model_uploadBlob & typeof model_error>> = []
-                for (let i = 0; i < imageFiles.length; i++) {
-                    res_que.push(uploadBlob({
-                        accessJwt: session!.accessJwt,
-                        mimeType: imageFiles[i].type,
-                        blob: new Uint8Array(await imageFiles[i].arrayBuffer())
-                    }))
-                }
-                setMsgInfo({
-                    msg: "画像のアップロード中...",
-                    isError: false
+            const noImagesAttached = (imageFiles === null)
+            // 画像のアップロードを行う場合の処理(Bluesky側)
+            if (!noImagesAttached) {
+                record = await attachImageToRecord({
+                    base: record,
+                    session: sessionNecessary,
+                    imageFiles: imageFiles,
+                    handleProcessing: setMsgInfo
                 })
-                const blob_res = await Promise.all(res_que)
-                // 画像アップロードに失敗したファイルが一つでも存在した場合停止する
-                for (let value of blob_res) {
-                    if (typeof value?.error !== "undefined") {
-                        let e: Error = new Error(value.message)
-                        e.name = value.error
-                        throw e
-                    }
-                }
-                let images: Array<{
-                    image: { cid: string, mimeType: string },
-                    alt: string
-                }> = []
-                blob_res.forEach((value) => {
-                    images.push({
-                        image: {
-                            cid: value.blob.ref.$link,
-                            mimeType: value.blob.mimeType
-                        },
-                        alt: ""
-                    })
-                })
-                record = {
-                    ...record,
-                    embed: {
-                        $type: "app.bsky.embed.images",
-                        images: images
-                    }
-                }
+                console.log(record)
             }
-            // 画像のアップロードを行わない（代わりにURL埋め込みを行う）
-            if (noGenerate && facets.length > 0) {
+            if (typeof record.facets !== "undefined" && record.facets.length > 0) {
                 let linkcardUrl: string | null = null
-                facets.forEach((value) => {
+                // メンションではなくリンクを検出する
+                record.facets.forEach((value) => {
                     const facetObj = value.features[0]
                     if (facetObj.$type === "app.bsky.richtext.facet#link") {
                         linkcardUrl = facetObj.uri
                     }
                 })
-                // 最後に添付されたlinkをembetとして扱う
                 if (linkcardUrl !== null) {
-                    const html = await fetch(linkcardUrl).then((text) => text.text())
-                    const ogpUrl = getOgp({ content: html })
-                    const [title, description] = getMeta({ content: html })
-
-                    const blob = await fetch(ogpUrl).then(res => res.blob())
-                    // リンク先のOGPからblobを作成し、mimeTypeの設定&バイナリのアップロードを実施
-                    const res_ogp = await uploadBlob({
-                        accessJwt: session.accessJwt,
-                        mimeType: blob.type,
-                        blob: new Uint8Array(await blob.arrayBuffer())
-                    })
-                    // 例外処理
-                    if (typeof res_ogp?.error !== "undefined") {
-                        let e: Error = new Error(res_ogp.message)
-                        e.name = res_ogp.error
-                        throw e
-                    }
-                    const embed = {
-                        "$type": "app.bsky.embed.external",
-                        external: {
-                            uri: linkcardUrl,
-                            title: title,
-                            description: description,
-                            thumb: res_ogp.blob,
-                        }
-                    }
-                    record = {
-                        ...record,
-                        embed: embed
-                    }
-                    // X向けにもリンクを添付
                     xContent.url = linkcardUrl
-                    // 本文からリンクの文字列を削除
+                    // 本文からはリンク対象の文字列を削除
                     xContent.content = post.replace(linkcardUrl, "")
+                }
+                if (linkcardUrl !== null) {
+                    // OGPを生成する必要がない場合(!noGenerate but noImageAttached)
+                    // またはOGPの生成を抑制している場合(noGenerate)で
+                    // 外部リンクが添付されている場合はlinkcardを付与する
+                    if((!noGenerate && noImagesAttached) || noGenerate) {
+                        record = await attachExternalToRecord({
+                            base: record,
+                            session: sessionNecessary,
+                            externalUrl: linkcardUrl,
+                            handleProcessing: setMsgInfo
+                        })
+                    }
                 }
             }
             setMsgInfo({
-                msg: "Blueskyへ投稿中...",
+                msg: "Blueskyへポスト中...",
                 isError: false
             })
             const rec_res = await createRecord({
@@ -201,10 +148,11 @@ const Component = ({
                 throw e
             }
             setMsgInfo({
-                msg: "Blueskyへ投稿しました!",
+                msg: "Blueskyへポストしました!",
                 isError: false
             })
-            if (!noGenerate && imageFiles !== null) {
+            // noGenerateの場合はTwitter用ページは生成しない
+            if (!noGenerate && !noImagesAttached) {
                 setMsgInfo({
                     msg: "Twitter用ページ生成中...",
                     isError: false
@@ -304,7 +252,7 @@ const Component = ({
                             setProp={setAutoPop} />
                         <NoGenerateToggle
                             labeltext={<>
-                                OGPを<b>生成しない</b>(埋め込みURL有効化)
+                                OGPを<b>生成しない</b>
                             </>}
                             prop={noGenerate}
                             setProp={setNoGenerate} />

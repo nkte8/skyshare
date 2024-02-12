@@ -17,7 +17,7 @@ const Component = ({
     imageFiles: Array<File> | null,
 }) => {
     const comp_1 = (files: Array<File>) => (
-        <div className="aspect-video inline-flex mb-1 w-full">
+        <div className="aspect-video flex mb-0 w-full">
             <img
                 src={URL.createObjectURL(files[0])}
                 alt={files[0].name}
@@ -26,7 +26,7 @@ const Component = ({
         </div>
     )
     const comp_2 = (files: Array<File>) => (
-        <div className="aspect-video inline-flex mb-1 w-full">
+        <div className="aspect-video flex mb-0 w-full">
             <img
                 src={URL.createObjectURL(files[0])}
                 alt={files[0].name}
@@ -40,13 +40,13 @@ const Component = ({
         </div>
     )
     const comp_3 = (files: Array<File>) => (
-        <div className="aspect-video inline-flex mb-1 w-full">
+        <div className="aspect-video flex mb-0 w-full">
             <img
                 src={URL.createObjectURL(files[0])}
                 alt={files[0].name}
                 className={view({ class: "rounded-l-3xl", size: "w_half" })}
             />
-            <div className="w-1/2 h-full">
+            <div className="w-1/2 h-full mb-0">
                 <img
                     src={URL.createObjectURL(files[1])}
                     alt={files[1].name}
@@ -62,29 +62,29 @@ const Component = ({
     )
 
     const comp_4 = (files: Array<File>) => (
-        <div className="aspect-video inline-flex mb-1 w-full">
-            <div className="w-1/2 h-full">
+        <div className="aspect-video flex mb-0 w-full">
+            <div className="w-1/2 h-full mb-0">
                 <img
                     src={URL.createObjectURL(files[0])}
                     alt={files[0].name}
-                    className={view({ class: "rounded-tl-lg", size: "h_half" })}
+                    className={view({ class: "rounded-tl-3xl", size: "h_half" })}
                 />
                 <img
                     src={URL.createObjectURL(files[2])}
                     alt={files[2].name}
-                    className={view({ class: "rounded-bl-lg", size: "h_half" })}
+                    className={view({ class: "rounded-bl-3xl", size: "h_half" })}
                 />
             </div>
-            <div className="w-1/2 h-full">
+            <div className="w-1/2 h-full mb-0">
                 <img
                     src={URL.createObjectURL(files[1])}
                     alt={files[1].name}
-                    className={view({ class: "rounded-tr-lg", size: "h_half" })}
+                    className={view({ class: "rounded-tr-3xl", size: "h_half" })}
                 />
                 <img
                     src={URL.createObjectURL(files[3])}
                     alt={files[3].name}
-                    className={view({ class: "rounded-br-lg", size: "h_half" })}
+                    className={view({ class: "rounded-br-3xl", size: "h_half" })}
                 />
             </div>
         </div>
@@ -92,7 +92,7 @@ const Component = ({
     )
     return (
         <>
-            <div className="rounded-lg mb-1 border-2 p-1">
+            <div className="rounded-3xl border-2 mb-0 p-2">
                 {
                     imageFiles ? (
                         imageFiles.length == 1 ? (
