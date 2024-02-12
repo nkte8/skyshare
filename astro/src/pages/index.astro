@@ -8,20 +8,8 @@ import version from "@/utils/version";
 import Xicon from "@/components/Xicon.astro";
 import Bskyicon from "@/components/Bskyicon.astro";
 
-// const svgtag_url = `url('/materials/tag.svg')`;
 const robots = ["index", "follow", "noarchive", "noimageindex"];
 ---
-
-<!-- <style define:vars={{ svgtag_url }}>
-	.tag {
-		mask-image: var(--svgtag_url);
-		mask-size: 100%;
-		mask-repeat: no-repeat;
-		background: #ff8f8f;
-		aspect-ratio: 135/50;
-		font-size: min(4vw, 28px);
-	}
-</style> -->
 <Pagelayout
 	cardPath=`/materials/ogp_main.png?updated=${version}`
 	pageTitle={title}
@@ -40,18 +28,6 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 				class="max-w-2xl mb-8 mx-auto w-11/12"
 				alt={servicename}
 			/>
-			{
-				/* 
-			<div
-				class="tag aspect-auto[135/73] top-2/3 left-3/4 max-w-32 w-1/5 font-mono absolute leading-none font-extrabold rotate-12"
-			>
-				<span
-					class="block top-0 bottom-0 left-3 right-0 m-auto w-min h-min absolute text-gray-700"
-					>&nbsp;*Beta</span
-				>
-			</div>
-			*/
-			}
 		</div>
 		<div class="max-w-3xl my-4 text-2xl font-normal">
 			<div class="h-16">
