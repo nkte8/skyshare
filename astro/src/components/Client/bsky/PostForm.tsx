@@ -217,7 +217,7 @@ const Component = ({
                             class: "inline-block mx-2"
                         })}
                         disabled={!(post.length >= 1 || imageFiles !== null)}>
-                        キャンセル
+                        下書きを消す
                     </button>
                     <div className="flex-1 my-0"></div>
                     <PostButton
