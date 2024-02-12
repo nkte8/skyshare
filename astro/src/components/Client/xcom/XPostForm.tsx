@@ -29,9 +29,18 @@ export const Component = ({
                 setOgpMeta(meta)
             } catch (error: unknown) {
                 if (error instanceof Error) {
+                    let msg: string = ""
+                    switch (error.message) {
+                        case "Failed to fetch":
+                            msg = "URLに設定されていないか、URL誤りでリンクカードを設定できませんでした。"
+                            break
+                        default:
+                            msg = error.name + ": " + error.message
+                            break
+                    }
                     setMsgInfo({
                         isError: true,
-                        msg: error.name + ": " + error.message
+                        msg: msg
                     })
                 }
                 setOgpUrl(null)
@@ -57,8 +66,7 @@ export const Component = ({
                                     {value.match(/\n/) ? <br /> : value}
                                 </Fragment>
                             })
-                        }&nbsp;
-                        {xcontent.url}
+                        }
                     </div>
                 </div>
                 <div className="block relative h-fit w-fit">
@@ -86,8 +94,8 @@ export const Component = ({
             </div>
             <div className="text-center">
                 <XButton
-                    labeltext={"Xでポストする"}
-                    twiurl={xcontent.url}
+                    labeltext={<div className="mb-0">Xでポストする</div>}
+                    clikedtext={<div className="mb-0 text-xs">ポップアップを実行しました</div>}
                     content={xcontent.content}
                     disabled={false} />
             </div>

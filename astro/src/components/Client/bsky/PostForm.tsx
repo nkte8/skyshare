@@ -115,14 +115,12 @@ const Component = ({
                 })
                 if (linkcardUrl !== null) {
                     xContent.url = linkcardUrl
-                    // 本文からはリンク対象の文字列を削除
-                    xContent.content = post.replace(linkcardUrl, "")
                 }
                 if (linkcardUrl !== null) {
                     // OGPを生成する必要がない場合(!noGenerate but noImageAttached)
                     // またはOGPの生成を抑制している場合(noGenerate)で
                     // 外部リンクが添付されている場合はlinkcardを付与する
-                    if((!noGenerate && noImagesAttached) || noGenerate) {
+                    if ((!noGenerate && noImagesAttached) || noGenerate) {
                         record = await attachExternalToRecord({
                             base: record,
                             session: sessionNecessary,
@@ -166,7 +164,9 @@ const Component = ({
                         isError: false
                     })
                     const [id, rkey] = get_res.uri.split("/")
-                    xContent.url = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl).toString()
+                    const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl).toString()
+                    xContent.url = ogpUrl
+                    xContent.content += `${xContent.content !== "" ? (" ") : ("")}${ogpUrl}`
                 }
             }
             if (autoPop) {

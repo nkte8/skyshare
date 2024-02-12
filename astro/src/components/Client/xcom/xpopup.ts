@@ -1,19 +1,11 @@
 const XPopup = ({
-    url,
     content,
 }: {
-    url: string,
     content: string
 }) => {
     const tweetext = encodeURIComponent(content)
     window.open(
-        `https://twitter.com/intent/tweet?text=${tweetext}${(
-            url !== "" ? (
-                "&url=" + url
-            ) : (
-                ""
-            ))
-        }`, '_blank', '')
+        `https://twitter.com/intent/tweet?text=${tweetext}`, '_blank', '')
 }
 
 export default XPopup
