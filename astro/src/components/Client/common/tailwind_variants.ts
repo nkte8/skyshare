@@ -29,7 +29,8 @@ export const button_base = tv({
 	variants: {
 		color: {
 			blue: "bg-blue-500 hover:bg-blue-700 text-white",
-			sky: "bg-sky-400 hover:bg-sky-600 text-white"
+			sky: "bg-sky-400 hover:bg-sky-600 text-white",
+			gray: "bg-gray-400 hover:bg-gray-600 text-white"
 		},
 		disabled: {
 			false: "cursor-pointer sm:shadow-md shadow transition-all",
