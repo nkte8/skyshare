@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
+import { Fragment, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { type xContent, type msgInfo } from "../common/types"
 import { Profile_context } from "../common/contexts"
 import XButton from "./XButton"
@@ -51,7 +51,14 @@ export const Component = ({
                         <img src={profile?.avatar} className="w-12 h-12 inline-block rounded-full" />
                     </div>
                     <div className="text-left ml-3 break-all">
-                        {`${xcontent.content} ${xcontent.url}`}
+                        {
+                            xcontent.content.split(/(\n)/).map((value, index) => {
+                                return <Fragment key={index}>
+                                    {value.match(/\n/) ? <br /> : value}
+                                </Fragment>
+                            })
+                        }&nbsp;
+                        {xcontent.url}
                     </div>
                 </div>
                 <div className="block relative h-fit w-fit">
