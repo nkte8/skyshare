@@ -5,25 +5,14 @@ import { abouturl, posturl, qaurl, changeurl } from "@/utils/envs";
 const title = `${servicename} - Share Bluesky to X`;
 import version from "@/utils/version";
 
-const svgbsky_url = `url('/materials/bluesky.svg')`;
-const svgtag_url = `url('/materials/tag.svg')`;
-const svgtwi_url = `url('/materials/twitter.svg')`;
+import Xicon from "@/components/Xicon.astro";
+import Bskyicon from "@/components/Bskyicon.astro";
+
+// const svgtag_url = `url('/materials/tag.svg')`;
 const robots = ["index", "follow", "noarchive", "noimageindex"];
 ---
 
-<style define:vars={{ svgbsky_url, svgtwi_url, svgtag_url }}>
-	.bsky {
-		mask-image: var(--svgbsky_url);
-		mask-size: 100%;
-		mask-repeat: no-repeat;
-		background: #1185fe;
-	}
-	.twi {
-		mask-image: var(--svgtwi_url);
-		mask-size: 100%;
-		mask-repeat: no-repeat;
-		background: #444;
-	}
+<!-- <style define:vars={{ svgtag_url }}>
 	.tag {
 		mask-image: var(--svgtag_url);
 		mask-size: 100%;
@@ -32,7 +21,7 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 		aspect-ratio: 135/50;
 		font-size: min(4vw, 28px);
 	}
-</style>
+</style> -->
 <Pagelayout
 	cardPath=`/materials/ogp_main.png?updated=${version}`
 	pageTitle={title}
@@ -64,19 +53,11 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 			*/
 			}
 		</div>
-		<div class="max-w-3xl my-8 text-2xl font-normal">
-			<div class="h-20">
-				<img
-					src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAG3RFWHRTb2Z0d2FyZQBDZWxzeXMgU3R1ZGlvIFRvb2zBp+F8AAAACXBIWXMAABnWAAAZ1gEY0crtAAAAA1BMVEVHcEyC+tLSAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII="
-					class="bsky max-w-12 mx-4 w-full aspect-square my-auto inline-block align-middle"
-					alt="Bluesky"
-				/>
+		<div class="max-w-3xl my-4 text-2xl font-normal">
+			<div class="h-16">
+				<Bskyicon />
 				<span class="align-middle">と</span>
-				<img
-					src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAG3RFWHRTb2Z0d2FyZQBDZWxzeXMgU3R1ZGlvIFRvb2zBp+F8AAAACXBIWXMAABnWAAAZ1gEY0crtAAAAA1BMVEVHcEyC+tLSAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII="
-					class="twi max-w-12 mx-4 w-full aspect-square inline-block align-middle"
-					alt="X"
-				/>
+				<Xicon />
 			</div>
 			<span class="block my-2 text-xl">同時投稿を"少し楽にする"</span>
 			<span class="block my-2 text-xl">ウェブアプリです</span>
@@ -84,11 +65,28 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 
 		<a
 			href={posturl}
-			class="bg-white text-xl bg-opacity-80 border-0 py-4 px-10 focus:outline-none hover:bg-sky-200 inline-flex rounded-full transition-colors"
+			class="bg-white text-xl
+					bg-opacity-80 border-0 py-4 px-10
+					focus:outline-none hover:bg-sky-200
+					inline-flex rounded-full transition-colors shadow-md"
 			>Blueskyへログイン
 		</a>
+		<div class="max-w-xl my-4 mx-auto text-lg font-normal">
+			<div>アプリ化、対応しています</div>
+			<div class="text-sm">
+				<img
+					src="/apple-touch-icon.png"
+					class="w-20 h-20 rounded-2xl mx-auto mb-1"
+				/>
+				Skyshare
+			</div>
+			<div>「ホーム画面に追加」からどうぞ</div>
+		</div>
+
 		<div class="text-center mx-auto md:max-w-3xl my-5">
-			<div class="bg-white bg-opacity-80 rounded-lg w-fit px-4 py-2 m-auto">
+			<div
+				class="bg-white bg-opacity-80 rounded-lg w-fit px-4 py-2 m-auto"
+			>
 				<a href={abouturl} class="mx-2">About</a>
 				<a href={changeurl} class="mx-2">Changelog</a>
 				<a href={qaurl} class="mx-2">Q&A</a>
