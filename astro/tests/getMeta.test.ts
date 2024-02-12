@@ -16,6 +16,20 @@ describe('detectFacets Test', () => {
             }
         )
     }, 100000) // long timeouf)
+    // CORS ERROR
+    // test('True Website youtube test', async () => {
+    //     let html = await fetch("https://www.youtube.com/watch?v=xitQ_oNTVvE").then((text) => text.text())
+    //     const result = getMeta({
+    //         content: html
+    //     })
+    //     expect(result).toEqual(
+    //         {
+    //             title: "Google Chrome スピードテスト",
+    //             description: "20秒でできる？Google Chromeブラウザでお出かけ前の情報チェック。google.co.jp/chrome"
+    //         }
+    //     )
+    // }, 100000) // long timeouf)
+
     // faketest os:title or og:description only
     test('Fake os:title or og:description only page test', async () => {
         const result = getMeta({

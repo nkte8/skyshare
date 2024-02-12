@@ -6,6 +6,6 @@ export type msgInfo = {
 }
 
 export type xContent = {
-    url: string,
+    url: URL | null,
     content: string,
 }
