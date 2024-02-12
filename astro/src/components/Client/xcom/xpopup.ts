@@ -1,7 +1,3 @@
-
-import { pagesPrefix } from "@/utils/vars"
-const siteurl = location.origin
-
 const XPopup = ({
     url,
     content,

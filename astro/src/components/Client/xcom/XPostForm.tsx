@@ -4,7 +4,6 @@ import { Profile_context } from "../common/contexts"
 import XButton from "./XButton"
 import getOgp from "../../../utils/getOgp"
 import Tweetbox from "../common/Tweetbox"
-import { servicename } from "@/utils/vars"
 import getMeta, { ogpMeta } from "@/utils/getMeta"
 
 export const Component = ({
