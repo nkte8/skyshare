@@ -252,7 +252,7 @@ const Component = ({
                             setProp={setAutoPop} />
                         <NoGenerateToggle
                             labeltext={<>
-                                OGPを<b>生成しない</b>
+                                Xへの投稿画像は自身で添付する
                             </>}
                             prop={noGenerate}
                             setProp={setNoGenerate} />
