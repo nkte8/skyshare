@@ -4,8 +4,8 @@ import { Profile_context } from "../common/contexts"
 import XButton from "./XButton"
 import getOgp from "../../../utils/getOgp"
 import Tweetbox from "../common/Tweetbox"
-import LoadingCircle from "../common/loadingcircle"
 import { servicename } from "@/utils/vars"
+import getMeta, { ogpMeta } from "@/utils/getMeta"
 
 export const Component = ({
     xcontent,
@@ -16,6 +16,7 @@ export const Component = ({
 }) => {
     const { profile } = useContext(Profile_context)
     const [ogpUrl, setOgpUrl] = useState<string | null>(null)
+    const [ogpMeta, setOgpMeta] = useState<ogpMeta | null>(null)
     const previewOgp = async () => {
         if (xcontent.url !== "") {
             try {
@@ -24,7 +25,9 @@ export const Component = ({
                 ).then((text) => text.text()
                 ).catch()
                 const url = getOgp({ content: html })
+                const meta = getMeta({ content: html })
                 setOgpUrl(url)
+                setOgpMeta(meta)
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     setMsgInfo({
@@ -33,6 +36,7 @@ export const Component = ({
                     })
                 }
                 setOgpUrl(null)
+                setOgpMeta(null)
             }
         }
     }
@@ -52,14 +56,21 @@ export const Component = ({
                     </div>
                 </div>
                 <div className="block relative h-fit w-fit">
-                    {xcontent.url !== "" && (
-                        ogpUrl !== null && (
-                            <>
-                                <img src={ogpUrl} className="w-full rounded-3xl" />
-                                <div className="absolute bottom-2 left-4 bg-opacity-70 rounded-md px-2 text-white bg-black">{profile?.handle} Post - {servicename}</div>
-                            </>
-                        )
-                    )}
+                    {xcontent.url !== "" &&
+                        <>
+                            {
+                                ogpUrl !== null && (
+                                    <img src={ogpUrl} className="w-full rounded-3xl" />
+                                )
+                            }
+                            {
+                                ogpMeta !== null && (
+                                    <div className="absolute bottom-2 left-4 bg-opacity-70 rounded-md px-2 text-white bg-black">
+                                        {ogpMeta.title}
+                                    </div>
+                                )
+                            }
+                        </>}
                 </div>
             </Tweetbox>
             <div className="max-w-xl mx-auto text-left">
@@ -74,8 +85,6 @@ export const Component = ({
                     content={xcontent.content}
                     disabled={false} />
             </div>
-
-
         </>
     )
 }
