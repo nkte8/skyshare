@@ -23,7 +23,7 @@ import XPopup from "../xcom/xpopup"
 import AutoXPopupToggle from "./AutoXPopupToggle"
 import NoGenerateToggle from "./NoGenerateToggle"
 import PostButton from "./PostButton"
-import Details from "./Details"
+import LanguageSelect from "./LanguageSelect"
 
 const siteurl = location.origin
 const MemoImgViewBox = memo(ImgViewBox)
@@ -52,6 +52,8 @@ const Component = ({
     const [noGenerate, setNoGenerate] = useState<boolean>(false)
     // Postの実行状態を管理する変数とディスパッチャー
     const [isPostProcessing, setPostProcessing] = useState<boolean>(false)
+    // Postの実行状態を管理する変数とディスパッチャー
+    const [language, setLanguage] = useState<Array<string> | undefined>(["ja"])
     // セッション
     const { session } = useContext(Session_context)
     // Postの入力上限
@@ -74,7 +76,8 @@ const Component = ({
         try {
             let record = await buildRecordBase({
                 text: post,
-                createdAt: new Date()
+                createdAt: new Date(),
+                langs: language
             })
             let xContent: xContent = {
                 url: null,
@@ -207,6 +210,9 @@ const Component = ({
             setCount(event.currentTarget.value.length)
         }
     }
+    const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        event.currentTarget.textContent
+    }
 
     return (
         <>
@@ -239,7 +245,10 @@ const Component = ({
                         className="py-0"
                     />
 
-                    <div className="flex-1"></div>
+                    <div className="flex-1 my-auto"></div>
+                    <LanguageSelect
+                        disabled={isPostProcessing}
+                        setLanguage={setLanguage} />
                     <div className={
                         `align-middle my-auto mr-1 px-2 rounded-lg ${(
                             count > countMax
@@ -253,21 +262,18 @@ const Component = ({
 
                 </div>
 
-                <Details
-                    initValue={!(autoPop || noGenerate)}>
-                    <div className="flex flex-wrap">
-                        <AutoXPopupToggle
-                            labeltext={"Xを自動で開く"}
-                            prop={autoPop}
-                            setProp={setAutoPop} />
-                        <NoGenerateToggle
-                            labeltext={<>
-                                Xへの投稿画像は自身で添付する
-                            </>}
-                            prop={noGenerate}
-                            setProp={setNoGenerate} />
-                    </div>
-                </Details>
+                <div className="flex flex-wrap">
+                    <AutoXPopupToggle
+                        labeltext={"Xを自動で開く"}
+                        prop={autoPop}
+                        setProp={setAutoPop} />
+                    <NoGenerateToggle
+                        labeltext={<>
+                            Xへの投稿画像は自身で添付する
+                        </>}
+                        prop={noGenerate}
+                        setProp={setNoGenerate} />
+                </div>
                 <MemoImgViewBox
                     imageFiles={imageFiles} />
             </Tweetbox>

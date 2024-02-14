@@ -10,12 +10,12 @@ const getMeta = ({
     let metas: Array<string> = []
 
     const titleFilter: Array<RegExp> = [
-        /(?<= *< *meta +name=["']?twitter:title["']? +content=)["']?([^"']*)["']?/,
-        /(?<= *< *meta +property=["']?og:title["']? +content=)["']?([^"']*)["']?/,
+        /(?: *< *meta +name=["']?twitter:title["']? +content=)["']?([^"']*)["']?/,
+        /(?: *< *meta +property=["']?og:title["']? +content=)["']?([^"']*)["']?/,
     ]
     const descriptionFilter: Array<RegExp> = [
-        /(?<= *< *meta +name=["']?twitter:description["']? +content=)["']?([^"']*)["']?/,
-        /(?<= *< *meta +property=["']?og:description["']? +content=)["']?([^"']*)["']?/,
+        /(?: *< *meta +name=["']?twitter:description["']? +content=)["']?([^"']*)["']?/,
+        /(?: *< *meta +property=["']?og:description["']? +content=)["']?([^"']*)["']?/,
     ]
     for (let filters of [titleFilter, descriptionFilter]) {
         let result: string = ""
