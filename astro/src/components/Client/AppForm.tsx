@@ -1,12 +1,12 @@
 import { useState, Dispatch, SetStateAction } from "react"
 import { type Session_info } from "./common/contexts"
-import { type msgInfo, type modes, type xContent } from "./common/types"
+import { type msgInfo, type modes, type popupContent } from "./common/types"
 import LoginForm from "./bsky/LoginForm"
 import PostForm from "./bsky/PostForm"
 import PageViewForm from "./pagedb/PageViewForm"
 import ModeSelectButton from "./common/ModeSelectButton"
 import LogoutButton from "./bsky/LogoutButton"
-import XForm from "./xcom/XPostForm"
+import PopupPreviewForm from "./intents/PopupPreviewForm"
 
 const Component = ({
     session,
@@ -20,7 +20,7 @@ const Component = ({
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }
 ) => {
-    const [xcontent, setXcontent] = useState<xContent>(null!)
+    const [xcontent, setXcontent] = useState<popupContent>(null!)
     const Forms = ({ mode }: {
         mode: modes
     }) => {
@@ -35,7 +35,7 @@ const Component = ({
             case "pagedb":
                 return <PageViewForm setMsgInfo={setMsgInfo} />
             case "xcom":
-                return <XForm
+                return <PopupPreviewForm
                     setMsgInfo={setMsgInfo}
                     xcontent={xcontent} />
         }

@@ -7,6 +7,20 @@ const LSKeyName: Obj = {
     refreshJwt: "refreshJwt",
     autoXPopup: "autoXPopup",
     noGenerate: "noGenerate",
+    showTaittsuu: "showTaittsuu",
+}
+
+export const readShowTaittsuu = (def: boolean): boolean => {
+    const value = get_ls_value(LSKeyName.showTaittsuu)
+    if (value !== null) {
+        return value === "true"
+    }
+    rm_ls_value(LSKeyName.showTaittsuu)
+    return def
+}
+
+export const setShowTaittsuu = (flag: boolean): void => {
+    set_ls_value(LSKeyName.showTaittsuu, flag.toString())
 }
 
 export const readNoGenerate = (def: boolean): boolean => {

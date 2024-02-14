@@ -3,23 +3,23 @@ import { link } from "../common/tailwind_variants";
 
 const Component = ({
     children,
-    initValue,
+    initHidden,
 }: {
     children: ReactNode
-    initValue: boolean
+    initHidden: boolean
 }) => {
     const [hidden, setHidden] = useState<boolean>(true)
     const onClick = () => {
         setHidden(!hidden)
     }
     useEffect(() => {
-        setHidden(initValue)
-    }, [initValue])
+        setHidden(initHidden)
+    }, [initHidden])
     return (
         <>
-            <button className={link({ class: "block" })}
-                onClick={onClick}>高度な設定{hidden ? ("▼") : ("△")}</button>
-            <div className={`transition-all pt-2 ${hidden ? ("hidden h-0") : ("h-full")}`}>
+            <button className={link({ class: "block text-sm mx-2" })}
+                onClick={onClick}>実験的な機能{hidden ? ("▼") : ("△")}</button>
+            <div className={`transition-all pt-1 ${hidden ? ("hidden h-0") : ("h-full")}`}>
                 {children}
             </div>
         </>

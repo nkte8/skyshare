@@ -1,6 +1,6 @@
 import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context } from "../common/contexts"
-import { type msgInfo, type modes, type xContent } from "../common/types"
+import { type msgInfo, type modes, type popupContent } from "../common/types"
 
 import {
     buildRecordBase,
@@ -19,11 +19,13 @@ import Tweetbox from "../common/Tweetbox"
 import ImgForm from "./ImgForm"
 import ImgViewBox from "./ImgViewBox"
 import TextForm from "./TextForm"
-import XPopup from "../xcom/xpopup"
-import AutoXPopupToggle from "./AutoXPopupToggle"
-import NoGenerateToggle from "./NoGenerateToggle"
+import Popup from "../intents/popup"
+import AutoXPopupToggle from "./options/AutoXPopupToggle"
+import NoGenerateToggle from "./options/NoGenerateToggle"
+import ShowTaittsuuToggle from "./options/ShowTaittsuuToggle"
 import PostButton from "./PostButton"
 import LanguageSelect from "./LanguageSelect"
+import Details from "./Details"
 
 const siteurl = location.origin
 const MemoImgViewBox = memo(ImgViewBox)
@@ -38,7 +40,7 @@ const Component = ({
     setProcessing: Dispatch<SetStateAction<boolean>>,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
     setMode: Dispatch<SetStateAction<modes>>,
-    setXcontent: Dispatch<SetStateAction<xContent>>,
+    setXcontent: Dispatch<SetStateAction<popupContent>>,
 }) => {
     // ImgFormにて格納されるimageとディスパッチャー
     const [imageFiles, setImageFile] = useState<File[] | null>(null);
@@ -46,10 +48,6 @@ const Component = ({
     const [post, setPost] = useState<string>("")
     // Postの文字数を格納する変数とディスパッチャー
     const [count, setCount] = useState<number>(0)
-    // ポスト時に自動でXを開く
-    const [autoPop, setAutoPop] = useState<boolean>(false)
-    // OGP画像を生成しない（Embedを有効にする）
-    const [noGenerate, setNoGenerate] = useState<boolean>(false)
     // Postの実行状態を管理する変数とディスパッチャー
     const [isPostProcessing, setPostProcessing] = useState<boolean>(false)
     // Postの実行状態を管理する変数とディスパッチャー
@@ -60,6 +58,14 @@ const Component = ({
     const countMax = 300
     // PostのWarining上限
     const countWarn = 140
+    // Options
+    // ポスト時に自動でXを開く
+    const [autoPop, setAutoPop] = useState<boolean>(false)
+    // OGP画像を生成しない（Embedを有効にする）
+    const [noGenerate, setNoGenerate] = useState<boolean>(false)
+    // タイッツーボタンを表示する
+    const [showTaittsuu, setShowTaittsuu] = useState<boolean>(false)
+
 
     const initializePost = () => {
         setPostProcessing(true)
@@ -79,7 +85,7 @@ const Component = ({
                 createdAt: new Date(),
                 langs: language
             })
-            let xContent: xContent = {
+            let popupContent: popupContent = {
                 url: null,
                 content: post
             }
@@ -119,7 +125,7 @@ const Component = ({
                     }
                 })
                 if (linkcardUrl !== null) {
-                    xContent.url = new URL(linkcardUrl)
+                    popupContent.url = new URL(linkcardUrl)
                 }
                 if (linkcardUrl !== null) {
                     // OGPを生成する必要がない場合(!noGenerate but noImageAttached)
@@ -170,14 +176,17 @@ const Component = ({
                     })
                     const [id, rkey] = get_res.uri.split("/")
                     const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
-                    xContent.url = ogpUrl
-                    xContent.content += `${xContent.content !== "" ? (" ") : ("")}${ogpUrl.toString()}`
+                    popupContent.url = ogpUrl
+                    popupContent.content += `${popupContent.content !== "" ? (" ") : ("")}${ogpUrl.toString()}`
                 }
             }
             if (autoPop) {
-                XPopup(xContent)
+                Popup({
+                    intentKind: "xcom",
+                    content: popupContent.content
+                })
             }
-            setXcontent(xContent)
+            setXcontent(popupContent)
             setMode("xcom")
             handlerCancel()
         } catch (error: unknown) {
@@ -209,9 +218,6 @@ const Component = ({
             // 絵文字のカウント数が想定より多く設定されてしまうため、firefox_v125までは非推奨ブラウザとする
             setCount(event.currentTarget.value.length)
         }
-    }
-    const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        event.currentTarget.textContent
     }
 
     return (
@@ -262,7 +268,7 @@ const Component = ({
 
                 </div>
 
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap mb-4">
                     <AutoXPopupToggle
                         labeltext={"Xを自動で開く"}
                         prop={autoPop}
@@ -274,6 +280,14 @@ const Component = ({
                         prop={noGenerate}
                         setProp={setNoGenerate} />
                 </div>
+                <Details initHidden={!showTaittsuu}>
+                    <div className="flex flex-wrap">
+                        <ShowTaittsuuToggle
+                            labeltext={"タイッツーの投稿ボタンも表示する"}
+                            prop={showTaittsuu}
+                            setProp={setShowTaittsuu} />
+                    </div>
+                </Details>
                 <MemoImgViewBox
                     imageFiles={imageFiles} />
             </Tweetbox>

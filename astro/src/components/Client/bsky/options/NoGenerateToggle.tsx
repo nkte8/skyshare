@@ -1,6 +1,6 @@
-import ToggleSwitch from "./ToggleSwitch"
+import ToggleSwitch from "../ToggleSwitch"
 import { Dispatch, ReactNode, SetStateAction } from "react"
-import { readAutoXPopup, setAutoXPopup } from "@/utils/localstorage"
+import { readNoGenerate, setNoGenerate } from "@/utils/localstorage"
 
 const Component = ({
     labeltext,
@@ -15,8 +15,8 @@ const Component = ({
         <ToggleSwitch
             prop={prop}
             setProp={setProp}
-            initialValue={readAutoXPopup(false)}
-            setPropConfig={setAutoXPopup}
+            initialValue={readNoGenerate(false)}
+            setPropConfig={setNoGenerate}
             labeltext={labeltext} />
     )
 }
