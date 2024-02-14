@@ -1,16 +1,17 @@
 import { Fragment, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
-import { type xContent, type msgInfo } from "../common/types"
+import { type popupContent, type msgInfo } from "../common/types"
 import { Profile_context } from "../common/contexts"
-import XButton from "./XButton"
+import ShareButton from "./ShareButton"
 import getOgp from "../../../utils/getOgp"
 import Tweetbox from "../common/Tweetbox"
 import getMeta, { ogpMeta } from "@/utils/getMeta"
+import { readShowTaittsuu } from "@/utils/localstorage"
 
 export const Component = ({
     xcontent,
     setMsgInfo
 }: {
-    xcontent: xContent,
+    xcontent: popupContent,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
     const { profile } = useContext(Profile_context)
@@ -92,12 +93,24 @@ export const Component = ({
                 また、文字数がTwitterの制限(140字)を超えている場合はそのまま投稿できません。
                 編集により文字数を手動で調整してください。
             </div>
-            <div className="text-center">
-                <XButton
+            <div className="mx-auto w-fit">
+                <ShareButton
+                    intentKind="xcom"
+                    className="block mx-auto"
                     labeltext={<div className="mb-0">Xでポストする</div>}
                     clikedtext={<div className="mb-0 text-xs">ポップアップを実行しました</div>}
                     content={xcontent.content}
                     disabled={false} />
+                {
+                    readShowTaittsuu(false) &&
+                    <ShareButton
+                        intentKind="taittsuu"
+                        className="block mx-auto mt-2"
+                        labeltext={<div className="mb-0">タイッツーでポストする</div>}
+                        clikedtext={<div className="mb-0 text-xs">ポップアップを実行しました</div>}
+                        content={xcontent.content}
+                        disabled={false} />
+                }
             </div>
         </>
     )

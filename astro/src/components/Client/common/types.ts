@@ -5,7 +5,7 @@ export type msgInfo = {
     isError: boolean,
 }
 
-export type xContent = {
+export type popupContent = {
     url: URL | null,
     content: string,
 }
