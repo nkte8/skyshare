@@ -7,7 +7,7 @@ import model_uploadBlob from "./atproto_api/models/uploadBlob.json";
 import model_error from "./atproto_api/models/error.json";
 
 import getOgp from "./getOgp"
-import getMeta, {ogpMeta} from "./getMeta"
+import getMeta, { ogpMeta } from "./getMeta"
 
 export type SessionNecessary = {
     did: string,
@@ -17,6 +17,7 @@ export type SessionNecessary = {
 type RecordBase = {
     text: string,
     createdAt: Date,
+    langs?: Array<string>
 }
 // 付与できる情報を定義
 type RecordCore = {
@@ -54,11 +55,11 @@ export const attachExternalToRecord = async ({
     let recordResult: RecordCore = base
     let html: string | null = null
     let ogpUrl: string | null = null
-    let ogpMeta:ogpMeta = {
+    let ogpMeta: ogpMeta = {
         title: "",
         description: ""
     }
-    let blob:Blob | null = null
+    let blob: Blob | null = null
 
     try {
         html = await fetch(externalUrl).then((text) => text.text())

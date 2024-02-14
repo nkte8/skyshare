@@ -7,8 +7,8 @@ const getOgp = ({
 }): string => {
     let ogpUrl: string = ""
     const regexFilters: Array<RegExp> = [
-        /(?<= *< *meta +name=["']?twitter:image["']? +content=)["']?([^"']*)["']?/,
-        /(?<= *< *meta +property=["']?og:image["']? +content=)["']?([^"']*)["']?/
+        /(?: *< *meta +name=["']?twitter:image["']? +content=)["']?([^"']*)["']?/,
+        /(?: *< *meta +property=["']?og:image["']? +content=)["']?([^"']*)["']?/
     ]
     // &->&amp;(or &#38)にエスケープされている場合、これを置き換え処理
     // (fetchの取得結果をただすなど)もっと根本的に修正できるのであればそうすべき。
