@@ -2,7 +2,7 @@ export type intentInfo = {
     kind: "xcom" | "taittsuu",
     intent: Array<
         {
-            hard: "iphone" | "android" | "other",
+            hard: string,
             url: string
         }>,
     default: string

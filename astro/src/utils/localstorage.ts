@@ -8,7 +8,22 @@ const LSKeyName: Obj = {
     autoXPopup: "autoXPopup",
     noGenerate: "noGenerate",
     showTaittsuu: "showTaittsuu",
+    forceIntent: "forceIntent",
 }
+
+export const readForceIntent = (def: boolean): boolean => {
+    const value = get_ls_value(LSKeyName.forceIntent)
+    if (value !== null) {
+        return value === "true"
+    }
+    rm_ls_value(LSKeyName.forceIntent)
+    return def
+}
+
+export const setForceIntent = (flag: boolean): void => {
+    set_ls_value(LSKeyName.forceIntent, flag.toString())
+}
+
 
 export const readShowTaittsuu = (def: boolean): boolean => {
     const value = get_ls_value(LSKeyName.showTaittsuu)
