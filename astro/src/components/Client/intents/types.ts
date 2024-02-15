@@ -1,4 +1,9 @@
 export type intentInfo = {
     kind: "xcom" | "taittsuu",
-    url: string
+    intent: Array<
+        {
+            hard: string,
+            url: string
+        }>,
+    default: string
 }

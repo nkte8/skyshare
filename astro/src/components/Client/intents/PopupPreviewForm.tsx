@@ -8,20 +8,20 @@ import getMeta, { ogpMeta } from "@/utils/getMeta"
 import { readShowTaittsuu } from "@/utils/localstorage"
 
 export const Component = ({
-    xcontent,
+    popupContent,
     setMsgInfo
 }: {
-    xcontent: popupContent,
+    popupContent: popupContent,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
     const { profile } = useContext(Profile_context)
     const [ogpUrl, setOgpUrl] = useState<string | null>(null)
     const [ogpMeta, setOgpMeta] = useState<ogpMeta | null>(null)
     const previewOgp = async () => {
-        if (xcontent.url !== null) {
+        if (popupContent.url !== null) {
             try {
                 let html = await fetch(
-                    xcontent.url
+                    popupContent.url
                 ).then((text) => text.text()
                 ).catch()
                 const url = getOgp({ content: html })
@@ -51,7 +51,7 @@ export const Component = ({
     }
     useEffect(() => {
         previewOgp()
-    }, [xcontent])
+    }, [popupContent])
     return (
         <>
             <div className="text-lg font-medium">Xへの投稿プレビュー画面</div>
@@ -62,7 +62,7 @@ export const Component = ({
                     </div>
                     <div className="text-left ml-3 break-all">
                         {
-                            xcontent.content.split(/(\n)/).map((value, index) => {
+                            popupContent.content.split(/(\n)/).map((value, index) => {
                                 return <Fragment key={index}>
                                     {value.match(/\n/) ? <br /> : value}
                                 </Fragment>
@@ -71,7 +71,7 @@ export const Component = ({
                     </div>
                 </div>
                 <div className="block relative h-fit w-fit">
-                    {xcontent.url !== null &&
+                    {popupContent.url !== null &&
                         <>
                             {
                                 ogpUrl !== null && (
@@ -99,7 +99,7 @@ export const Component = ({
                     className="block mx-auto"
                     labeltext={<div className="mb-0">Xでポストする</div>}
                     clikedtext={<div className="mb-0 text-xs">ポップアップを実行しました</div>}
-                    content={xcontent.content}
+                    content={popupContent.content}
                     disabled={false} />
                 {
                     readShowTaittsuu(false) &&
@@ -108,7 +108,7 @@ export const Component = ({
                         className="block mx-auto mt-2"
                         labeltext={<div className="mb-0">タイッツーでポストする</div>}
                         clikedtext={<div className="mb-0 text-xs">ポップアップを実行しました</div>}
-                        content={xcontent.content}
+                        content={popupContent.content}
                         disabled={false} />
                 }
             </div>

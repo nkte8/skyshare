@@ -23,6 +23,7 @@ import Popup from "../intents/popup"
 import AutoXPopupToggle from "./options/AutoXPopupToggle"
 import NoGenerateToggle from "./options/NoGenerateToggle"
 import ShowTaittsuuToggle from "./options/ShowTaittsuuToggle"
+import ForceIntentToggle from "./options/ForceIntentToggle"
 import PostButton from "./PostButton"
 import LanguageSelect from "./LanguageSelect"
 import Details from "./Details"
@@ -34,13 +35,13 @@ const Component = ({
     processing,
     setProcessing,
     setMode,
-    setXcontent
+    setPopupContent
 }: {
     processing: boolean,
     setProcessing: Dispatch<SetStateAction<boolean>>,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
     setMode: Dispatch<SetStateAction<modes>>,
-    setXcontent: Dispatch<SetStateAction<popupContent>>,
+    setPopupContent: Dispatch<SetStateAction<popupContent>>,
 }) => {
     // ImgFormにて格納されるimageとディスパッチャー
     const [imageFiles, setImageFile] = useState<File[] | null>(null);
@@ -63,6 +64,8 @@ const Component = ({
     const [autoPop, setAutoPop] = useState<boolean>(false)
     // OGP画像を生成しない（Embedを有効にする）
     const [noGenerate, setNoGenerate] = useState<boolean>(false)
+    // OGP画像を生成しない（Embedを有効にする）
+    const [noUseXApp, setNoUseXApp] = useState<boolean>(false)
     // タイッツーボタンを表示する
     const [showTaittsuu, setShowTaittsuu] = useState<boolean>(false)
 
@@ -186,7 +189,7 @@ const Component = ({
                     content: popupContent.content
                 })
             }
-            setXcontent(popupContent)
+            setPopupContent(popupContent)
             setMode("xcom")
             handlerCancel()
         } catch (error: unknown) {
@@ -274,9 +277,7 @@ const Component = ({
                         prop={autoPop}
                         setProp={setAutoPop} />
                     <NoGenerateToggle
-                        labeltext={<>
-                            Xへの投稿画像は自身で添付する
-                        </>}
+                        labeltext={"Xへの画像は自身で添付する"}
                         prop={noGenerate}
                         setProp={setNoGenerate} />
                 </div>
@@ -286,6 +287,10 @@ const Component = ({
                             labeltext={"タイッツーの投稿ボタンも表示する"}
                             prop={showTaittsuu}
                             setProp={setShowTaittsuu} />
+                        <ForceIntentToggle
+                            labeltext={"Xの投稿はアプリを強制的に起動する"}
+                            prop={noUseXApp}
+                            setProp={setNoUseXApp} />
                     </div>
                 </Details>
                 <MemoImgViewBox
