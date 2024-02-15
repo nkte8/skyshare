@@ -34,13 +34,13 @@ const Component = ({
     processing,
     setProcessing,
     setMode,
-    setXcontent
+    setPopupContent
 }: {
     processing: boolean,
     setProcessing: Dispatch<SetStateAction<boolean>>,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
     setMode: Dispatch<SetStateAction<modes>>,
-    setXcontent: Dispatch<SetStateAction<popupContent>>,
+    setPopupContent: Dispatch<SetStateAction<popupContent>>,
 }) => {
     // ImgFormにて格納されるimageとディスパッチャー
     const [imageFiles, setImageFile] = useState<File[] | null>(null);
@@ -186,7 +186,7 @@ const Component = ({
                     content: popupContent.content
                 })
             }
-            setXcontent(popupContent)
+            setPopupContent(popupContent)
             setMode("xcom")
             handlerCancel()
         } catch (error: unknown) {

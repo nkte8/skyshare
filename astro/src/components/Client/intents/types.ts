@@ -1,4 +1,9 @@
 export type intentInfo = {
     kind: "xcom" | "taittsuu",
-    url: string
+    intent: Array<
+        {
+            hard: "iphone" | "android" | "other",
+            url: string
+        }>,
+    default: string
 }

@@ -20,14 +20,14 @@ const Component = ({
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }
 ) => {
-    const [xcontent, setXcontent] = useState<popupContent>(null!)
+    const [popupContent, setPopupContent] = useState<popupContent>(null!)
     const Forms = ({ mode }: {
         mode: modes
     }) => {
         switch (mode) {
             case "bsky":
                 return <PostForm
-                    setXcontent={setXcontent}
+                    setPopupContent={setPopupContent}
                     setMode={setMode}
                     setMsgInfo={setMsgInfo}
                     processing={processing}
@@ -37,7 +37,7 @@ const Component = ({
             case "xcom":
                 return <PopupPreviewForm
                     setMsgInfo={setMsgInfo}
-                    xcontent={xcontent} />
+                    popupContent={popupContent} />
         }
     }
 
