@@ -1,4 +1,5 @@
 // localstorage関連  
+import { Base64 } from "js-base64"
 type Obj = {
     [key: string]: string;
 };
@@ -9,6 +10,52 @@ const LSKeyName: Obj = {
     noGenerate: "noGenerate",
     showTaittsuu: "showTaittsuu",
     forceIntent: "forceIntent",
+    savePassword: "savePassword",
+    loginInfo: "loginInfo"
+}
+type loginInfo = {
+    id: string,
+    pw: string
+}
+
+export const resetLoginInfo = () => {
+    rm_ls_value(LSKeyName.loginInfo)
+}
+
+export const readLogininfo = (): loginInfo | null => {
+    const value = get_ls_value(LSKeyName.loginInfo)
+    if (value !== null) {
+        const Logininfo: loginInfo =
+            JSON.parse(Base64.decode(value))
+        return Logininfo
+    }
+    rm_ls_value(LSKeyName.loginInfo)
+    return null
+}
+
+export const setLogininfo = ({ id, pw }: loginInfo): void => {
+    const Logininfo: string =
+        Base64.encode(JSON.stringify({
+            id: id, pw: pw
+        })
+        )
+    set_ls_value(LSKeyName.loginInfo, Logininfo)
+}
+
+export const readSavePassword = (def: boolean): boolean => {
+    const value = get_ls_value(LSKeyName.savePassword)
+    if (value !== null) {
+        return value === "true"
+    }
+    rm_ls_value(LSKeyName.savePassword)
+    return def
+}
+
+export const setSavePassword = (flag: boolean): void => {
+    set_ls_value(LSKeyName.savePassword, flag.toString())
+    if (flag === false) {
+        rm_ls_value(LSKeyName.loginInfo)
+    }
 }
 
 export const readForceIntent = (def: boolean): boolean => {
@@ -23,7 +70,6 @@ export const readForceIntent = (def: boolean): boolean => {
 export const setForceIntent = (flag: boolean): void => {
     set_ls_value(LSKeyName.forceIntent, flag.toString())
 }
-
 
 export const readShowTaittsuu = (def: boolean): boolean => {
     const value = get_ls_value(LSKeyName.showTaittsuu)

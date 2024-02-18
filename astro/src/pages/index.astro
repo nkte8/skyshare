@@ -1,7 +1,7 @@
 ---
 import Pagelayout from "@/layouts/Indexlayout.astro";
 import { servicename, githuburl } from "@/utils/vars";
-import { abouturl, posturl, qaurl, changeurl } from "@/utils/envs";
+import { posturl, qaurl, changeurl, featureurl } from "@/utils/envs";
 const title = `${servicename} - Share Bluesky to X`;
 import version from "@/utils/version";
 
@@ -51,7 +51,7 @@ const robots = ["index", "follow", "noarchive", "noimageindex"];
 			<div
 				class="bg-white bg-opacity-80 rounded-lg w-fit px-4 py-2 m-auto"
 			>
-				<a href={abouturl} class="mx-2">About</a>
+				<a href={featureurl} class="mx-2">Feature</a>
 				<a href={changeurl} class="mx-2">Changelog</a>
 				<a href={qaurl} class="mx-2">Q&A</a>
 				<a href={githuburl} class="mx-2">Github</a>

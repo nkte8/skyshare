@@ -2,7 +2,7 @@ import { useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context } from "../common/contexts"
 import { type msgInfo } from "../common/types"
 import deleteSession from "@/utils/atproto_api/deleteSession";
-import { resetJwt } from "@/utils/localstorage";
+import { resetJwt, resetLoginInfo } from "@/utils/localstorage";
 import ProcButton from "../common/ProcButton"
 
 export const Component = ({
@@ -27,16 +27,17 @@ export const Component = ({
             if (session.refreshJwt === null) {
                 return
             }
-            await deleteSession({
-                refreshJwt: session.refreshJwt
-            })
+            resetJwt()
+            resetLoginInfo()
             setSession({
                 did: null,
                 accessJwt: null,
                 refreshJwt: null,
                 handle: null,
             })
-            resetJwt()
+            await deleteSession({
+                refreshJwt: session.refreshJwt
+            })
             if (setMsgInfo !== undefined) {
                 setMsgInfo({
                     msg: "ログアウトしました!",

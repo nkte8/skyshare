@@ -1,7 +1,7 @@
 ---
 // thanks for https://tailblocks.cc/
 import { githuburl } from "@/utils/vars";
-import { baseurl, qaurl, abouturl, changeurl } from "@/utils/envs";
+import { baseurl, qaurl, changeurl, featureurl } from "@/utils/envs";
 import App from "@/components/Client";
 import Loadingcircle from "./loadingcircle.astro";
 
@@ -23,7 +23,7 @@ const { hideLoader = false } = Astro.props;
         </a>
         <nav class="ml-auto flex items-center text-base justify-center">
             <div class="md:block hidden mb-0">
-                <a href={abouturl} class="mx-2">About</a>
+                <a href={featureurl} class="mx-2">Feature</a>
                 <a href={changeurl} class="mx-2">Changelog</a>
                 <a href={qaurl} class="mx-2">Q&A</a>
                 <a href={githuburl} class="mx-2">Github</a>

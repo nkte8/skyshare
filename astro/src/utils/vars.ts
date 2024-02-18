@@ -1,3 +1,4 @@
+export const serviceurl = "skyshare.uk"
 export const githuburl = "https://github.com/nkte8/skyshare"
 export const zennprofile = "https://zenn.dev/nkte8"
 export const zennurl = "https://zenn.dev/nkte8/articles/2024-02-03-r01"

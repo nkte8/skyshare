@@ -1,4 +1,4 @@
-import { useState, useContext, Dispatch, SetStateAction } from "react"
+import { useState, useEffect, useContext, Dispatch, SetStateAction } from "react"
 import { inputtext_base, link } from "../common/tailwind_variants"
 import { Session_context, Profile_context } from "../common/contexts"
 import { type msgInfo } from "../common/types"
@@ -8,6 +8,8 @@ import loadProfile from "./loadProfile";
 import { writeJwt } from "@/utils/localstorage"
 import ProcButton from "../common/ProcButton"
 import Tooltip from "../common/Tooltip"
+import SavePasswordToggle from "./options/SavePasswordToggle"
+import { readLogininfo, setLogininfo } from "@/utils/localstorage"
 
 export const Component = ({
     setMsgInfo,
@@ -15,17 +17,22 @@ export const Component = ({
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
 }) => {
     const [loading, setLoad] = useState<boolean>(false)
+    const [savePassword, setSavePassword] = useState<boolean>(false)
     const [identifier, setIdentifer] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const { setSession } = useContext(Session_context)
     const { setProfile } = useContext(Profile_context)
 
-    const handleLogin = async () => {
+    const handleLogin = async (id?: string, pw?: string) => {
         setLoad(true)
         try {
+            if (typeof id === "undefined" || typeof pw === "undefined") {
+                id = identifier
+                pw = password
+            }
             const res = await createSession({
-                identifier: identifier,
-                password: password
+                identifier: id,
+                password: pw
             })
             if (typeof res.error !== "undefined") {
                 let e: Error = new Error(res.message)
@@ -39,6 +46,13 @@ export const Component = ({
                     msg: "セッションを開始しました!",
                     isError: false,
                 })
+                // savePasswordフラグにより、ブラウザへID/PWを保存
+                if (savePassword === true) {
+                    setLogininfo({
+                        id: identifier,
+                        pw: password
+                    })
+                }
                 // プロフィールを読み込み
                 await loadProfile({
                     session: res,
@@ -57,6 +71,21 @@ export const Component = ({
         }
         setLoad(false)
     }
+    const handleOnLoad = async () => {
+        const loginInfo = readLogininfo()
+        if (loginInfo !== null) {
+            setMsgInfo({
+                msg: "ブラウザに保存されたID/APWでログイン中...",
+                isError: false,
+            })
+            await handleLogin(
+                loginInfo.id,
+                loginInfo.pw)
+        }
+    }
+    useEffect(() => {
+        handleOnLoad()
+    }, [])
 
     return (
         <>
@@ -67,7 +96,12 @@ export const Component = ({
                     </label>
                     <input onChange={(event) => setIdentifer(event.target.value)}
                         placeholder="example.bsky.social"
-                        className={inputtext_base({ class: "max-w-52 w-full px-2", kind: "outbound" })} type="text" />
+                        disabled={loading}
+                        className={inputtext_base({
+                            class: "max-w-52 w-full px-2",
+                            kind: "outbound",
+                            disabled: loading
+                        })} type="text" />
                 </div>
                 <div className="align-middle">
                     <label className="w-32 inline-block my-auto">
@@ -75,7 +109,12 @@ export const Component = ({
                     </label>
                     <input onChange={(event) => setPassword(event.target.value)}
                         placeholder="this-isex-ampl-epwd"
-                        className={inputtext_base({ class: "max-w-52 w-full px-2", kind: "outbound" })} type="password" />
+                        disabled={loading}
+                        className={inputtext_base({
+                            class: "max-w-52 w-full px-2",
+                            kind: "outbound",
+                            disabled: loading
+                        })} type="password" />
                 </div>
                 <div className="my-2">
                     <ProcButton
@@ -84,6 +123,12 @@ export const Component = ({
                         context="Blueskyアカウントへログイン"
                         disabled={!(identifier.length > 0 && password.length > 0)}
                         showAnimation={true} />
+                </div>
+                <div className="mx-auto w-fit">
+                    <SavePasswordToggle
+                        labeltext={"ID/AppPasswordをブラウザへ保存する"}
+                        prop={savePassword}
+                        setProp={setSavePassword} />
                 </div>
                 <Tooltip tooltip={
                     <div className="flex flex-col sm:flex-row">
