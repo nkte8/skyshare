@@ -1,0 +1,63 @@
+name: Bug Report
+description: "About unexpected work of application report"
+title: "[Bug Report]: "
+labels: ["bug"]
+assignees: 
+  - nkte8
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **↑ Don't forget write about bug as short in title pls**
+        **↑ タイトルに端的にバグについて記載するのをお忘れなく！**
+
+  - type: textarea
+    id: about
+    attributes:
+      label: What's the matter?
+      description: |
+        Write what the issue is easily here pls. 
+        ここにどういう不具合なのかを端的に書いてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: howto
+    attributes:
+      label: When/How the issue was occured?
+      description: |
+        Write when the issue/bug occured and how to cause the issue/bug here.
+        ここにいつ不具合が起きたか、どのようにして不具合をおこしたかを書いてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: What environmet you using to cause issue? 
+      description: |
+        Write your environment of running app, What device, OS and version, browser name and version, other info like uses of Contents blocker, Extension...etc
+        デバイスは何か、OSとOSのバージョンは何か、ブラウザとブラウザのバージョンは何か、その他背景情報（コンテンツブロッカー・拡張機能の利用状況）
+    validations:
+      required: true
+
+  - type: textarea
+    id: repeatability
+    attributes:
+      label: Can you occur issue again?
+      description: |
+        I wanna know repeatability of issue. If you can occur issue again with some procedure, write how.
+        問題の再現性を知りたいです。もし不具合を一定の手順で起こせる場合、その方法を記載してください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: other
+    attributes:
+      label: Other infomation pls.
+      description: |
+        If you cannot write correctly only writing, share as media like picture/video.
+        もし文章だけでは難しい場合、画像や動画などを共有してください。
+    validations:
+      required: false
