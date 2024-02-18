@@ -1,0 +1,75 @@
+name: Feature Request
+description: "Create new feature request"
+title: "[Feature Request]: "
+labels: ["enhancement"]
+assignees: 
+  - nkte8
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **↑ Don't forget write request as short in title pls**
+        **↑ タイトルに端的に追加して欲しい機能を記載するのをお忘れなく！**
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Hi Bluesky Developperes and Testeres!
+
+        Skyshare always believes all X users to come to Bluesky!
+        For help the purpose, I should improve service for users using this service.
+        I need idea of nice service for nice X users transfer, give me!
+        
+        Skyshareは全てのXユーザがBlueskyへ来ると信じています。
+        この目的のために、開発者はユーザビリティを向上させる必要があると考えています。
+        Xユーザがより移行を早めるため、より良いサービスのため、アイデアが必要です!
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Request Form
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Request Details
+      description: |
+        I respect your great idea! Please make me know;)
+        リクエストありがとう！どんなのか教えて！
+    validations:
+      required: true
+
+  - type: dropdown
+    id: importance
+    attributes:
+      label: Feature Scope
+      description: |
+        How the way your idea help purpose? You suggest...
+        あなたが思うに、この機能はどのような観点で目的を解決しそう？
+      multiple: true
+      options:
+        - Usability increase, user satisfication (ユーザビリティ向上させ、利用者を満足させる)
+        - Better for Bluesky user, more wonderful (Blueskyユーザに対して、より魅力的にする)
+        - Make X users better Bluesky, transfer cause (XユーザにBlueskyを魅力的に感じさせ、移行を助長する)
+        - Awesome idea, increase Developer motivation (素晴らしいアイデアで、開発者を躍起にさせる)
+        - other, write next (その他。次のフォームに記載する)
+    validations:
+      required: true
+
+  - type: input
+    id: other
+    attributes:
+      label: Feature Add infomation
+      description: |
+        If you choose other before or wanna write more PR about your idea, please write it.
+        前のドロップダウンにてotherを選択された場合や、リクエストをよりPRしたい場合は記載してください。
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Thanks to Request!
+
+        Thx to write it! if answer of form valid, developer would consider the wonderful idea. Expect Update!
+        書いてくれてありがとう！もしフォームへの回答内容が適切であれば、この素晴らしいアイデアは検討させていただきます！アップデートをお待ちください！
