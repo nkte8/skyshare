@@ -36,7 +36,6 @@ const Component = ({
 
     const handleFilechanged = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputFiles = event.currentTarget.files;
-        let resultAlts: Array<string> = []
         let resultFiles: Array<File> = []
         // 入力されたファイルがない場合は処理を中断
         if (!inputFiles || inputFiles?.length === 0) {
