@@ -120,6 +120,7 @@ export const attachImageToRecord = async ({
     session,
     imageFiles,
     handleProcessing,
+    altTexts,
 }: {
     base: RecordBase,
     session: SessionNecessary,
@@ -129,6 +130,7 @@ export const attachImageToRecord = async ({
     }: {
         msg: string, isError: boolean
     }) => void
+    altTexts: Array<string>
 }): Promise<RecordCore> => {
     let recordResult: RecordCore = base
     let queUploadBlob: Array<Promise<typeof model_uploadBlob & typeof model_error>> = []
@@ -159,13 +161,13 @@ export const attachImageToRecord = async ({
         $type: "app.bsky.embed.images",
         images: []
     }
-    resultUploadBlobs.forEach((value) => {
+    resultUploadBlobs.forEach((value, index) => {
         embed.images.push({
             image: {
                 cid: value.blob.ref.$link,
                 mimeType: value.blob.mimeType
             },
-            alt: ""
+            alt: altTexts[index]
         })
     })
     recordResult = {
