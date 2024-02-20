@@ -19,37 +19,43 @@ const get_mimetype = (name: string): boolean => {
     return result
 }
 
-const Component = ({ disabled, setImageFile, className }: {
+const Component = ({ 
+    disabled,
+    imageFiles,
+    setImageFile,
+    className,
+}: {
     disabled: boolean
-    setImageFile: Dispatch<SetStateAction<File[] | null>>
+    imageFiles: Array<File>
+    setImageFile: Dispatch<SetStateAction<File[]>>
     className?: string
 }) => {
     const inputRef = useRef<HTMLInputElement>(null!);
-
     const handleClick = () => { inputRef.current.click() }
+    const maxImages = 4
 
     const handleFilechanged = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const filelist = event.currentTarget.files;
-        const reset = () => {
-            setImageFile(null)
+        const inputFiles = event.currentTarget.files;
+        let resultAlts: Array<string> = []
+        let resultFiles: Array<File> = []
+        // 入力されたファイルがない場合は処理を中断
+        if (!inputFiles || inputFiles?.length === 0) {
+            event.target.value = ""
+            return
         }
-        if (!filelist || filelist?.length === 0) {
-            reset(); return
+        if (imageFiles.length > 0 ) {
+            resultFiles = imageFiles
         }
         let files: Array<Promise<File>> = [];
-        Array.from(filelist).forEach((value, index) => {
-            if (index >= 4) {
-                return
-            }
+        Array.from(inputFiles).forEach((value) => {
             if (get_mimetype(value.type) !== false) {
                 files.push(compressImage(value))
             }
         })
-        if (files.length <= 0) {
-            reset()
-            return
-        }
-        setImageFile(await Promise.all<File>(files))
+        resultFiles = resultFiles.concat(await Promise.all<File>(files))
+        resultFiles = resultFiles.slice(0,maxImages)
+        setImageFile(resultFiles)
+        event.target.value = ""
     }
 
     const acceptlist = extensions.join(",")

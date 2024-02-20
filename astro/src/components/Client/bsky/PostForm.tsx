@@ -17,7 +17,7 @@ import { link } from "../common/tailwind_variants";
 import { pagesPrefix } from "@/utils/vars";
 import Tweetbox from "../common/Tweetbox"
 import ImgForm from "./ImgForm"
-import ImgViewBox from "./ImgViewBox"
+import ImgViewBox from "./imgctrl/ImgViewBox"
 import TextForm from "./TextForm"
 import Popup from "../intents/popup"
 import AutoXPopupToggle from "./options/AutoXPopupToggle"
@@ -44,7 +44,9 @@ const Component = ({
     setPopupContent: Dispatch<SetStateAction<popupContent>>,
 }) => {
     // ImgFormにて格納されるimageとディスパッチャー
-    const [imageFiles, setImageFile] = useState<File[] | null>(null);
+    const [imageFiles, setImageFile] = useState<Array<File>>([]);
+    // ImgFormにて格納されるAltテキストのリスト
+    const [altTexts, setAltText] = useState<Array<string>>(["", "", "", ""]);
     // Post内容を格納する変数とディスパッチャー
     const [post, setPost] = useState<string>("")
     // Postの文字数を格納する変数とディスパッチャー
@@ -115,7 +117,8 @@ const Component = ({
                     base: record,
                     session: sessionNecessary,
                     imageFiles: imageFiles,
-                    handleProcessing: setMsgInfo
+                    handleProcessing: setMsgInfo,
+                    altTexts: altTexts
                 })
             }
             if (typeof record.facets !== "undefined" && record.facets.length > 0) {
@@ -172,16 +175,19 @@ const Component = ({
                     accessJwt: session.accessJwt,
                     uri: rec_res.uri
                 })
-                if (typeof get_res.uri !== "undefined") {
-                    setMsgInfo({
-                        msg: "Twitter用リンクを生成しました!",
-                        isError: false
-                    })
-                    const [id, rkey] = get_res.uri.split("/")
-                    const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
-                    popupContent.url = ogpUrl
-                    popupContent.content += `${popupContent.content !== "" ? (" ") : ("")}${ogpUrl.toString()}`
+                if (typeof get_res?.error !== "undefined") {
+                    let e: Error = new Error(get_res.message)
+                    e.name = `pstform.tsx ${get_res.error}`
+                    throw e
                 }
+                setMsgInfo({
+                    msg: "Twitter用リンクを生成しました!",
+                    isError: false
+                })
+                const [id, rkey] = get_res.uri.split("/")
+                const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
+                popupContent.url = ogpUrl
+                popupContent.content += `${popupContent.content !== "" ? (" ") : ("")}${ogpUrl.toString()}`
             }
             if (autoPop) {
                 Popup({
@@ -206,7 +212,7 @@ const Component = ({
         setPostProcessing(false)
     }
     const handlerCancel = () => {
-        setImageFile(null)
+        setImageFile([])
         setPost("")
         setCount(0)
     }
@@ -250,6 +256,7 @@ const Component = ({
                 <div className="flex">
                     <ImgForm
                         disabled={isPostProcessing}
+                        imageFiles={imageFiles}
                         setImageFile={setImageFile}
                         className="py-0"
                     />
@@ -294,7 +301,10 @@ const Component = ({
                     </div>
                 </Details>
                 <MemoImgViewBox
-                    imageFiles={imageFiles} />
+                    imageFiles={imageFiles}
+                    setImageFile={setImageFile}
+                    altTexts={altTexts}
+                    setAltText={setAltText} />
             </Tweetbox>
         </>
     );
