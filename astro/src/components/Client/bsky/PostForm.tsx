@@ -110,7 +110,7 @@ const Component = ({
                 e.name = "postform.tsx"
                 throw e
             }
-            const noImagesAttached = (imageFiles === null)
+            const noImagesAttached = (imageFiles.length <= 0)
             // 画像のアップロードを行う場合の処理(Bluesky側)
             if (!noImagesAttached) {
                 record = await attachImageToRecord({
@@ -236,10 +236,10 @@ const Component = ({
                     <button
                         onClick={handlerCancel}
                         className={link({
-                            enabled: (post.length >= 1 || imageFiles !== null),
+                            enabled: (post.length >= 1 || imageFiles.length > 0),
                             class: "inline-block mx-2"
                         })}
-                        disabled={!(post.length >= 1 || imageFiles !== null)}>
+                        disabled={!(post.length >= 1 || imageFiles.length > 0)}>
                         下書きを消す
                     </button>
                     <div className="flex-1 my-0"></div>
@@ -247,7 +247,7 @@ const Component = ({
                         handlePost={handlePost}
                         isProcessing={processing}
                         isPostProcessing={isPostProcessing}
-                        disabled={!(post.length >= 1 || imageFiles !== null)} />
+                        disabled={!(post.length >= 1 || imageFiles.length > 0)} />
                 </div>
                 <TextForm
                     post={post}
