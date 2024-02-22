@@ -1,5 +1,37 @@
 # Skyshare 更新履歴
 
+## 1.1.9
+
+### Patch Changes
+
+- AT Protocolの更新により、画像の投稿ができなくなっていた不具合を修正しました。
+  - 原因は`app.bsky.embed.images`lexiconの型変更が、blueskyのPDSに適応されたためでした。
+    - 2023/04のコミット[7f008c0](https://github.com/bluesky-social/atproto/commit/7f008c05a09c6dcf42dcac2819210138af42835c#diff-cae50bb07a43fef0cca5d73ad36687d970b3c1b9a92184dc1d48cb34cea0523a)により、ポストに画像を添付する方法は以下のように変更されました。
+
+2023/04/01以前:
+```
+              image: {
+                  cid: string,
+                  mimeType: string
+              }
+```
+2023/04/01以降:
+```
+              image: {
+                  $type: "blob",
+                  ref: {
+                      $link: string
+                  },
+                  mimeType: string,
+                  size: number
+              },
+```
+
+- `image`object型の内容は`UploadBlob`が返却する`blob`型準拠となっており、当サイトで使用していた型は日本語のAT Protocol技術記事を参考にした古い内容だったため、古い情報をRecordへ登録していました（`legacy blob ref`の根本原因）
+- しかし、本エラーは今日まで発生しませんでした。これは、BlueskyのPDS側がこの形式を受け入れていた（lexiconの定義は変わっていたが、PDSでは従来の形式に置き換えていた）ことが原因だと考えられます。
+  - 2023/02/23朝7時ごろに [6dfc899](https://github.com/bluesky-social/atproto/commit/6dfc899d995a0a7b0eb33ea1661e5c3660e38f90#diff-e35dfd17ddb08257c68e17800f771441e2e6298e8817dedaa1324442c42b0c1eR247) がマージされました。新しいlexiconの型情報でPDSが検証されるようになったことから、従来のObject型がエラー判定とされました。（`Legacy blob ref at ...`の出力の正体）
+- 以上より、Skyshare側も新しい形式に追従し、createPostのエラーを解消しました。
+
 ## 1.1.8
 
 ### Patch Changes

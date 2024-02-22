@@ -3,10 +3,18 @@ namespace embed {
         $type: "app.bsky.embed.images",
         images: Array<{
             image: {
-                cid: string,
-                mimeType: string
+                $type: "blob" | string,
+                ref: {
+                    $link: string
+                },
+                mimeType: string,
+                size: number
             },
-            alt: string
+            alt: string,
+            aspectRaito?: {
+                width: number,
+                height: number
+            }
         }>
     }
     export type external = {

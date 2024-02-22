@@ -18,10 +18,10 @@ export const Component = ({
     setLanguage
 }: {
     disabled: boolean,
-    setLanguage: Dispatch<SetStateAction<Array<string> | undefined>>,
+    setLanguage: Dispatch<SetStateAction<Array<string>>>,
 }) => {
     const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        let value: Array<string> | undefined = undefined
+        let value: Array<string> = []
         const item = langList.find((opt) => opt.label === event.target.value)
         if (typeof item !== "undefined") {
             value = [item.code]

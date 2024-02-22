@@ -54,7 +54,7 @@ const Component = ({
     // Postの実行状態を管理する変数とディスパッチャー
     const [isPostProcessing, setPostProcessing] = useState<boolean>(false)
     // Postの実行状態を管理する変数とディスパッチャー
-    const [language, setLanguage] = useState<Array<string> | undefined>(["ja"])
+    const [language, setLanguage] = useState<Array<string>>(["ja"])
     // セッション
     const { session } = useContext(Session_context)
     // Postの入力上限
@@ -88,7 +88,8 @@ const Component = ({
             let record = await buildRecordBase({
                 text: post,
                 createdAt: new Date(),
-                langs: language
+                langs: language,
+                $type: "app.bsky.feed.post"
             })
             let popupContent: popupContent = {
                 url: null,
