@@ -17,7 +17,8 @@ export type SessionNecessary = {
 type RecordBase = {
     text: string,
     createdAt: Date,
-    langs?: Array<string>
+    $type: "app.bsky.feed.post",
+    langs: Array<string>
 }
 // 付与できる情報を定義
 type RecordCore = {
@@ -145,7 +146,12 @@ export const attachImageToRecord = async ({
         msg: `画像のアップロード中...`,
         isError: false
     })
-    const resultUploadBlobs = await Promise.all(queUploadBlob)
+    // 戻り配列の順序を固定
+    const resultUploadBlobs = 
+        await Promise.all(queUploadBlob).then(
+        (values) => {
+            return values
+        })
 
     // 画像アップロードに失敗したファイルが一つでも存在した場合停止する
     resultUploadBlobs.forEach((value) => {
@@ -163,11 +169,8 @@ export const attachImageToRecord = async ({
     }
     resultUploadBlobs.forEach((value, index) => {
         embed.images.push({
-            image: {
-                cid: value.blob.ref.$link,
-                mimeType: value.blob.mimeType
-            },
-            alt: altTexts[index]
+            image: value.blob,
+            alt: altTexts[index],
         })
     })
     recordResult = {

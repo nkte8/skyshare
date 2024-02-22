@@ -41,7 +41,7 @@ export default {
 				},
 				'ul': {
 					listStyleType: theme("listStyleType.disc"),
-					marginLeft: "1rem",
+					marginLeft: "1.5rem",
 					marginBottom: "1rem"
 				},
 				"div": {
@@ -55,7 +55,7 @@ export default {
 					color: "rgb(37 99 235)", // text-blue-600
 				},
 				"code": {
-					backgroundColor: "rgb(229 231 235)", // bg-gray-200
+					backgroundColor: "rgb(226 232 240);", // bg-gray-200
 					borderRadius: theme("borderRadius.md"),
 					paddingLeft: "0.3rem",
 					paddingRight: "0.3rem",
@@ -65,6 +65,16 @@ export default {
 				},
 				"s": {
 					color: "rgb(156 163 175)"  // text-gray-400
+				},
+				"pre": {
+					backgroundColor: "rgb(226 232 240);", // bg-gray-200
+					paddingTop: "0.5rem",
+					paddingBottom: "0.5rem",
+					paddingRight: "2rem",
+					paddingLeft: "2rem",
+					margin: "0.5rem",
+					borderRadius: theme("borderRadius.md"),
+					width: "90%"
 				}
 			})
 		})

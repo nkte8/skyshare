@@ -1,5 +1,6 @@
 {
     "blob": {
+        "$type": "blob",
         "ref": {
             "$link": "string"
         },
