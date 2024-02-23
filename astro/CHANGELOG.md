@@ -1,5 +1,13 @@
 # Skyshare 更新履歴
 
+## 1.1.10
+
+### Patch Changes
+
+- OGPページ削除の際にページのみではなく、OGPカードも削除するようにしました。
+  - これまでOGPページについては削除処理によってデータをデータベースから削除していましたが、OGP画像自体も削除対象に含めました。
+- 一部の関数にJSDocを設定し、コードの可読性を向上させました。
+
 ## 1.1.9
 
 ### Patch Changes
@@ -9,13 +17,16 @@
     - 2023/04のコミット[7f008c0](https://github.com/bluesky-social/atproto/commit/7f008c05a09c6dcf42dcac2819210138af42835c#diff-cae50bb07a43fef0cca5d73ad36687d970b3c1b9a92184dc1d48cb34cea0523a)により、ポストに画像を添付する方法は以下のように変更されました。
 
 2023/04/01以前:
+
 ```
               image: {
                   cid: string,
                   mimeType: string
               }
 ```
+
 2023/04/01以降:
+
 ```
               image: {
                   $type: "blob",

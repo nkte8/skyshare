@@ -29,7 +29,7 @@ type pagedb = {
         alt: string
     }>
 }
-export namespace dev {
+namespace dev {
     let envName: envName = "dev"
     function checkInput(arg: any): arg is Input {
         return typeof arg.uri !== "undefined" &&

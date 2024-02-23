@@ -5,11 +5,22 @@ import getPostThread from "../atproto/getPostThread"
 import type modelGetSession from "../atproto/models/getSession.json"
 import type modelGetPostThread from "../atproto/models/getPostThread.json"
 import delOgbPageDB from "./delPagedb"
+import deleteOgp from './ogpEraser'
 
 import { app_bsky } from '../atproto/base'
-import modelInput from "./models/Input.json"
 import { domain, envName } from '../vars'
-type Input = typeof modelInput
+
+/**
+ * この関数の入力となる形式
+ * @param {string} id handle @ rkeyで形成されるpageid  
+ * @param {string} did did
+ * @param {string} accessJwt アクセスシークレット
+ */
+type Input = {
+    id: string,
+    did: string,
+    accessJwt: string
+}
 
 export namespace prod {
     let envName: envName = "prod"
@@ -114,6 +125,12 @@ export namespace prod {
         response.status(200).send({
             result: "ok"
         });
+        // OGPを削除
+        const ogpFilename = `${handleFromId}/${rkeyFromId}`
+        await deleteOgp({
+            env: envName,
+            ogpFilename: ogpFilename
+        })
         response.end();
     });
 }

@@ -4,18 +4,31 @@ import getPostThread from "../atproto/getPostThread"
 import compositeImages from "./compositeImages"
 import { uploadOgp } from "./ogpUploader"
 import { addOgbPageDB } from "./addPagedb"
-import modelInput from "./models/Input.json"
 import { domain, envName } from '../vars'
-type Input = typeof modelInput
 
-type bskylinxDB = {
+/**
+ * この関数の入力となる形式
+ * @param {string} uri OGPを作成するBluesky投稿のuri
+ * @param {string} accessJwt アクセスシークレット
+ */
+type Input = {
+    uri: string,
+    accessJwt: string
+}
+/**
+ * upstashに登録する情報
+ * @param {string} ogp OGPイメージのリンク
+ * @param {Array<object>} imgs イメージ情報のリスト
+ * @param {string} imgs.thumb イメージのサムネイル情報
+ * @param {string} imgs.alt イメージのalt情報
+ */
+type pagedb = {
     ogp: string,
     imgs: Array<{
         thumb: string,
         alt: string
     }>
 }
-
 export namespace prod {
     let envName: envName = "prod"
     function checkInput(arg: any): arg is Input {
@@ -83,7 +96,7 @@ export namespace prod {
             ogpBuffer: await ogpBuffer
         })
 
-        const resPagedbAdd = await addOgbPageDB<bskylinxDB>({
+        const resPagedbAdd = await addOgbPageDB<pagedb>({
             env: envName,
             keyName: dbKey,
             dbData: {
