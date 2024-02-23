@@ -5,6 +5,14 @@ type output = {
     result: string
 }
 
+/**
+ * pageDBからデータを削除
+ *
+ * @param {Object} props
+ * @param {string} props.id handle @ rkeyで形成されるpageid
+ * @param {string} props.dud did
+ * @param {string} props.accessJwt アクセストークン
+ */
 export const api = async ({
     id,
     did,

@@ -4,22 +4,22 @@ import getSession from "../atproto/getSession"
 import getPostThread from "../atproto/getPostThread"
 import type modelGetSession from "../atproto/models/getSession.json"
 import type modelGetPostThread from "../atproto/models/getPostThread.json"
-import { delOgbPageDB } from "./delPagedb"
+import delOgbPageDB from "./delPagedb"
 
 import { app_bsky } from '../atproto/base'
 import modelInput from "./models/Input.json"
-import { domain } from '../vars'
+import { domain, envName } from '../vars'
 type Input = typeof modelInput
 
 export namespace prod {
-    let envName: "dev" | "prod" = "prod"
+    let envName: envName = "prod"
     function checkInput(arg: any): arg is Input {
         return typeof arg.id !== "undefined" &&
             typeof arg.did !== "undefined" &&
             typeof arg.accessJwt !== "undefined";
     }
     let cors_value: RegExp | string = "*"
-    if (envName as "dev" | "prod" === "prod") {
+    if (envName as envName === "prod") {
         cors_value = domain
     }
     export const editDbEndpoint = functions.https.onRequest({

@@ -5,7 +5,7 @@ import compositeImages from "./compositeImages"
 import { uploadOgp } from "./ogpUploader"
 import { addOgbPageDB } from "./addPagedb"
 import modelInput from "./models/Input.json"
-import { domain } from '../vars'
+import { domain, envName } from '../vars'
 type Input = typeof modelInput
 
 type bskylinxDB = {
@@ -17,13 +17,13 @@ type bskylinxDB = {
 }
 
 export namespace prod {
-    let envName: "dev" | "prod" = "prod"
+    let envName: envName = "prod"
     function checkInput(arg: any): arg is Input {
         return typeof arg.uri !== "undefined" &&
             typeof arg.accessJwt !== "undefined";
     }
     let cors_value: RegExp | string = "*"
-    if (envName as "dev" | "prod" === "prod") {
+    if (envName as envName === "prod") {
         cors_value = domain
     }
     export const ogpGenerator = functions.https.onRequest({

@@ -1,9 +1,17 @@
 import redisDel from "../upstash/redisDel"
+import { envName } from '../vars'
 
-export const delOgbPageDB = ({
+/**
+ * upstash Redisからページデータを削除
+ *
+ * @param {Object} props
+ * @param {"dev" | "prod"} props.env dev or prod
+ * @param {string} props.keName upstash keyname
+ */
+const delOgbPageDB = ({
     env, keyName
 }: {
-    env: "dev" | "prod",
+    env: envName,
     keyName: string
 }) => {
     let envParam = {
@@ -29,3 +37,4 @@ export const delOgbPageDB = ({
         key: keyName,
     })
 }
+export default delOgbPageDB

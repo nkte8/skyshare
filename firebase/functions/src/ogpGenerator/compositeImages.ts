@@ -1,5 +1,10 @@
 import sharp from 'sharp';
 
+/**
+ * OPGの合成関数
+ *
+ * @param {Array<Buffer>} 合成するイメージのarray
+ */
 export const compositeImages = async (
     images: Array<Buffer>
 ): Promise<Buffer> => {
@@ -78,6 +83,7 @@ export const compositeImages = async (
     }
     result = ogp.composite(compositeOptions)
     result = result.jpeg({
+        quality: 80,
         progressive: true,
         mozjpeg: true
     });

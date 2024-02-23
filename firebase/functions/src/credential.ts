@@ -1,7 +1,7 @@
 import { initializeApp, cert } from 'firebase-admin/app'
 import { getStorage } from 'firebase-admin/storage';
-
-import * as serviceAccount from '../service_account.json'
+import { storageUrl } from './vars';
+import * as serviceAccount from './service_account.json'
 const params = {
     type: serviceAccount.type,
     projectId: serviceAccount.project_id,
@@ -17,6 +17,6 @@ const params = {
 
 const adminApp = getStorage(initializeApp({
     credential: cert(params),
-    storageBucket: "gs://ogp-generator-5f516.appspot.com"
+    storageBucket: storageUrl
 }));
 export default adminApp
