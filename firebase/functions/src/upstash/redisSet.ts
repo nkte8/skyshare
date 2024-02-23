@@ -1,3 +1,12 @@
+/**
+ * upstash redisへ情報を登録する
+ * @param {Object} props
+ * @param {Object} props.auth redisへの認証データ
+ * @param {endpoint} props.auth.endpoint エンドポイントのURL
+ * @param {token} props.auth.token トークン
+ * @param {key} props.key 登録するキー情報
+ * @param {T} props.value 登録する値情報
+ */
 export const api = async <T>({
     auth,
     key,

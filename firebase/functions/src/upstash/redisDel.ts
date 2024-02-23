@@ -1,3 +1,11 @@
+/**
+ * upstash redisから情報を削除するAPI
+ * @param {Object} props
+ * @param {Object} props.auth redisへの認証データ
+ * @param {endpoint} props.auth.endpoint エンドポイントのURL
+ * @param {token} props.auth.token トークン
+ * @param {key} props.key 削除するキー情報
+ */
 export const api = async ({
     auth,
     key

@@ -5,6 +5,13 @@ type output = {
     uri: string
 }
 
+/**
+ * pageDBへページを追加
+ *
+ * @param {Object} props
+ * @param {string} props.uri 元投稿のuri
+ * @param {string} props.accessJwt アクセストークン
+ */
 export const api = async ({
     uri,
     accessJwt,

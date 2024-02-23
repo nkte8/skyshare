@@ -1,4 +1,11 @@
-const errRes = (code: number) => {
+/**
+ * エラー文字列を返却する
+ * @param {number} code RFC7231定義のHTTPエラーコード
+ */
+const errRes = (code: number):{
+    error: string,
+    message: string
+} => {
     let error: string = ""
     let message: string = ""
     switch (code) {

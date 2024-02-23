@@ -1,11 +1,14 @@
-import adminApp from "./credential";
+import adminApp from "../credential";
 import { getDownloadURL } from 'firebase-admin/storage';
+import { envParam } from "../vars"
 
-let envParam = {
-    dev: "ogpdev",
-    prod: "ogp"
-};
-
+/**
+ * Firebaes storageへファイルの登録
+ * @param {Object} props
+ * @param {"dev" | "prod"} props.env dev or prod
+ * @param {string} props.ogpFilename OGPのファイル名
+ * @param {Buffer} props.ogpBuffer 保存するOGPの画像データ
+ */
 export const uploadOgp = async ({
     env, ogpFilename, ogpBuffer
 }: {
