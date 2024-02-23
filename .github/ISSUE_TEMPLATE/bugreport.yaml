@@ -27,8 +27,8 @@ body:
     attributes:
       label: When/How the issue was occured?
       description: |
-        Write when the issue/bug occured and how to cause the issue/bug here.
-        ここにいつ不具合が起きたか、どのようにして不具合をおこしたかを書いてください。
+        Write details when the issue/bug occured and how to cause the issue/bug here.
+        ここにいつ不具合が起きたか、どのようにして不具合をおこしたかを詳細に書いてください。
     validations:
       required: true
 
