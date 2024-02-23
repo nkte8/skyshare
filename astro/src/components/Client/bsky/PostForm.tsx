@@ -188,7 +188,7 @@ const Component = ({
                 const [id, rkey] = get_res.uri.split("/")
                 const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
                 popupContent.url = ogpUrl
-                popupContent.content += `${popupContent.content !== "" ? (" ") : ("")}${ogpUrl.toString()}`
+                popupContent.content += `${popupContent.content !== "" ? ("\n") : ("")}${ogpUrl.toString()}`
             }
             if (autoPop) {
                 Popup({
