@@ -11,7 +11,6 @@ export const Component = ({
     isProcessing: boolean,
     isPostProcessing: boolean,
     disabled: boolean
-
 }) => {
     return (
         <ProcButton
@@ -20,7 +19,7 @@ export const Component = ({
             context="Post"
             showAnimation={isPostProcessing}
             color="blue"
-            className={"my-0 py-0.5"}
+            className={["my-0","py-0.5"].join(" ")}
             disabled={disabled} />
     )
 }

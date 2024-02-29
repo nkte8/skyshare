@@ -12,6 +12,7 @@ import LogoutButton from "./bsky/LogoutButton"
 import LoadSession from "./bsky/LoadSession"
 import PageControllerForm from "./pagedb/PageControllerForm"
 import type model_getProfile from "@/utils/atproto_api/models/getProfile.json";
+import { link } from "./common/tailwind_variants";
 
 const Component = ({
     portalonly = false
@@ -110,12 +111,7 @@ const Component = ({
                 !portalonly && isLoaded && (
                     session?.accessJwt !== null ? (
                         <>
-                            <ProcButton handler={handleClick}
-                                isProcessing={processing}
-                                disabled={processing}
-                                showAnimation={false}
-                                context="投稿する"
-                                className={buttonstyle} />
+                            <a className={link({ class: ["mx-2"] })} href={posturl}>PostForm</a>
                             <LogoutButton
                                 className={buttonstyle}
                                 reload={true}

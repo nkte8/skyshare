@@ -11,6 +11,7 @@ import {
 
 import createRecord from "@/utils/atproto_api/createRecord";
 import createPage from "@/utils/backend_api/createPage";
+import { setSavedTags, readSavedTags } from "@/utils/localstorage";
 
 import { link } from "../common/tailwind_variants";
 
@@ -27,6 +28,7 @@ import ForceIntentToggle from "./options/ForceIntentToggle"
 import PostButton from "./PostButton"
 import LanguageSelect from "./LanguageSelect"
 import Details from "./Details"
+import TagInputList from "./TagInputList"
 
 const siteurl = location.origin
 const MemoImgViewBox = memo(ImgViewBox)
@@ -61,6 +63,8 @@ const Component = ({
     const countMax = 300
     // PostのWarining上限
     const countWarn = 140
+    // 保存できるタグの上限
+    const maxTagCount = 8
     // Options
     // ポスト時に自動でXを開く
     const [autoPop, setAutoPop] = useState<boolean>(false)
@@ -71,14 +75,12 @@ const Component = ({
     // タイッツーボタンを表示する
     const [showTaittsuu, setShowTaittsuu] = useState<boolean>(false)
 
-
-    const initializePost = () => {
-        setPostProcessing(true)
-        setProcessing(true)
-        // Postを押したら強制的にフォーカスアウトイベントを発火
-    }
-
     const handlePost = async () => {
+        const initializePost = () => {
+            setPostProcessing(true)
+            setProcessing(true)
+            // Postを押したら強制的にフォーカスアウトイベントを発火
+        }
         initializePost()
         setMsgInfo({
             msg: "レコードに変換中...",
@@ -91,6 +93,17 @@ const Component = ({
                 langs: language,
                 $type: "app.bsky.feed.post"
             })
+            // Hashtagが含まれている場合はブラウザに保存
+            const savedTag = readSavedTags()
+            let taglist: string[] = (savedTag !== null) ? savedTag : []
+            record.facets?.forEach((value) => {
+                const facet = value.features[0]
+                if (facet.$type === "app.bsky.richtext.facet#tag") {
+                    taglist.unshift(`#${facet.tag}`)
+                }
+            })
+            setSavedTags(taglist.slice(0, maxTagCount))
+
             let popupContent: popupContent = {
                 url: null,
                 content: post
@@ -238,17 +251,19 @@ const Component = ({
                         onClick={handlerCancel}
                         className={link({
                             enabled: (post.length >= 1 || imageFiles.length > 0),
-                            class: "inline-block mx-2"
+                            class: ["inline-block", "mx-2", "flex-none"]
                         })}
                         disabled={!(post.length >= 1 || imageFiles.length > 0)}>
                         下書きを消す
                     </button>
-                    <div className="flex-1 my-0"></div>
-                    <PostButton
-                        handlePost={handlePost}
-                        isProcessing={processing}
-                        isPostProcessing={isPostProcessing}
-                        disabled={!(post.length >= 1 || imageFiles.length > 0)} />
+                    <div className="flex-1"></div>
+                    <div className="flex-none my-auto">
+                        <PostButton
+                            handlePost={handlePost}
+                            isProcessing={processing}
+                            isPostProcessing={isPostProcessing}
+                            disabled={!(post.length >= 1 || imageFiles.length > 0)} />
+                    </div>
                 </div>
                 <TextForm
                     post={post}
@@ -276,31 +291,40 @@ const Component = ({
                         }`}>
                         {count}/{countMax}
                     </div>
-
                 </div>
-
-                <div className="flex flex-wrap mb-4">
-                    <AutoXPopupToggle
-                        labeltext={"Xを自動で開く"}
-                        prop={autoPop}
-                        setProp={setAutoPop} />
-                    <NoGenerateToggle
-                        labeltext={"Xへの画像は自身で添付する"}
-                        prop={noGenerate}
-                        setProp={setNoGenerate} />
-                </div>
-                <Details initHidden={!showTaittsuu}>
-                    <div className="flex flex-wrap">
-                        <ShowTaittsuuToggle
-                            labeltext={"タイッツーの投稿ボタンも表示する"}
-                            prop={showTaittsuu}
-                            setProp={setShowTaittsuu} />
-                        <ForceIntentToggle
-                            labeltext={"Xの投稿はアプリを強制的に起動する"}
-                            prop={noUseXApp}
-                            setProp={setNoUseXApp} />
+                <div className="mx-2 my-auto">
+                    <div className="flex w-full">
+                        <div className="flex-none my-auto">よく使うタグ: </div>
+                        <TagInputList
+                            post={post}
+                            setPost={setPost}
+                            disabled={processing} />
                     </div>
-                </Details>
+
+                    <div className="flex flex-wrap mb-4">
+                        <AutoXPopupToggle
+                            labeltext={"Xを自動で開く"}
+                            prop={autoPop}
+                            setProp={setAutoPop} />
+                        <NoGenerateToggle
+                            labeltext={"Xへの画像は自身で添付する"}
+                            prop={noGenerate}
+                            setProp={setNoGenerate} />
+                    </div>
+                    <Details initHidden={!showTaittsuu}>
+                        <div className="flex flex-wrap">
+                            <ShowTaittsuuToggle
+                                labeltext={"タイッツーの投稿ボタンも表示する"}
+                                prop={showTaittsuu}
+                                setProp={setShowTaittsuu} />
+                            <ForceIntentToggle
+                                labeltext={"Xの投稿はアプリを強制的に起動する"}
+                                prop={noUseXApp}
+                                setProp={setNoUseXApp} />
+                        </div>
+                    </Details>
+
+                </div>
                 <MemoImgViewBox
                     imageFiles={imageFiles}
                     setImageFile={setImageFile}

@@ -7,7 +7,7 @@ export default {
 		extend: {},
 	},
 	plugins: [
-		plugin(function ({ addBase, theme }) {
+		plugin(function ({ addBase, theme, addUtilities }) {
 			addBase({
 				'h1': {
 					fontSize: theme("fontSize.4xl"),
@@ -77,6 +77,25 @@ export default {
 					width: "90%"
 				}
 			})
+			const newUtilities = {
+				".minimum-scrollbars": {
+				  scrollbarWidth: "none",
+				  "&::-webkit-scrollbar": {
+					width: "0px",
+					background: "transparent",
+					display: "none"
+				  },
+				  "& *::-webkit-scrollbar": {
+					width: "0px",
+					background: "transparent",
+					display: "none"
+				  },
+				  "& *": {
+					scrollbarWidth: "none",
+				  }
+				}
+			  };
+			  addUtilities(newUtilities);
 		})
 		// ...
 	],
