@@ -54,7 +54,7 @@ const createLinkFacet = ({
     encoded: string,
 }): Array<facets.link> => {
     const Regex = /(https?:\/\/[^ ]*) ?/i
-    let facet: Array<facets.link> = []
+    let result: Array<facets.link> = []
     let regexResult: Array<regexResult> = []
     regexSeacrh({
         array: regexResult,
@@ -62,7 +62,7 @@ const createLinkFacet = ({
         encoded: encoded,
     })
     for (let link of regexResult) {
-        facet.push({
+        result.push({
             index: link.index,
             features: [
                 {
@@ -72,7 +72,7 @@ const createLinkFacet = ({
             ]
         })
     }
-    return facet
+    return result
 }
 
 const createMentionFacet = async ({
@@ -107,17 +107,45 @@ const createMentionFacet = async ({
     return result
 }
 
+const createHashtagFacet = async ({
+    encoded,
+}: {
+    encoded: string,
+}): Promise<Array<facets.hashtag>> => {
+    const Regex = /((#|#️⃣)[^ ]*) ?/i
+    let result: Array<facets.hashtag> = []
+    let regexResult: Array<regexResult> = []
+    regexSeacrh({
+        array: regexResult,
+        regex: Regex,
+        encoded: encoded,
+    })
+    for (let tag of regexResult) {
+        result.push({
+            index: tag.index,
+            features: [
+                {
+                    $type: "app.bsky.richtext.facet#tag",
+                    tag: tag.encoded.slice(1)
+                }
+            ]
+        })
+    }
+    return result
+}
+
 const detectFacets = async ({
     text
 }: {
     text: string
-}): Promise<Array<facets.link | facets.mention>> => {
+}): Promise<Array<facets.link | facets.mention | facets.hashtag>> => {
     let facets: Array<
-        facets.link | facets.mention
+        facets.link | facets.mention | facets.hashtag
     > = []
     const encoded = encodeURI(text).replace(/%(20|0A)/g, " ")
     facets = facets.concat(createLinkFacet({ encoded }))
     facets = facets.concat(await createMentionFacet({ encoded }))
+    facets = facets.concat(await createHashtagFacet({ encoded }))
     return facets
 }
 

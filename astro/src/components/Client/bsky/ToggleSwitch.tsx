@@ -33,7 +33,7 @@ const Component = ({
 
     return (
         <>
-            <div className="mx-2 my-auto flex">
+            <div className="mr-2 my-auto flex">
                 <input
                     ref={inputRef}
                     checked={prop}

@@ -30,18 +30,40 @@ export const Component = ({
     }
     return (
         <>
-            <select
-                onChange={handleSelect}
-                disabled={disabled}
-                className="text-sm h-6 my-auto">
-                {langList.map((value) => {
-                    return (
-                        <option key={value.code}>
-                            {value.label}
-                        </option>
-                    )
-                })}
-            </select>
+            <div className={[
+                "p-0", "h-8", "text-sm",
+                "my-auto", "rounded-lg",
+                "relative",
+                "border-2",
+                "after:my-auto",
+                "after:content-['▼']",
+                "after:absolute",
+                "after:right-2",
+                "after:top-0",
+                "after:bottom-0",
+                "after:h-fit",
+                "after:text-gray-300",
+                "after:pointer-events-none"
+            ].join(" ")}>
+                <select
+                    onChange={handleSelect}
+                    disabled={disabled}
+                    className={[
+                        "appearance-none",
+                        "block", "h-full", "w-full",
+                        "pl-4", "pr-6", "py-1",
+                        "bg-white",
+                        "rounded-lg",
+                        "disabled:bg-gray-200"].join(" ")}>
+                    {langList.map((value) => {
+                        return (
+                            <option key={value.code}>
+                                {value.label}
+                            </option>
+                        )
+                    })}
+                </select>
+            </div>
         </>
     )
 }

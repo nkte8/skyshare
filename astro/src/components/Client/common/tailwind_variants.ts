@@ -33,7 +33,7 @@ export const button_base = tv({
 			gray: "bg-gray-400 hover:bg-gray-600 text-white"
 		},
 		disabled: {
-			false: "cursor-pointer sm:shadow-md shadow transition-all",
+			false: "cursor-pointer transition-all",
 			true: "hover:bg-gray-200 bg-gray-200 cursor-progress text-gray-700 hover:text-gray-700"
 		},
 		regectinput: {
@@ -43,6 +43,10 @@ export const button_base = tv({
 		hidden: {
 			true: "hidden",
 			false: ""
+		},
+		noshadow: {
+			false: "sm:shadow-md shadow",
+			true: "shadow-none"
 		}
 	}
 })

@@ -27,6 +27,7 @@ const Component = ({
                 class: "my-1 mx-px " + className,
                 color: color,
                 hidden: hidden,
+                noshadow: disabled
             })}
             type="button" disabled={(isProcessing || disabled)}>
 
