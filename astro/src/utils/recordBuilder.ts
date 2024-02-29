@@ -22,7 +22,7 @@ type RecordBase = {
 }
 // 付与できる情報を定義
 type RecordCore = {
-    facets?: Array<facet.link | facet.mention>
+    facets?: Array<facet.link | facet.mention | facet.hashtag>
     embed?: embed.images | embed.external
 } & RecordBase
 
@@ -147,11 +147,11 @@ export const attachImageToRecord = async ({
         isError: false
     })
     // 戻り配列の順序を固定
-    const resultUploadBlobs = 
+    const resultUploadBlobs =
         await Promise.all(queUploadBlob).then(
-        (values) => {
-            return values
-        })
+            (values) => {
+                return values
+            })
 
     // 画像アップロードに失敗したファイルが一つでも存在した場合停止する
     resultUploadBlobs.forEach((value) => {
