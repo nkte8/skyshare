@@ -11,11 +11,32 @@ const LSKeyName: Obj = {
     showTaittsuu: "showTaittsuu",
     forceIntent: "forceIntent",
     savePassword: "savePassword",
-    loginInfo: "loginInfo"
+    loginInfo: "loginInfo",
+    savedTags: "savedTags"
 }
 type loginInfo = {
     id: string,
     pw: string
+}
+
+// 将来的にはローカルではなく、DB側に保存したい
+// DB構造を変えることになると思われるため,大きなアップデートの時の次タスクとして積みたい
+export const readSavedTags = (): string[] | null => {
+    const value = get_ls_value(LSKeyName.savedTags)
+    if (value !== null) {
+        const Logininfo: string[] =
+            JSON.parse(Base64.decode(value))
+        return Logininfo
+    }
+    rm_ls_value(LSKeyName.savedTags)
+    return null
+}
+
+export const setSavedTags = (Tags: string[]): void => {
+    const savedTags: string =
+        Base64.encode(JSON.stringify(Tags)
+        )
+    set_ls_value(LSKeyName.savedTags, savedTags)
 }
 
 export const resetLoginInfo = () => {
