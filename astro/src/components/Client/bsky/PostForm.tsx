@@ -99,7 +99,16 @@ const Component = ({
             record.facets?.forEach((value) => {
                 const facet = value.features[0]
                 if (facet.$type === "app.bsky.richtext.facet#tag") {
-                    taglist.unshift(`#${facet.tag}`)
+                    const tagName = `#${facet.tag}`
+                    const tagIndex = taglist.indexOf(tagName)
+                    if (tagIndex < 0){
+                        // タグが存在しない場合は先頭に追加
+                        taglist.unshift(tagName)
+                    } else {
+                        // タグが存在する場合は先頭に移動
+                        taglist.splice(tagIndex, 1)
+                        taglist.unshift(tagName)
+                    }
                 }
             })
             setSavedTags(taglist.slice(0, maxTagCount))
