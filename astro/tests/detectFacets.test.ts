@@ -201,4 +201,112 @@ describe('detectFacets Test', () => {
         )
     })
 
+    test('Hashtag facets', async () => {
+        const result = await detectFacets({
+            text: "#hashtag"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 0,
+                        byteEnd: 8
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#tag",
+                            tag: "hashtag"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
+
+    test('Multi Hashtags facets', async () => {
+        const result = await detectFacets({
+            text: "test #hashtag #hash2"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 5,
+                        byteEnd: 13
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#tag",
+                            tag: "hashtag"
+                        }
+                    ]
+                }, {
+                    index: {
+                        byteStart: 14,
+                        byteEnd: 20
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#tag",
+                            tag: "hash2"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
+
+    test('Bsky not supported Hashtag facets', async () => {
+        const result = await detectFacets({
+            text: "#C# #0"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 0,
+                        byteEnd: 3
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#tag",
+                            tag: "C#"
+                        }
+                    ]
+                }, {
+                    index: {
+                        byteStart: 4,
+                        byteEnd: 6
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#tag",
+                            tag: "0"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
+    test('Bad hashtag#️⃣ enable facet', async () => {
+        const result = await detectFacets({
+            text: "#️⃣0"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 0,
+                        byteEnd: 8
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#tag",
+                            tag: "️⃣0"
+                        }
+                    ]
+                },
+            ])
+        )
+    })
 })

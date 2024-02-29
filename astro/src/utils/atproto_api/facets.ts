@@ -23,5 +23,17 @@ namespace facet {
             }
         ]
     }
+    export type hashtag = {
+        index: {
+            byteStart: number,
+            byteEnd: number,
+        }
+        features: [
+            {
+                $type: "app.bsky.richtext.facet#tag",
+                tag: string
+            }
+        ]
+    }
 }
 export default facet
