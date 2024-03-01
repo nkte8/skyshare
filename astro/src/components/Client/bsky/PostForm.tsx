@@ -27,6 +27,7 @@ import AutoXPopupToggle from "./options/AutoXPopupToggle"
 import NoGenerateToggle from "./options/NoGenerateToggle"
 import ShowTaittsuuToggle from "./options/ShowTaittsuuToggle"
 import ForceIntentToggle from "./options/ForceIntentToggle"
+import AppendVia from "./options/AppendViaToggle"
 import PostButton from "./PostButton"
 import LanguageSelect from "./LanguageSelect"
 import Details from "./Details"
@@ -79,6 +80,8 @@ const Component = ({
     const [showTaittsuu, setShowTaittsuu] = useState<boolean>(false)
     // メディアに対してラベル付与を行う
     const [selfLabel, setSelfLabel] = useState<label.value | null>(null)
+    // viaを付与する
+    const [appendVia, setAppendVia] = useState<boolean>(false)
 
     const handlePost = async () => {
         const initializePost = () => {
@@ -101,7 +104,7 @@ const Component = ({
                     $type: "com.atproto.label.defs#selfLabels",
                     values: [selfLabel]
                 } : undefined,
-                via: servicename
+                via: (appendVia !== false) ? servicename : undefined
             })
             // Hashtagが含まれている場合はブラウザに保存
             const savedTag = readSavedTags()
@@ -333,7 +336,14 @@ const Component = ({
                             prop={noGenerate}
                             setProp={setNoGenerate} />
                     </div>
-                    <Details initHidden={!showTaittsuu}>
+                </div>
+                <MemoImgViewBox
+                    imageFiles={imageFiles}
+                    setImageFile={setImageFile}
+                    altTexts={altTexts}
+                    setAltText={setAltText} />
+                <div className="mx-2 my-auto">
+                    <Details initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
                         <div className="flex flex-wrap">
                             <ShowTaittsuuToggle
                                 labeltext={"タイッツーの投稿ボタンも表示する"}
@@ -343,15 +353,13 @@ const Component = ({
                                 labeltext={"Xの投稿はアプリを強制的に起動する"}
                                 prop={noUseXApp}
                                 setProp={setNoUseXApp} />
+                            <AppendVia
+                                labeltext={"Viaを付与する"}
+                                prop={appendVia}
+                                setProp={setAppendVia} />
                         </div>
                     </Details>
-
                 </div>
-                <MemoImgViewBox
-                    imageFiles={imageFiles}
-                    setImageFile={setImageFile}
-                    altTexts={altTexts}
-                    setAltText={setAltText} />
             </Tweetbox>
         </>
     );
