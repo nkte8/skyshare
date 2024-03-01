@@ -20,7 +20,8 @@ type RecordBase = {
     createdAt: Date,
     $type: "app.bsky.feed.post",
     langs: Array<string>,
-    labels?: labels
+    labels?: labels,
+    via?: string
 }
 // 付与できる情報を定義
 type RecordCore = {

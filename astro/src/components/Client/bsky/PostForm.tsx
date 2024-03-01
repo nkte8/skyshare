@@ -1,6 +1,7 @@
 import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context } from "../common/contexts"
 import { type msgInfo, type modes, type popupContent } from "../common/types"
+import { servicename } from "@/utils/vars";
 
 import {
     buildRecordBase,
@@ -99,7 +100,8 @@ const Component = ({
                 labels: (selfLabel !== null) ? {
                     $type: "com.atproto.label.defs#selfLabels",
                     values: [selfLabel]
-                } : undefined
+                } : undefined,
+                via: servicename
             })
             // Hashtagが含まれている場合はブラウザに保存
             const savedTag = readSavedTags()
