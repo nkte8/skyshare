@@ -41,7 +41,7 @@ export default {
 				},
 				'ul': {
 					listStyleType: theme("listStyleType.disc"),
-					marginLeft: "1.5rem",
+					marginLeft: "1.1rem",
 					marginBottom: "1rem"
 				},
 				"div": {
@@ -74,7 +74,6 @@ export default {
 					paddingLeft: "2rem",
 					margin: "0.5rem",
 					borderRadius: theme("borderRadius.md"),
-					width: "90%"
 				}
 			})
 			const newUtilities = {
