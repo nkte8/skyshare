@@ -309,4 +309,26 @@ describe('detectFacets Test', () => {
             ])
         )
     })
+
+    test('no existing mention', async () => {
+        const result = await detectFacets({
+            text: "#test @0 ignore"
+        })
+        expect(result).toEqual(
+            expect.arrayContaining([
+                {
+                    index: {
+                        byteStart: 0,
+                        byteEnd: 5
+                    },
+                    features: [
+                        {
+                            $type: "app.bsky.richtext.facet#tag",
+                            tag: "test"
+                        }
+                    ]
+                }
+            ])
+        )
+    }, 100000) // long timeouf
 })
