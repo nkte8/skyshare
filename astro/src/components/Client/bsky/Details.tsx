@@ -17,7 +17,7 @@ const Component = ({
     }, [initHidden])
     return (
         <>
-            <button className={link({ class: "block text-sm mx-2" })}
+            <button className={link({ class: "block text-sm" })}
                 onClick={onClick}>実験的な機能{hidden ? ("▼") : ("△")}</button>
             <div className={`transition-all pt-1 ${hidden ? ("hidden h-0") : ("h-full")}`}>
                 {children}
