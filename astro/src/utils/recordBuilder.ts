@@ -8,6 +8,7 @@ import model_error from "./atproto_api/models/error.json";
 
 import getOgp from "./getOgp"
 import getMeta, { ogpMeta } from "./getMeta"
+import { labels } from "./atproto_api/labels";
 
 export type SessionNecessary = {
     did: string,
@@ -18,7 +19,8 @@ type RecordBase = {
     text: string,
     createdAt: Date,
     $type: "app.bsky.feed.post",
-    langs: Array<string>
+    langs: Array<string>,
+    labels?: labels
 }
 // 付与できる情報を定義
 type RecordCore = {

@@ -11,6 +11,7 @@ import {
 
 import createRecord from "@/utils/atproto_api/createRecord";
 import createPage from "@/utils/backend_api/createPage";
+import { label } from "@/utils/atproto_api/labels";
 import { setSavedTags, readSavedTags } from "@/utils/localstorage";
 
 import { link } from "../common/tailwind_variants";
@@ -29,6 +30,7 @@ import PostButton from "./PostButton"
 import LanguageSelect from "./LanguageSelect"
 import Details from "./Details"
 import TagInputList from "./TagInputList"
+import SelfLabelsSelector from "./SelfLabelsSelect"
 
 const siteurl = location.origin
 const MemoImgViewBox = memo(ImgViewBox)
@@ -74,6 +76,8 @@ const Component = ({
     const [noUseXApp, setNoUseXApp] = useState<boolean>(false)
     // タイッツーボタンを表示する
     const [showTaittsuu, setShowTaittsuu] = useState<boolean>(false)
+    // メディアに対してラベル付与を行う
+    const [selfLabel, setSelfLabel] = useState<label.value | null>(null)
 
     const handlePost = async () => {
         const initializePost = () => {
@@ -91,7 +95,11 @@ const Component = ({
                 text: post,
                 createdAt: new Date(),
                 langs: language,
-                $type: "app.bsky.feed.post"
+                $type: "app.bsky.feed.post",
+                labels: (selfLabel !== null) ? {
+                    $type: "com.atproto.label.defs#selfLabels",
+                    values: [selfLabel]
+                } : undefined
             })
             // Hashtagが含まれている場合はブラウザに保存
             const savedTag = readSavedTags()
@@ -101,7 +109,7 @@ const Component = ({
                 if (facet.$type === "app.bsky.richtext.facet#tag") {
                     const tagName = `#${facet.tag}`
                     const tagIndex = taglist.indexOf(tagName)
-                    if (tagIndex < 0){
+                    if (tagIndex < 0) {
                         // タグが存在しない場合は先頭に追加
                         taglist.unshift(tagName)
                     } else {
@@ -266,6 +274,10 @@ const Component = ({
                         下書きを消す
                     </button>
                     <div className="flex-1"></div>
+                    <SelfLabelsSelector
+                        disabled={processing}
+                        setSelfLabel={setSelfLabel}
+                        selectedLabel={selfLabel} />
                     <div className="flex-none my-auto">
                         <PostButton
                             handlePost={handlePost}
@@ -285,13 +297,12 @@ const Component = ({
                         setImageFile={setImageFile}
                         className="py-0"
                     />
-
                     <div className="flex-1 my-auto"></div>
                     <LanguageSelect
                         disabled={isPostProcessing}
                         setLanguage={setLanguage} />
                     <div className={
-                        `align-middle my-auto mr-1 px-2 rounded-lg ${(
+                        `align-middle my-auto mr-1 px-2 flex-none w-20 rounded-lg ${(
                             count > countMax
                         ) && "bg-red-300"
                         } ${(
