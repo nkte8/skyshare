@@ -137,7 +137,7 @@ const Component = ({
     }
 
     return (
-        <div className="aspect-video rounded-3xl border-2 mb-0 p-2 relative">
+        <div className="aspect-video rounded-3xl border-2 p-2 relative">
             {
                 imageFiles.length > 0 ? (
                     <>

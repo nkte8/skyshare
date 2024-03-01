@@ -12,11 +12,29 @@ const LSKeyName: Obj = {
     forceIntent: "forceIntent",
     savePassword: "savePassword",
     loginInfo: "loginInfo",
-    savedTags: "savedTags"
+    savedTags: "savedTags",
+    appendVia: "appendVia"
 }
 type loginInfo = {
     id: string,
     pw: string
+}
+
+// viaはlexicon的には定義されていない?付与しての投稿自体は問題ないため、オプションに変更
+export const readAppendVia = (def: boolean): boolean => {
+    const value = get_ls_value(LSKeyName.appendVia)
+    if (value !== null) {
+        return value === "true"
+    }
+    rm_ls_value(LSKeyName.appendVia)
+    return def
+}
+
+export const setAppendVia = (flag: boolean): void => {
+    set_ls_value(LSKeyName.appendVia, flag.toString())
+    if (flag === false) {
+        rm_ls_value(LSKeyName.appendVia)
+    }
 }
 
 // 将来的にはローカルではなく、DB側に保存したい
