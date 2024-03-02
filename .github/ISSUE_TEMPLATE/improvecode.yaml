@@ -1,0 +1,33 @@
+name: Improve code
+description: "More nice cording, more nice developing"
+title: "[Improve code]: "
+labels: ["invalid"]
+assignees: 
+  - nkte8
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **↑ Don't forget write about bug as short in title pls**
+        **↑ タイトルに端的に内容について記載するのをお忘れなく！**
+
+  - type: textarea
+    id: about
+    attributes:
+      label: Where and how it seems bad?
+      description: |
+        Write where and how the code seems bad here.
+        ここにどのコード、どのように良くないか書いてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: howto
+    attributes:
+      label: What it shoud become? 
+      description: |
+        Write what the code should be here. If you can, it would be help us that write improved logic or codes.
+        コードがどのようにあるべきかをここに書いてください。可能であれば、向上させたロジックやコードを書いていただけると助かります。
+    validations:
+      required: true
