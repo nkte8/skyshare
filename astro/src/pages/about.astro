@@ -1,8 +1,9 @@
 ---
 import { servicename, serviceurl, authorlink } from "@/utils/vars";
-import { qaurl, siteurl } from "@/utils/envs";
+import { qaurl } from "@/utils/envs";
 import version from "@/utils/version";
 import Pagelayout from "@/layouts/Pagelayout.astro";
+const siteurl = Astro.url.origin
 
 const title = `About - ${servicename}`;
 const robots = ["index", "nofollow", "noarchive", "noimageindex"];

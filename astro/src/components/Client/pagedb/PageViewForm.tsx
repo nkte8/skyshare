@@ -1,6 +1,5 @@
 import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 import { pagesPrefix } from "@/utils/vars"
-const siteurl = location.origin
 import getIds from "@/utils/backend_api/geIds"
 import { Session_context } from "../common/contexts"
 import { load_circle, link } from "../common/tailwind_variants"
@@ -12,8 +11,8 @@ const Component = ({
 }: {
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
 }) => {
+    const siteurl = location.origin
     const { session } = useContext(Session_context)
-
     const error: ReactNode = (
         <>
             <div>Failed to load Pages</div>

@@ -2,9 +2,9 @@ import { Fragment, Dispatch, SetStateAction, useContext, useEffect, useState } f
 import { type popupContent, type msgInfo } from "../common/types"
 import { Profile_context } from "../common/contexts"
 import ShareButton from "./ShareButton"
-import getOgp from "../../../utils/getOgp"
+import { getOgpMeta } from "@/utils/getOgp"
 import Tweetbox from "../common/Tweetbox"
-import getMeta, { ogpMeta } from "@/utils/getMeta"
+import { ogpMetaData } from "@/lib/types"
 import { readShowTaittsuu } from "@/utils/localstorage"
 
 export const Component = ({
@@ -14,20 +14,22 @@ export const Component = ({
     popupContent: popupContent,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
+    const siteurl = location.origin
+    
     const { profile } = useContext(Profile_context)
     const [ogpUrl, setOgpUrl] = useState<string | null>(null)
-    const [ogpMeta, setOgpMeta] = useState<ogpMeta | null>(null)
+    const [ogpMeta, setOgpMeta] = useState<ogpMetaData | null>(null)
     const previewOgp = async () => {
         if (popupContent.url !== null) {
             try {
-                let html = await fetch(
-                    popupContent.url
-                ).then((text) => text.text()
-                ).catch()
-                const url = getOgp({ content: html })
-                const meta = getMeta({ content: html })
-                setOgpUrl(url)
-                setOgpMeta(meta)
+                const ogp = await getOgpMeta(siteurl, popupContent.url.toString())
+                if (ogp.type === "error") {
+                    let e: Error = new Error(ogp.message)
+                    e.name = ogp.error
+                    throw e
+                }
+                setOgpUrl(ogp.image)
+                setOgpMeta(ogp)
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     let msg: string = ""
@@ -70,16 +72,20 @@ export const Component = ({
                         }
                     </div>
                 </div>
-                <div className="block relative h-fit w-fit">
+                <div className="block relative h-auto max-w-full">
                     {popupContent.url !== null &&
                         <>
                             {
-                                ogpUrl !== null && (
-                                    <img src={ogpUrl} className="w-full rounded-3xl" />
+                                ogpUrl !== null && ogpUrl !== "" ? (
+                                    <img src={ogpUrl} className="w-full rounded-3xl aspect-video object-cover border-2" />
+                                ) : (
+                                    <div className="w-full rounded-3xl py-10 object-cover border-2 text-gray-300">
+                                        No OGP image found at {popupContent.url.host.toString()}
+                                    </div>
                                 )
                             }
                             {
-                                ogpMeta !== null && (
+                                ogpMeta !== null && ogpMeta.title !== "" && (
                                     <div className="absolute bottom-2 left-4 bg-opacity-70 rounded-md px-2 text-white bg-black">
                                         {ogpMeta.title}
                                     </div>

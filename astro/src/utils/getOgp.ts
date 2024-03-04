@@ -1,24 +1,49 @@
-// jsdomはNode用だったのでフロントでできない。
-// フロントでやりたいのでローレベルで書く
-const getOgp = ({
-    content
-}: {
-    content: string
-}): string => {
-    let ogpUrl: string = ""
-    const regexFilters: Array<RegExp> = [
-        /(?: *< *meta +name=["']?twitter:image["']? +content=)["']?([^"']*)["']?/,
-        /(?: *< *meta +property=["']?og:image["']? +content=)["']?([^"']*)["']?/
-    ]
-    // &->&amp;(or &#38)にエスケープされている場合、これを置き換え処理
-    // (fetchの取得結果をただすなど)もっと根本的に修正できるのであればそうすべき。
-    for (let filter of regexFilters) {
-        const regResult = filter.exec(content)
-        if (regResult !== null) {
-            ogpUrl = regResult[1].replace("&#38;", "&")
-            break
+import type { ogpMetaData, errorResponse } from "@/lib/types";
+
+// note: エラー規格を型定義として決めた方がいい（ error@Component: message　とするなど）
+export const getOgpMeta = async (
+    siteurl: string,
+    externalUrl: string
+): Promise<ogpMetaData | errorResponse> => {
+    const apiUrl = new URL("/api/getOgpMeta", siteurl)
+    apiUrl.searchParams.append("url", encodeURIComponent(externalUrl))
+    return await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
         }
-    }
-    return ogpUrl
+    }).then(async (response) => {
+        if (!response?.ok) {
+            let res: errorResponse = await response.json()
+            let e: Error = new Error(res.message)
+            e.name = res.error
+            throw e
+        }
+        return await response.json() as ogpMetaData
+    }).catch((e: Error) => {
+        return <errorResponse>{
+            type: "error",
+            error: `${e.name}@getOgpMeta`,
+            message: e.message
+        }
+    })
 }
-export default getOgp
+// Blob型はユニオン型として扱うことが難しいため、エラーハンドリングできない
+export const getOgpBlob = async (
+    siteurl: string,
+    externalUrl: string
+): Promise<Blob> => {
+    const apiUrl = new URL("/api/getOgpBlob", siteurl)
+    apiUrl.searchParams.append("url", encodeURIComponent(externalUrl))
+    return await fetch(apiUrl, {
+        method: 'GET'
+    }).then(async (response) => {
+        if (!response?.ok) {
+            let res: errorResponse = await response.json()
+            let e: Error = new Error(res.message)
+            e.name = `${res.error}@getOgpBlob`
+            throw e
+        }
+        return await response.blob()
+    })
+}

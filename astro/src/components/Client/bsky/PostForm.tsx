@@ -34,7 +34,6 @@ import Details from "./Details"
 import TagInputList from "./TagInputList"
 import SelfLabelsSelector from "./SelfLabelsSelect"
 
-const siteurl = location.origin
 const MemoImgViewBox = memo(ImgViewBox)
 const Component = ({
     setMsgInfo,
@@ -49,6 +48,7 @@ const Component = ({
     setMode: Dispatch<SetStateAction<modes>>,
     setPopupContent: Dispatch<SetStateAction<popupContent>>,
 }) => {
+    const siteurl = location.origin
     // ImgFormにて格納されるimageとディスパッチャー
     const [imageFiles, setImageFile] = useState<Array<File>>([]);
     // ImgFormにて格納されるAltテキストのリスト
@@ -173,8 +173,9 @@ const Component = ({
                     // OGPを生成する必要がない場合(!noGenerate but noImageAttached)
                     // またはOGPの生成を抑制している場合(noGenerate)で
                     // 外部リンクが添付されている場合はlinkcardを付与する
-                    if ((!noGenerate && noImagesAttached) || noGenerate) {
+                    if (noGenerate || noImagesAttached) {
                         record = await attachExternalToRecord({
+                            apiUrl: siteurl,
                             base: record,
                             session: sessionNecessary,
                             externalUrl: new URL(linkcardUrl),
