@@ -23,7 +23,7 @@ namespace embed {
             uri: string,
             title: string,
             description: string,
-            thumb: {
+            thumb?: {
                 ref: {
                     $link: string
                 },

@@ -6,8 +6,8 @@ import uploadBlob from "./atproto_api/uploadBlob";
 import model_uploadBlob from "./atproto_api/models/uploadBlob.json";
 import model_error from "./atproto_api/models/error.json";
 
-import getOgp from "./getOgp"
-import getMeta, { ogpMeta } from "./getMeta"
+import type { ogpMetaData, errorResponse } from "@/lib/types";
+import { getOgpMeta, getOgpBlob } from "./getOgp"
 import { labels } from "./atproto_api/labels";
 
 export type SessionNecessary = {
@@ -42,11 +42,13 @@ export const buildRecordBase = async (props: RecordBase): Promise<RecordCore> =>
 }
 
 export const attachExternalToRecord = async ({
+    apiUrl,
     base,
     session,
     externalUrl,
     handleProcessing
 }: {
+    apiUrl: string,
     base: RecordBase,
     session: SessionNecessary,
     externalUrl: URL,
@@ -57,64 +59,69 @@ export const attachExternalToRecord = async ({
     }) => void
 }): Promise<RecordCore> => {
     let recordResult: RecordCore = base
-    let html: string | null = null
-    let ogpUrl: string | null = null
-    let ogpMeta: ogpMeta = {
+    let ogpMeta: ogpMetaData | errorResponse = {
         title: "",
-        description: ""
+        description: "",
+        image: "",
+        type: "meta"
     }
     let blob: Blob | null = null
-
     try {
-        html = await fetch(externalUrl).then((text) => text.text())
-        if (html !== null) {
-            ogpUrl = getOgp({ content: html })
-            ogpMeta = getMeta({ content: html })
-            handleProcessing({
-                msg: `${externalUrl.hostname}からOGPの取得中...`,
-                isError: false
-            })
-            blob = await fetch(ogpUrl).then(res => res.blob())
-        }
-    } catch (error: unknown) {
-        // failed to fetchの場合、リンクカードを付与しない。
         handleProcessing({
-            msg: `OGPカードの取得に失敗しました。`,
-            isError: true
-        })
-    }
-    if (blob !== null) {
-        // リンク先のOGPからblobを作成し、mimeTypeの設定&バイナリのアップロードを実施
-        handleProcessing({
-            msg: `画像のアップロード中...`,
+            msg: `${externalUrl.hostname}からOGPの取得中...`,
             isError: false
         })
-        const resultUploadBlobs = await uploadBlob({
-            accessJwt: session.accessJwt,
-            mimeType: blob.type,
-            blob: new Uint8Array(await blob.arrayBuffer())
-        })
-        // 例外処理
-        if (typeof resultUploadBlobs?.error !== "undefined") {
-            let e: Error = new Error(resultUploadBlobs.message)
-            e.name = resultUploadBlobs.error
+        ogpMeta = await getOgpMeta(apiUrl, externalUrl.toString())
+        if (ogpMeta.type === "error") {
+            let e: Error = new Error(ogpMeta.message)
+            e.name = ogpMeta.error
             throw e
         }
-
-        // embedを追加
-        let embed: embed.external = {
+        if (ogpMeta.image !== "") {
+            blob = await getOgpBlob(apiUrl, ogpMeta.image)
+        }
+        const embed: embed.external = {
             $type: "app.bsky.embed.external",
             external: {
                 uri: externalUrl.toString(),
                 title: ogpMeta.title,
                 description: ogpMeta.description,
-                thumb: resultUploadBlobs.blob,
             }
+        }
+        if (blob !== null) {
+            // リンク先のOGPからblobを作成し、mimeTypeの設定&バイナリのアップロードを実施
+            handleProcessing({
+                msg: `画像のアップロード中...`,
+                isError: false
+            })
+            const resultUploadBlobs = await uploadBlob({
+                accessJwt: session.accessJwt,
+                mimeType: blob.type,
+                blob: new Uint8Array(await blob.arrayBuffer())
+            })
+            // 例外処理
+            if (typeof resultUploadBlobs?.error !== "undefined") {
+                let e: Error = new Error(resultUploadBlobs.message)
+                e.name = resultUploadBlobs.error
+                throw e
+            }
+            // embedを追加
+            embed.external.thumb = resultUploadBlobs.blob
         }
         recordResult = {
             ...base,
             embed
         }
+    } catch (error: unknown) {
+        let msg: string = "Unexpected Unknown Error"
+        if (error instanceof Error) {
+            msg = error.name + ": " + error.message
+        }
+        handleProcessing({
+            msg: msg,
+            isError: true
+        })
+        blob = null
     }
     return recordResult
 }

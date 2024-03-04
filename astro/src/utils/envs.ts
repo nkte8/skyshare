@@ -1,5 +1,6 @@
 export const baseurl = import.meta.env.BASE_URL
-export const siteurl = import.meta.env.SITE
+const environmentFlag = Boolean(import.meta.env.PUBLIC_IS_NOT_PRODUCTION)
+export const corsAllowOrigin = (environmentFlag) ? "*" : import.meta.env.SITE
 export const posturl = baseurl + "app/"
 export const abouturl = baseurl + "about/"
 export const qaurl = baseurl + "qa/"

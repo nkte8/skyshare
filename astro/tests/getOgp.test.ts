@@ -1,99 +1,97 @@
 import { describe, test, expect } from "@jest/globals";
-import getOgp from "../src/utils/getOgp"
-const version = `v${process.env.PUBLIC_VERSION}`
+import { getOgpMeta } from "../src/utils/getOgp"
+import type { ogpMetaData, errorResponse } from "../src/lib/types";
 
-describe('detectFacets Test', () => {
+const version = `v${process.env.PUBLIC_VERSION}`
+const siteurl = "http://192.168.3.200:4321"
+
+describe('getOgp Test', () => {
     test('True Website test', async () => {
-        let html = await fetch("https://skyshare.uk").then((text) => text.text())
-        const result = getOgp({
-            content: html
-        })
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://skyshare.uk")
         expect(result).toEqual(
-            `https://skyshare.uk/materials/ogp_main.png?updated=${version}`
+            <ogpMetaData>{
+                type: "meta",
+                title: "Skyshare - Share Bluesky to X",
+                description: "Skyshare is a web application helps bluesky users post to both bluesky or x.com.",
+                image: `https://skyshare.uk/materials/ogp_main.png?updated=${version}`
+            }
+        )
+    }, 10000) // long timeouf)
+    // YoutubeはCORSが設定されている例
+    test('True Website cors site test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://www.youtube.com/watch?v=xitQ_oNTVvE")
+        expect(result).toEqual(
+            <ogpMetaData>{
+                type: "meta",
+                title: "Google Chrome スピードテスト",
+                description: "20秒でできる？Google Chromeブラウザでお出かけ前の情報チェック。google.co.jp/chrome",
+                image: `https://i.ytimg.com/vi/xitQ_oNTVvE/hqdefault.jpg`
+            }
         )
     }, 100000) // long timeouf)
-    // CORS ERROR
-    // test('True Website youtube test', async () => {
-    //     let html = await fetch("https://www.youtube.com/watch?v=xitQ_oNTVvE").then((text) => text.text())
-    //     const result = getOgp({
-    //         content: html
-    //     })
-    //     expect(result).toEqual(
-    //         `https://i.ytimg.com/vi/xitQ_oNTVvE/hqdefault.jpg`
-    //     )
-    // }, 100000) // long timeouf)
-
-    // faketest og:image only
-    test('Fake og:image only page test', async () => {
-        const result = getOgp({
-            content: '<html>\
-            <head>\
-            <meta property="og:image" content="https://hoge/hoge.jpg">\
-            </head>\
-            </html>'
-        })
+    // Zennは　twitter:imageが設定されていない例
+    test('True Website no twitter:image test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://zenn.dev")
         expect(result).toEqual(
-            `https://hoge/hoge.jpg`
+            <ogpMetaData>{
+                type: "meta",
+                title: "Zenn｜エンジニアのための情報共有コミュニティ",
+                description: "Zennはエンジニアが技術・開発についての知見をシェアする場所です。本の販売や、読者からのバッジの受付により対価を受け取ることができます。",
+                image: `https://static.zenn.studio/images/logo-only-dark.png`
+            }
         )
-    })
-    // faketest twitter:image only
-    test('Fake twitter:image only page test', async () => {
-        const result = getOgp({
-            content: '<html>\
-            <head>\
-            <meta name="twitter:image" content="https://hoge/fuga.jpg">\
-            </head>\
-            </html>'
-        })
+    }, 100000) // long timeouf)
+    // It media はエンコーディングが古い shift-jisのサイト
+    test('True Website shift-jis site test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://www.itmedia.co.jp/news/")
         expect(result).toEqual(
-            `https://hoge/fuga.jpg`
+            <ogpMetaData>{
+                type: "meta",
+                title: "ITmedia NEWS",
+                description: "ITがもたらす変化を敏感に感じ取り、仕事や生活に生かしていこうという企業内個人やネットサービス開発者、ベンチャー経営者をコアターゲットに、IT業界動向やネットサービストレンド、ネット上の話題までカバーするニュースを配信します。",
+                image: `https://image.itmedia.co.jp/images/logo/1200x630_500x500_news.gif`
+            }
         )
-    })
-    // faketest no ogp
-    test('Fake no ogp page test', async () => {
-        const result = getOgp({
-            content: '<html><head></head></html>'
-        })
+    }, 100000) // long timeouf)
+    test('Bad request localhost test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://localhost/")
         expect(result).toEqual(
-            ""
+            <errorResponse>{
+                type: "error",
+                error: "Bad Gateway@getOgpMeta",
+                message: "Failed to get correct response from gateway. Announce server administrator."
+            }
         )
-    })
-    // faketest both ogp select twitter:image
-    test('Fake both ogp select twitter:image test', async () => {
-        const result = getOgp({
-            content: '<html>\
-            <head>\
-            <meta property="og:image" content="https://hoge/hoge.jpg">\
-            <meta name="twitter:image" content="https://hoge/fuga.jpg">\
-            </head>\
-            </html>'
-        })
+    }, 100000) // long timeouf)
+    test('Bad request no dns ipv4 website test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://192.168.0.2/")
         expect(result).toEqual(
-            `https://hoge/fuga.jpg`
+            <errorResponse>{
+                type: "error",
+                error: "Bad Gateway@getOgpMeta",
+                message: "Failed to get correct response from gateway. Announce server administrator."
+            }
         )
-    })
-    // faketest very bad but not wrong test
-    test('Fake very bad but not wrong test', async () => {
-        const result = getOgp({
-            content: `<html>\
-            <head>    <  meta  property=og:image  content='https://hoge/hoge.jpg'  />\
-            </head></html>`
-        })
+    }, 100000) // long timeouf)
+    test('Bad request no dns ipv6 website test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://[fe00::1]/")
         expect(result).toEqual(
-            `https://hoge/hoge.jpg`
+            <errorResponse>{
+                type: "error",
+                error: "Bad Gateway@getOgpMeta",
+                message: "Failed to get correct response from gateway. Announce server administrator."
+            }
         )
-    })
-    // faketest reallikeURL get test
-    test('Fake reallike url get test', async () => {
-        const result = getOgp({
-            content: `<html>\
-            <head>\
-            <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/ogp-generator-5f516.appspot.com/o/ogpdev%2Fnlla.bsky.social%2F3kl5ka3i2bt27?alt=media&token=5fe67771-922e-44ec-a3d4-cd94d6fe5885">\
-            </head></html>`
-        })
+    }, 100000) // long timeouf)
+    test('Bad request invalid protocol test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "file://./index.html")
         expect(result).toEqual(
-            `https://firebasestorage.googleapis.com/v0/b/ogp-generator-5f516.appspot.com/o/ogpdev%2Fnlla.bsky.social%2F3kl5ka3i2bt27?alt=media&token=5fe67771-922e-44ec-a3d4-cd94d6fe5885`
+            <errorResponse>{
+                type: "error",
+                error: "Bad Gateway@getOgpMeta",
+                message: "Failed to get correct response from gateway. Announce server administrator."
+            }
         )
-    })
+    }, 100000) // long timeouf)
 
 })

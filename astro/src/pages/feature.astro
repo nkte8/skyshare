@@ -1,8 +1,9 @@
 ---
 import { pagesPrefix, servicename, githuburl, zennurl } from "@/utils/vars";
-import { baseurl, siteurl, qaurl, abouturl } from "@/utils/envs";
+import { baseurl, qaurl, abouturl } from "@/utils/envs";
 import version from "@/utils/version";
 import Pagelayout from "@/layouts/Pagelayout.astro";
+const siteurl = Astro.url.origin
 const example_url = new URL(
 	baseurl + pagesPrefix + "/nlla.bsky.social_3kk7qzpffl22n/",
 	siteurl,
