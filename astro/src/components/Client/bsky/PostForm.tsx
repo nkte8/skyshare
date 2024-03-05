@@ -1,7 +1,7 @@
 import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context } from "../common/contexts"
 import { type msgInfo, type modes, type popupContent } from "../common/types"
-import { servicename } from "@/utils/vars";
+import { servicename , pagesPrefix } from "@/utils/vars"
 
 import {
     buildRecordBase,
@@ -17,7 +17,6 @@ import { setSavedTags, readSavedTags } from "@/utils/localstorage";
 
 import { link } from "../common/tailwind_variants";
 
-import { pagesPrefix } from "@/utils/vars";
 import Tweetbox from "../common/Tweetbox"
 import ImgForm from "./ImgForm"
 import ImgViewBox from "./imgctrl/ImgViewBox"
@@ -34,6 +33,9 @@ import Details from "./Details"
 import TagInputList from "./TagInputList"
 import SelfLabelsSelector from "./SelfLabelsSelect"
 
+import { useKey } from "react-use"
+import type { KeyPredicate } from "react-use/lib/useKey"
+
 const MemoImgViewBox = memo(ImgViewBox)
 const Component = ({
     setMsgInfo,
@@ -49,6 +51,10 @@ const Component = ({
     setPopupContent: Dispatch<SetStateAction<popupContent>>,
 }) => {
     const siteurl = location.origin
+
+    /** Apple製品利用者の可能性がある場合True */
+    const isAssumedAsAppleProdUser = navigator.userAgent.toLowerCase().includes("mac os x")
+
     // ImgFormにて格納されるimageとディスパッチャー
     const [imageFiles, setImageFile] = useState<Array<File>>([]);
     // ImgFormにて格納されるAltテキストのリスト
@@ -84,6 +90,10 @@ const Component = ({
     const [appendVia, setAppendVia] = useState<boolean>(false)
 
     const handlePost = async () => {
+        if (!isValidPost()) {
+            return
+        }
+
         const initializePost = () => {
             setPostProcessing(true)
             setProcessing(true)
@@ -266,6 +276,41 @@ const Component = ({
         }
     }
 
+    /**
+     * Ctrl+Enterが押されたかどうかを判定します
+     * @param e キーボードイベント
+     * @returns Ctrl+Enterが押された場合true
+     */
+    const isCtrlEnterPressed: KeyPredicate = (e) => {
+        if (e.key === "Enter") {
+            if (isAssumedAsAppleProdUser) {
+                return e.metaKey === true
+            }
+            return e.ctrlKey === true
+        }
+        return false
+    }
+
+    // Ctrl+Enterが押された場合に投稿する
+    useKey(isCtrlEnterPressed, () => {
+        handlePost().catch((e: unknown) => {
+            const msg: string =
+                e instanceof Error
+                    ? `${e.name}: ${e.message}`
+                    : "Unexpected Error@PostForm.tsx"
+            setMsgInfo({
+                msg: msg,
+                isError: true,
+            })
+        })
+    })
+
+    /**
+     * ポスト可能かどうかを判定します
+     * @returns ポスト可能な場合true
+     */
+    const isValidPost = () => post.length >= 1 || imageFiles.length > 0
+
     return (
         <>
             <Tweetbox>
@@ -273,10 +318,10 @@ const Component = ({
                     <button
                         onClick={handlerCancel}
                         className={link({
-                            enabled: (post.length >= 1 || imageFiles.length > 0),
+                            enabled: isValidPost(),
                             class: ["inline-block", "mx-2", "flex-none"]
                         })}
-                        disabled={!(post.length >= 1 || imageFiles.length > 0)}>
+                        disabled={!isValidPost()}>
                         下書きを消す
                     </button>
                     <div className="flex-1"></div>
@@ -289,7 +334,7 @@ const Component = ({
                             handlePost={handlePost}
                             isProcessing={processing}
                             isPostProcessing={isPostProcessing}
-                            disabled={!(post.length >= 1 || imageFiles.length > 0)} />
+                            disabled={!isValidPost()} />
                     </div>
                 </div>
                 <TextForm
