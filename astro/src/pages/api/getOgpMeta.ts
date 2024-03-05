@@ -58,7 +58,6 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
             }
         }
     }
-    console.log(charset)
     charset = (typeof charset !== "undefined") ? charset.toLowerCase() : "utf-8" // default
     return charset
 }
