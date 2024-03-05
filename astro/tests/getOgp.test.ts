@@ -6,6 +6,8 @@ const version = `v${process.env.PUBLIC_VERSION}`
 const siteurl = "http://192.168.3.200:4321"
 
 // 本テストは正しい情報取得のため、 `npm run prod` で APIサーバを起動して行うこと。
+// 本番環境(cloudflare hosted)では、そもそもstatus codeが2XX系ではない場合、専用ページ(html)が返却されるため、
+// テストはNGになるが、正しく 502コードが返却されるため、問題ない。
 
 describe('getOgp Test', () => {
     test('True Website test', async () => {
@@ -56,7 +58,7 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request localhost test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://localhost/")
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://localhost/") //http%3A%2F%2Flocalhost%2F
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
@@ -66,7 +68,7 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request no dns ipv4 website test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://192.168.0.2/")
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://192.168.0.2/") //http%3A%2F%2F192.168.0.2%2F
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
@@ -76,7 +78,7 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request no dns ipv6 website test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://[fe00::1]/")
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://[fe00::1]/") // http%3A%2F%2F%5Bfe00%3A%3A1%5D%2F
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
@@ -86,7 +88,7 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request invalid protocol test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "file://./index.html")
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "file://./index.html") // file%3A%2F%2F.%2Findex.html
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
