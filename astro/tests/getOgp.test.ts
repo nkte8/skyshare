@@ -5,6 +5,8 @@ import type { ogpMetaData, errorResponse } from "../src/lib/types";
 const version = `v${process.env.PUBLIC_VERSION}`
 const siteurl = "http://192.168.3.200:4321"
 
+// 本テストは正しい情報取得のため、 `npm run prod` で APIサーバを起動して行うこと。
+
 describe('getOgp Test', () => {
     test('True Website test', async () => {
         let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://skyshare.uk")
