@@ -63,6 +63,18 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
     return charset
 }
 
+/**
+ * fetchしたHTMLのエスケープを解除
+ * エスケープ文字はたくさんあるが、一旦Skyshareページで使用しているURLで対応が必要なものだけ処理実施
+ *
+ * @param {string} html 解除処理を行うHTML文字列
+ */
+const unescapeHtml = (html: string): string => {
+    return html
+        .replace("&amp;", "&")
+        .replace("&#38;", "&")
+};
+
 export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> => {
     // 返却するするヘッダ
     const headers = {
@@ -93,8 +105,9 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
             throw e
         })
         const encoding: string = await findEncoding(htmlBlob)
-        const html: string = await decodeAsText(htmlBlob, encoding)
-
+        const html: string = unescapeHtml(
+            await decodeAsText(htmlBlob, encoding)
+        )
         const meta: ogpMetaData = extractHead(html);
         const response = new Response(
             JSON.stringify(meta),
