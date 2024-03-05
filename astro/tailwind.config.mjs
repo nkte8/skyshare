@@ -61,7 +61,7 @@ export default {
 					paddingRight: "0.3rem",
 					fontSize: theme("fontSize.sm"),
 					fontFamily: theme("font-mono"), 
-					color: "black" 
+					color: "black"
 				},
 				"s": {
 					color: "rgb(156 163 175)"  // text-gray-400
@@ -74,6 +74,8 @@ export default {
 					paddingLeft: "2rem",
 					margin: "0.5rem",
 					borderRadius: theme("borderRadius.md"),
+					whiteSpace: "pre-wrap",
+					wordBreak: "break-all"
 				}
 			})
 			const newUtilities = {
