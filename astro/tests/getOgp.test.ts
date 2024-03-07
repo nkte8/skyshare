@@ -98,4 +98,16 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
 
+    // Spotify
+    test('True Website spotify test', async () => {
+        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://open.spotify.com/intl-ja/track/1ymTLB4lwhJMlHspIIOAN8")
+        expect(result).toEqual(
+            <ogpMetaData>{
+                type: "meta",
+                title: "Via Chicago",
+                description: "ウィルコ · 曲 · 2005",
+                image: `https://i.scdn.co/image/ab67616d0000b273ca812e1712f8b09c30351378`
+            }
+        )
+    }, 100000) // long timeouf)
 })
