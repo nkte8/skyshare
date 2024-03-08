@@ -22,7 +22,11 @@ export const Component = ({
     const previewOgp = async () => {
         if (popupContent.url !== null) {
             try {
-                const ogp = await getOgpMeta(siteurl, popupContent.url.toString())
+                const ogp = await getOgpMeta({
+                    siteurl: siteurl, 
+                    externalUrl: popupContent.url.toString(),
+                    languageCode: "ja"
+                })
                 if (ogp.type === "error") {
                     let e: Error = new Error(ogp.message)
                     e.name = ogp.error

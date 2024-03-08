@@ -81,23 +81,36 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
         "Access-Control-Allow-Methods": "GET,OPTIONS",
         "Content-Type": "application/json"
     }
+    // OPTIONSリクエストは即OK
+    if (request.method === "OPTIONS") {
+        return new Response(null, {
+            status: 204,
+            headers: headers
+        })
+    }
     // APIの事前処理実施
     const validateResult = validateRequestReturnURL({ request })
 
     // エラーの場合はエラーレスポンスを返却
-    if (typeof validateResult !== "string") {
-        for (const [key, value] of Object.entries(headers)) {
-            validateResult.headers.append(key, value)
-        }
-        return validateResult
+    if (validateResult.type === "error") {
+        return new Response(JSON.stringify(validateResult), {
+            status: validateResult.status,
+            headers: headers
+        })
     }
 
     // 正常な場合はURLとして扱う
-    const url: string = validateResult
+    const url: string = validateResult.decodedUrl
     const decodeAsText = async (arrayBuffer: Blob, encoding: string) => new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer());
-
     try {
-        const htmlBlob: Blob = await fetch(url
+        const htmlBlob: Blob = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Accept-Language": validateResult.language,
+                "Sec-Fetch-Mode": "cors",
+                "User-Agent": "node"
+            }
+        }
         ).then((res) => res.blob()).catch((res: Error) => {
             let e: Error = new Error(res.message)
             e.name = res.name
@@ -124,7 +137,8 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
         return new Response(JSON.stringify(<errorResponse>{
             type: "error",
             error: name,
-            message: msg
+            message: msg,
+            status: 500,
         }), {
             status: 500,
             headers: headers
