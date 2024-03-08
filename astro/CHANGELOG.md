@@ -1,5 +1,16 @@
 # Skyshare 更新履歴
 
+## 1.3.3
+
+### Patch Changes
+
+- **SpotifyやAliexpressで正しくOGPが取得できないバグを修正しました。**
+  - 原因はOGP取得時のHTTPリクエストのパラメータ不足でした。両サイトともにリクエストヘッダの"Allow-Language"パラメータを参照してロケーションを確定していました。
+  - Spotifyではこのパラメータのないリクエストをreject(`403 Forbidden`にしてしまう)、Aliexpressではリクエストをリダイレクトする処理が行われている様子でした。
+    - Aliexpressのリダイレクトは、リダイレクト先でも同様の処理を行っていることから、永遠にリダイレクトが終わらないという挙動をしている、と推測しています。
+  - 上記に対して、一旦"ja"（日本語ロケーション）を固定値として指定し対応しました。
+    - 本パラメータは今後、ポストに設定するlanguage情報を参照するよう改修する予定です。(Now avalable jp location only, but it will fix to refer language of your post.)
+
 ## 1.3.2
 
 ### Patch Changes
