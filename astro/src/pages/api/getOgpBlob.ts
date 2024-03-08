@@ -2,46 +2,66 @@ import type { APIContext, APIRoute } from "astro";
 import validateRequestReturnURL from "@/lib/validateRequest"
 import createErrResponse from "@/lib/createErrResponse";
 import { corsAllowOrigin } from "@/utils/envs";
+import { errorResponse } from "@/lib/types";
 // SSRを有効化
 export const prerender = false;
 
 export const GET: APIRoute = async ({ request }: APIContext) => {
 
     // CORSの設定
-    const corsHeaders = {
+    const headers = {
         "Access-Control-Allow-Origin": corsAllowOrigin,
         "Access-Control-Allow-Methods": "GET,OPTIONS"
     }
+    // error用のheader
+    const errorheaders = {
+        ...headers,
+        "Content-Type": "application/json"
+    }
+
     // APIの事前処理実施
-    const validateResult: string | Response = validateRequestReturnURL({ request })
+    // OPTIONSリクエストは即OK
+    if (request.method === "OPTIONS") {
+        return new Response(null, {
+            status: 204,
+            headers: headers
+        })
+    }
+    // APIの事前処理実施
+    const validateResult = validateRequestReturnURL({ request })
 
     // エラーの場合はエラーレスポンスを返却
-    if (typeof validateResult !== "string") {
-        for (const [key, value] of Object.entries(corsHeaders)) {
-            validateResult.headers.append(key, value)
-        }
-        validateResult.headers.append("Content-Type", "application/json")
-        return validateResult
+    if (validateResult.type === "error") {
+        return new Response(JSON.stringify(validateResult), {
+            status: validateResult.status,
+            headers: errorheaders
+        })
     }
 
     // 正常な場合はURLとして扱う
-    const url: string = validateResult
+    const url: string = validateResult.decodedUrl
     try {
-        const blob: Blob = await fetch(url).then((res) => res.blob());
+        const blob: Blob = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Accept-Language": validateResult.language,
+                "Sec-Fetch-Mode": "cors",
+                "User-Agent": "node"
+            }
+        }).then((res) => res.blob());
         const response: Response = new Response(blob, {
             status: 200,
-            headers: corsHeaders
+            headers: headers
         });
         response.headers.append("Content-Type", blob.type)
         return response;
     } catch (error: unknown) {
-        const result: Response = createErrResponse({
+        const result: errorResponse = createErrResponse({
             statusCode: 500
         })
-        for (const [key, value] of Object.entries(corsHeaders)) {
-            result.headers.append(key, value)
-        }
-        result.headers.append("Content-Type", "application/json")
-        return result
+        return new Response(JSON.stringify(result), {
+            status: result.status,
+            headers: errorheaders
+        })
     }
 };

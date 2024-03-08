@@ -1,12 +1,18 @@
 import type { ogpMetaData, errorResponse } from "@/lib/types";
 
 // note: エラー規格を型定義として決めた方がいい（ error@Component: message　とするなど）
-export const getOgpMeta = async (
+export const getOgpMeta = async ({
+    siteurl,
+    externalUrl,
+    languageCode,
+}: {
     siteurl: string,
-    externalUrl: string
-): Promise<ogpMetaData | errorResponse> => {
+    externalUrl: string,
+    languageCode: string,
+}): Promise<ogpMetaData | errorResponse> => {
     const apiUrl = new URL("/api/getOgpMeta", siteurl)
     apiUrl.searchParams.append("url", encodeURIComponent(externalUrl))
+    apiUrl.searchParams.append("lang", languageCode)
     return await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -29,12 +35,18 @@ export const getOgpMeta = async (
     })
 }
 // Blob型はユニオン型として扱うことが難しいため、エラーハンドリングできない
-export const getOgpBlob = async (
+export const getOgpBlob = async ({
+    siteurl,
+    externalUrl,
+    languageCode,
+}: {
     siteurl: string,
-    externalUrl: string
-): Promise<Blob> => {
+    externalUrl: string,
+    languageCode: string,
+}): Promise<Blob> => {
     const apiUrl = new URL("/api/getOgpBlob", siteurl)
     apiUrl.searchParams.append("url", encodeURIComponent(externalUrl))
+    apiUrl.searchParams.append("lang", languageCode)
     return await fetch(apiUrl, {
         method: 'GET'
     }).then(async (response) => {

@@ -71,14 +71,22 @@ export const attachExternalToRecord = async ({
             msg: `${externalUrl.hostname}からOGPの取得中...`,
             isError: false
         })
-        ogpMeta = await getOgpMeta(apiUrl, externalUrl.toString())
+        ogpMeta = await getOgpMeta({
+            siteurl: apiUrl,
+            externalUrl: externalUrl.toString(),
+            languageCode: "ja"
+        })
         if (ogpMeta.type === "error") {
             let e: Error = new Error(ogpMeta.message)
             e.name = ogpMeta.error
             throw e
         }
         if (ogpMeta.image !== "") {
-            blob = await getOgpBlob(apiUrl, ogpMeta.image)
+            blob = await getOgpBlob({
+                siteurl: apiUrl,
+                externalUrl: ogpMeta.image,
+                languageCode: "ja"
+            })
         }
         const embed: embed.external = {
             $type: "app.bsky.embed.external",

@@ -11,7 +11,12 @@ const siteurl = "http://192.168.3.200:4321"
 
 describe('getOgp Test', () => {
     test('True Website test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://skyshare.uk")
+        let result: ogpMetaData | errorResponse = await getOgpMeta(
+            {
+                siteurl: siteurl,
+                externalUrl: "https://skyshare.uk",
+                languageCode: "ja"
+            })
         expect(result).toEqual(
             <ogpMetaData>{
                 type: "meta",
@@ -23,7 +28,11 @@ describe('getOgp Test', () => {
     }, 10000) // long timeouf)
     // YoutubeはCORSが設定されている例
     test('True Website cors site test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://www.youtube.com/watch?v=xitQ_oNTVvE")
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "https://www.youtube.com/watch?v=xitQ_oNTVvE",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <ogpMetaData>{
                 type: "meta",
@@ -35,7 +44,11 @@ describe('getOgp Test', () => {
     }, 100000) // long timeouf)
     // Zennは　twitter:imageが設定されていない例
     test('True Website no twitter:image test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://zenn.dev")
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "https://zenn.dev",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <ogpMetaData>{
                 type: "meta",
@@ -47,7 +60,11 @@ describe('getOgp Test', () => {
     }, 100000) // long timeouf)
     // It media はエンコーディングが古い shift-jisのサイト
     test('True Website shift-jis site test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://www.itmedia.co.jp/news/")
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "https://www.itmedia.co.jp/news/",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <ogpMetaData>{
                 type: "meta",
@@ -58,7 +75,11 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request localhost test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://localhost/") //http%3A%2F%2Flocalhost%2F
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "http://localhost/",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
@@ -68,7 +89,11 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request no dns ipv4 website test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://192.168.0.2/") //http%3A%2F%2F192.168.0.2%2F
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "http://192.0.2.1/",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
@@ -78,7 +103,11 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request no dns ipv6 website test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "http://[fe00::1]/") // http%3A%2F%2F%5Bfe00%3A%3A1%5D%2F
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "http://[fe00::1]/",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
@@ -88,7 +117,11 @@ describe('getOgp Test', () => {
         )
     }, 100000) // long timeouf)
     test('Bad request invalid protocol test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "file://./index.html") // file%3A%2F%2F.%2Findex.html
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "file://./index.html",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <errorResponse>{
                 type: "error",
@@ -100,7 +133,11 @@ describe('getOgp Test', () => {
 
     // Spotify
     test('True Website spotify test', async () => {
-        let result: ogpMetaData | errorResponse = await getOgpMeta(siteurl, "https://open.spotify.com/intl-ja/track/1ymTLB4lwhJMlHspIIOAN8")
+        let result: ogpMetaData | errorResponse = await getOgpMeta({
+            siteurl: siteurl,
+            externalUrl: "https://open.spotify.com/intl-ja/track/1ymTLB4lwhJMlHspIIOAN8",
+            languageCode: "ja"
+        })
         expect(result).toEqual(
             <ogpMetaData>{
                 type: "meta",
