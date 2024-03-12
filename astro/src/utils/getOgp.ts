@@ -16,7 +16,9 @@ export const getOgpMeta = async ({
     return await fetch(apiUrl, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Accept-Language": languageCode,
+            "Cache-Control": "no-cache",
         }
     }).then(async (response) => {
         if (!response?.ok) {
@@ -48,7 +50,11 @@ export const getOgpBlob = async ({
     apiUrl.searchParams.append("url", encodeURIComponent(externalUrl))
     apiUrl.searchParams.append("lang", languageCode)
     return await fetch(apiUrl, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            "Accept-Language": languageCode,
+            "Cache-Control": "no-cache",
+        }
     }).then(async (response) => {
         if (!response?.ok) {
             let res: errorResponse = await response.json()

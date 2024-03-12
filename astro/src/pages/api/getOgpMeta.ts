@@ -106,9 +106,10 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
         const htmlBlob: Blob = await fetch(url, {
             method: 'GET',
             headers: {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": validateResult.language,
-                "Sec-Fetch-Mode": "cors",
-                "User-Agent": "node"
+                "User-Agent": "node",
+                "Cache-Control": "no-cache",
             }
         }
         ).then((res) => res.blob()).catch((res: Error) => {
