@@ -1,5 +1,15 @@
 # Skyshare 更新履歴
 
+## 1.3.4
+
+### Patch Changes
+
+- AliexpressにおいてOPGが取得できない問題（[Issue #43](https://github.com/nkte8/skyshare/issues/43)）に対処しました。
+  - OGP取得先Webサイト上から情報を取得する際のHTTPヘッダを調節しました。
+  - `Cache-Control`に`no-cache`を付与しました。これが起因だったのかは不明ですが、少なくともOGP取得が成功しやすくなっているように思われます。
+    - この変更によりMacOS/SafariとWindows/Chromeの違いが発生していた事象が解消したと思われます。[※Githubコメント](https://github.com/nkte8/skyshare/issues/43#issuecomment-1991996587)
+  - サーバ側のキャッシュクリアの実施も影響しているかもしれません。残念ながらリダイレクトの根本原因がわからず、確たる情報として発信できませんでした。
+
 ## 1.3.3
 
 ### Patch Changes
@@ -7,7 +17,7 @@
 - **Spotifyで正しくOGPが取得できないバグを修正しました。**
   - 原因はOGP取得時のHTTPリクエストのパラメータ不足でした。Spotifyではリクエストヘッダの"Allow-Language"パラメータを参照してロケーションを確定していました。
   - Spotifyではこのパラメータのないリクエストをreject(`403 Forbidden`にしてしまう)
-  する処理が行われている様子でした。
+    する処理が行われている様子でした。
   - 上記に対して、一旦"ja"（日本語ロケーション）を固定値として指定し対応しました。
     - 本パラメータは今後、ポストに設定するlanguage情報を参照するよう改修する予定です。(Now avalable jp location only, but it will fix to refer language of your post.)
 

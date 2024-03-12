@@ -45,8 +45,8 @@ export const GET: APIRoute = async ({ request }: APIContext) => {
             method: 'GET',
             headers: {
                 "Accept-Language": validateResult.language,
-                "Sec-Fetch-Mode": "cors",
-                "User-Agent": "node"
+                "User-Agent": "node",
+                "Cache-Control": "no-cache",
             }
         }).then((res) => res.blob());
         const response: Response = new Response(blob, {
