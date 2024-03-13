@@ -33,9 +33,10 @@ const description = servicedesc
 <meta name="generator" content={Astro.generator} />
 <meta name="robots" content={robots.join(",")} />
 <script
+    is:inline
     type="text/partytown"
     src="https://www.googletagmanager.com/gtag/js?id=G-JDS7QWVYQB"></script>
-<script type="text/partytown">
+<script is:inline type="text/partytown">
     window.dataLayer = window.dataLayer || [];
     function gtag() {
         dataLayer.push(arguments);
