@@ -301,11 +301,10 @@ const Component = ({
         for (const item of items) {
 
             const file: File | null = item.getAsFile()
-            if (!file || !file.type.startsWith("image")) {
-                continue
-            }
 
-            newImageFiles.push(file)
+            if (file != null && file.type.startsWith("image")) {
+                newImageFiles.push(file)
+            }
         }
 
         await addImages(newImageFiles, imageFiles, setImageFile)
