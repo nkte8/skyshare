@@ -1,25 +1,9 @@
 import React, { useRef, Dispatch, SetStateAction } from "react"
-import { compressImage } from "@/utils/compressimage"
 import ProcButton from "../common/ProcButton"
 import pic from "@/images/image.svg"
-const mimetypes: Array<string> = [
-    "image/png", "image/jpeg"
-]
-const extensions: Array<string> = [
-    "png", "jpeg", "jpg"
-]
+import { imageExtensions, addImages } from "@/utils/image"
 
-const get_mimetype = (name: string): boolean => {
-    let result = false
-    mimetypes.forEach((value) => {
-        if (name === value) {
-            result = true
-        }
-    })
-    return result
-}
-
-const Component = ({ 
+const Component = ({
     disabled,
     imageFiles,
     setImageFile,
@@ -32,32 +16,25 @@ const Component = ({
 }) => {
     const inputRef = useRef<HTMLInputElement>(null!);
     const handleClick = () => { inputRef.current.click() }
-    const maxImages = 4
 
-    const handleFilechanged = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const inputFiles = event.currentTarget.files;
-        let resultFiles: Array<File> = []
+    /**
+     * ファイル選択時の処理を行います
+     * @param event チェンジイベント
+     * @returns なし
+     */
+    const handleFilechanged = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+        const inputFiles: FileList | null = event.currentTarget.files
         // 入力されたファイルがない場合は処理を中断
         if (!inputFiles || inputFiles?.length === 0) {
             event.target.value = ""
             return
         }
-        if (imageFiles.length > 0 ) {
-            resultFiles = imageFiles
-        }
-        let files: Array<Promise<File>> = [];
-        Array.from(inputFiles).forEach((value) => {
-            if (get_mimetype(value.type) !== false) {
-                files.push(compressImage(value))
-            }
-        })
-        resultFiles = resultFiles.concat(await Promise.all<File>(files))
-        resultFiles = resultFiles.slice(0,maxImages)
-        setImageFile(resultFiles)
+
+        await addImages([...inputFiles], imageFiles, setImageFile)
         event.target.value = ""
     }
 
-    const acceptlist = extensions.join(",")
+    const acceptlist = imageExtensions.join(",")
     return (
         <>
             <input type="file" accept={acceptlist}
