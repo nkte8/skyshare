@@ -35,6 +35,7 @@ import SelfLabelsSelector from "./SelfLabelsSelect"
 
 import { useKey } from "react-use"
 import type { KeyPredicate } from "react-use/lib/useKey"
+import { addImages } from "@/utils/image"
 
 const MemoImgViewBox = memo(ImgViewBox)
 const Component = ({
@@ -276,30 +277,38 @@ const Component = ({
         }
     }
 
-    const handleOnPaste = (e: ClipboardEvent) => {
-        const items = e.clipboardData?.items
-        if (!items) {
+    /**
+     * ペーストイベントを処理します
+     * @param e クリップボードイベント
+     */
+    const handleOnPaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        const items: DataTransferItemList = e.clipboardData.items
+        if (items.length <= 0) {
             return
         }
 
-        const newImageFiles = [...imageFiles]
+        await addImagesByPasting(items)
+    }
 
+    /**
+     * ペーストされたアイテムを画像として追加します
+     * @param items ペーストされたアイテム
+     */
+    const addImagesByPasting = async (
+        items: DataTransferItemList
+    ) => {
+        const newImageFiles = []
         for (const item of items) {
-            if (!item.type.startsWith("image")) {
+
+            const file: File | null = item.getAsFile()
+            if (!file || !file.type.startsWith("image")) {
                 continue
             }
 
-            const blob = item.getAsFile()
-            if (!blob) {
-                continue
-            }
-
-            if (!imageFiles.includes(blob)) {
-                newImageFiles.push(blob)
-            }
+            newImageFiles.push(file)
         }
 
-        setImageFile(newImageFiles.slice(0, 4))
+        await addImages(newImageFiles, imageFiles, setImageFile)
     }
 
     /**
