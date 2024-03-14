@@ -5,6 +5,7 @@ import { useContext } from "react"
 const Component = ({
     post,
     onChange,
+    onPaste,
     onfocus = (): void => { },
     onblur = (): void => { },
     disabled
@@ -12,6 +13,7 @@ const Component = ({
     post: string,
     disabled: boolean,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+    onPaste?: (event: ClipboardEvent) => void,
     onfocus?: () => void,
     onblur?: () => void,
 }) => {
@@ -26,6 +28,7 @@ const Component = ({
                     <img src={profile?.avatar} className="w-12 h-12 inline-block rounded-full" />
                 </div>
                 <textarea onChange={onChange}
+                    onPaste={onPaste}
                     autoFocus={true}
                     value={post}
                     onFocus={onfocus}

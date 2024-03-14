@@ -276,6 +276,32 @@ const Component = ({
         }
     }
 
+    const handleOnPaste = (e: ClipboardEvent) => {
+        const items = e.clipboardData?.items
+        if (!items) {
+            return
+        }
+
+        const newImageFiles = [...imageFiles]
+
+        for (const item of items) {
+            if (!item.type.startsWith("image")) {
+                continue
+            }
+
+            const blob = item.getAsFile()
+            if (!blob) {
+                continue
+            }
+
+            if (!imageFiles.includes(blob)) {
+                newImageFiles.push(blob)
+            }
+        }
+
+        setImageFile(newImageFiles.slice(0, 4))
+    }
+
     /**
      * Ctrl+Enterが押されたかどうかを判定します
      * @param e キーボードイベント
@@ -312,102 +338,102 @@ const Component = ({
     const isValidPost = () => post.length >= 1 || imageFiles.length > 0
 
     return (
-        <>
-            <Tweetbox>
-                <div className="flex">
-                    <button
-                        onClick={handlerCancel}
-                        className={link({
-                            enabled: isValidPost(),
-                            class: ["inline-block", "mx-2", "flex-none"]
-                        })}
-                        disabled={!isValidPost()}>
-                        下書きを消す
-                    </button>
-                    <div className="flex-1"></div>
-                    <SelfLabelsSelector
-                        disabled={processing}
-                        setSelfLabel={setSelfLabel}
-                        selectedLabel={selfLabel} />
-                    <div className="flex-none my-auto">
-                        <PostButton
-                            handlePost={handlePost}
-                            isProcessing={processing}
-                            isPostProcessing={isPostProcessing}
-                            disabled={!isValidPost()} />
-                    </div>
+        <Tweetbox>
+            <div className="flex">
+                <button
+                    onClick={handlerCancel}
+                    className={link({
+                        enabled: isValidPost(),
+                        class: ["inline-block", "mx-2", "flex-none"]
+                    })}
+                    disabled={!isValidPost()}>
+                    下書きを消す
+                </button>
+                <div className="flex-1"></div>
+                <SelfLabelsSelector
+                    disabled={processing}
+                    setSelfLabel={setSelfLabel}
+                    selectedLabel={selfLabel} />
+                <div className="flex-none my-auto">
+                    <PostButton
+                        handlePost={handlePost}
+                        isProcessing={processing}
+                        isPostProcessing={isPostProcessing}
+                        disabled={!isValidPost()} />
                 </div>
-                <TextForm
-                    post={post}
+            </div>
+            <TextForm
+                post={post}
+                disabled={isPostProcessing}
+                onChange={handleOnChange}
+                onPaste={handleOnPaste}
+            />
+            <div className="flex">
+                <ImgForm
                     disabled={isPostProcessing}
-                    onChange={handleOnChange} />
-                <div className="flex">
-                    <ImgForm
-                        disabled={isPostProcessing}
-                        imageFiles={imageFiles}
-                        setImageFile={setImageFile}
-                        className="py-0"
-                    />
-                    <div className="flex-1 my-auto"></div>
-                    <LanguageSelect
-                        disabled={isPostProcessing}
-                        setLanguage={setLanguage} />
-                    <div className={
-                        `align-middle my-auto mr-1 px-2 flex-none w-20 rounded-lg ${(
-                            count > countMax
-                        ) && "bg-red-300"
-                        } ${(
-                            count > countWarn && count <= countMax
-                        ) && "bg-amber-300"
-                        }`}>
-                        {count}/{countMax}
-                    </div>
-                </div>
-                <div className="mx-2 my-auto">
-                    <div className="flex w-full">
-                        <div className="flex-none my-auto">よく使うタグ: </div>
-                        <TagInputList
-                            post={post}
-                            setPost={setPost}
-                            disabled={processing} />
-                    </div>
-
-                    <div className="flex flex-wrap mb-4">
-                        <AutoXPopupToggle
-                            labeltext={"Xを自動で開く"}
-                            prop={autoPop}
-                            setProp={setAutoPop} />
-                        <NoGenerateToggle
-                            labeltext={"Xへの画像は自身で添付する"}
-                            prop={noGenerate}
-                            setProp={setNoGenerate} />
-                    </div>
-                </div>
-                <MemoImgViewBox
                     imageFiles={imageFiles}
                     setImageFile={setImageFile}
-                    altTexts={altTexts}
-                    setAltText={setAltText} />
-                <div className="mx-2 my-auto">
-                    <Details initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
-                        <div className="flex flex-wrap">
-                            <ShowTaittsuuToggle
-                                labeltext={"タイッツーの投稿ボタンも表示する"}
-                                prop={showTaittsuu}
-                                setProp={setShowTaittsuu} />
-                            <ForceIntentToggle
-                                labeltext={"Xの投稿はアプリを強制的に起動する"}
-                                prop={noUseXApp}
-                                setProp={setNoUseXApp} />
-                            <AppendVia
-                                labeltext={"Viaを付与する"}
-                                prop={appendVia}
-                                setProp={setAppendVia} />
-                        </div>
-                    </Details>
+                    className="py-0"
+                />
+                <div className="flex-1 my-auto"></div>
+                <LanguageSelect
+                    disabled={isPostProcessing}
+                    setLanguage={setLanguage} />
+                <div className={
+                    `align-middle my-auto mr-1 px-2 flex-none w-20 rounded-lg ${(
+                        count > countMax
+                    ) && "bg-red-300"
+                    } ${(
+                        count > countWarn && count <= countMax
+                    ) && "bg-amber-300"
+                    }`}>
+                    {count}/{countMax}
                 </div>
-            </Tweetbox>
-        </>
+            </div>
+            <div className="mx-2 my-auto">
+                <div className="flex w-full">
+                    <div className="flex-none my-auto">よく使うタグ: </div>
+                    <TagInputList
+                        post={post}
+                        setPost={setPost}
+                        disabled={processing} />
+                </div>
+
+                <div className="flex flex-wrap mb-4">
+                    <AutoXPopupToggle
+                        labeltext={"Xを自動で開く"}
+                        prop={autoPop}
+                        setProp={setAutoPop} />
+                    <NoGenerateToggle
+                        labeltext={"Xへの画像は自身で添付する"}
+                        prop={noGenerate}
+                        setProp={setNoGenerate} />
+                </div>
+            </div>
+            <MemoImgViewBox
+                imageFiles={imageFiles}
+                setImageFile={setImageFile}
+                altTexts={altTexts}
+                setAltText={setAltText} />
+            <div className="mx-2 my-auto">
+                <Details initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
+                    <div className="flex flex-wrap">
+                        <ShowTaittsuuToggle
+                            labeltext={"タイッツーの投稿ボタンも表示する"}
+                            prop={showTaittsuu}
+                            setProp={setShowTaittsuu} />
+                        <ForceIntentToggle
+                            labeltext={"Xの投稿はアプリを強制的に起動する"}
+                            prop={noUseXApp}
+                            setProp={setNoUseXApp} />
+                        <AppendVia
+                            labeltext={"Viaを付与する"}
+                            prop={appendVia}
+                            setProp={setAppendVia} />
+                    </div>
+                </Details>
+            </div>
+        </Tweetbox>
     );
 }
 
