@@ -287,14 +287,14 @@ const Component = ({
             return
         }
 
-        await addImagesByPasting(items)
+        await addPastedImages(items)
     }
 
     /**
      * ペーストされたアイテムを画像として追加します
      * @param items ペーストされたアイテム
      */
-    const addImagesByPasting = async (
+    const addPastedImages = async (
         items: DataTransferItemList
     ) => {
         const newImageFiles = []
