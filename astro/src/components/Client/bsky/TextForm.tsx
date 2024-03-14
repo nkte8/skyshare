@@ -13,7 +13,7 @@ const Component = ({
     post: string,
     disabled: boolean,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
-    onPaste?: (event: ClipboardEvent) => void,
+    onPaste?: (event: React.ClipboardEvent<HTMLTextAreaElement>) => void,
     onfocus?: () => void,
     onblur?: () => void,
 }) => {
