@@ -7,23 +7,23 @@ const imageExtensions: string[] = ["png", "jpeg", "jpg"]
 
 /**
  *
- * @param newFiles 新規に追加されたファイル配列
+ * @param newImageFiles 新規に追加されたファイル配列
  * @param imageFiles 既存の画像ファイル配列
  * @param setImageFile 画像ファイル配列のセッター
  */
 const addImages = async (
-    newFiles: File[],
+    newImageFiles: File[],
     imageFiles: File[],
     setImageFile: Dispatch<SetStateAction<File[]>>,
 ): Promise<void> => {
-    if (newFiles.length <= 0) {
+    if (newImageFiles.length <= 0) {
         return
     }
 
     const existingImageFiles: File[] = imageFiles.length > 0 ? imageFiles : []
     const additionalImageFiles: Promise<File>[] = []
 
-    newFiles.forEach((file: File) => {
+    newImageFiles.forEach((file: File) => {
         if (allowedMimeTypes.includes(file.type)) {
             additionalImageFiles.push(compressImage(file))
         }
