@@ -112,9 +112,9 @@ const Component = ({
                 langs: language,
                 $type: "app.bsky.feed.post",
                 labels: (selfLabel !== null) ? {
-                    $type: "com.atproto.label.defs#selfLabels",
-                    values: [selfLabel]
-                } : undefined,
+                        $type: "com.atproto.label.defs#selfLabels",
+                        values: [selfLabel]
+                    } : undefined,
                 via: (appendVia !== false) ? servicename : undefined
             })
             // Hashtagが含まれている場合はブラウザに保存
@@ -281,34 +281,42 @@ const Component = ({
      * ペーストイベントを処理します
      * @param e クリップボードイベント
      */
-    const handleOnPaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const handleOnPaste = async (
+        e: React.ClipboardEvent<HTMLTextAreaElement>,
+    ) => {
         const items: DataTransferItemList = e.clipboardData.items
         if (items.length <= 0) {
             return
         }
 
-        await addPastedImages(items)
+        const newImageFiles = collectNewImages(items)
+
+        if (newImageFiles.length <= 0) {
+            return
+        }
+
+        // NOTE 画像ファイルが含まれている場合は文字列のペーストを抑制
+        e.preventDefault()
+        await addImages(newImageFiles, imageFiles, setImageFile)
     }
 
     /**
-     * ペーストされたアイテムを画像として追加します
-     * @param items ペーストされたアイテム
+     * データ転送アイテムリストから画像ファイルのリストを作成します
+     * @param items データ転送アイテムリスト
+     * @returns 画像ファイルのリスト
      */
-    const addPastedImages = async (
-        items: DataTransferItemList
-    ) => {
-        const newImageFiles = []
+    const collectNewImages = (items: DataTransferItemList): File[] => {
+        const newImageFiles: File[] = []
+
         for (const item of items) {
-
             const file: File | null = item.getAsFile()
-            if (!file || !file.type.startsWith("image")) {
-                continue
-            }
 
-            newImageFiles.push(file)
+            if (file != null && file.type.startsWith("image")) {
+                newImageFiles.push(file)
+            }
         }
 
-        await addImages(newImageFiles, imageFiles, setImageFile)
+        return newImageFiles
     }
 
     /**

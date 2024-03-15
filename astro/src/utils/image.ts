@@ -16,10 +16,6 @@ const addImages = async (
     imageFiles: File[],
     setImageFile: Dispatch<SetStateAction<File[]>>,
 ): Promise<void> => {
-    if (newImageFiles.length <= 0) {
-        return
-    }
-
     const existingImageFiles: File[] = imageFiles.length > 0 ? imageFiles : []
     const additionalImageFiles: Promise<File>[] = []
 
