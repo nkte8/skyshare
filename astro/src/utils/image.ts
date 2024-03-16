@@ -19,9 +19,6 @@ const addImages = async (
     if (newImageFiles.length <= 0) {
         return
     }
-
-    const existingImageFiles: File[] = imageFiles.length > 0 ? imageFiles : []
-
     const additionalImageFiles: Promise<File>[] = newImageFiles
         .filter(file => allowedMimeTypes.includes(file.type))
         .map(file => compressImage(file))
