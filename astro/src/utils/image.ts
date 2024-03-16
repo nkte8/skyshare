@@ -26,9 +26,10 @@ const addImages = async (
         .filter(file => allowedMimeTypes.includes(file.type))
         .map(file => compressImage(file))
 
-    const concatenatedFiles: File[] = existingImageFiles.concat(
-        await Promise.all<File>(additionalImageFiles),
-    )
+    const concatenatedFiles: File[] = [
+        ...imageFiles,
+        ...(await Promise.all<File>(additionalImageFiles)),
+    ]
 
     const resultFiles: File[] = concatenatedFiles.slice(0, maxAttachableImages)
 
