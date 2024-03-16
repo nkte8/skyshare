@@ -16,18 +16,17 @@ const addImages = async (
     imageFiles: File[],
     setImageFile: Dispatch<SetStateAction<File[]>>,
 ): Promise<void> => {
-    const existingImageFiles: File[] = imageFiles.length > 0 ? imageFiles : []
-    const additionalImageFiles: Promise<File>[] = []
+    if (newImageFiles.length <= 0) {
+        return
+    }
+    const additionalImageFiles: Promise<File>[] = newImageFiles
+        .filter(file => allowedMimeTypes.includes(file.type))
+        .map(file => compressImage(file))
 
-    newImageFiles.forEach((file: File) => {
-        if (allowedMimeTypes.includes(file.type)) {
-            additionalImageFiles.push(compressImage(file))
-        }
-    })
-
-    const concatenatedFiles: File[] = existingImageFiles.concat(
-        await Promise.all<File>(additionalImageFiles),
-    )
+    const concatenatedFiles: File[] = [
+        ...imageFiles,
+        ...(await Promise.all<File>(additionalImageFiles)),
+    ]
 
     const resultFiles: File[] = concatenatedFiles.slice(0, maxAttachableImages)
 
