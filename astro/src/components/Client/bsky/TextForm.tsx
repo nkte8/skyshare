@@ -5,6 +5,7 @@ import { useContext } from "react"
 const Component = ({
     post,
     onChange,
+    onPaste,
     onfocus = (): void => { },
     onblur = (): void => { },
     disabled
@@ -12,10 +13,13 @@ const Component = ({
     post: string,
     disabled: boolean,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+    onPaste?: (event: React.ClipboardEvent<HTMLTextAreaElement>) => void,
     onfocus?: () => void,
     onblur?: () => void,
 }) => {
     const { profile } = useContext(Profile_context)
+    const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(navigator.userAgent.toLowerCase())
+
     return (
         <div className={inputtext_base({
             kind: "outbound",
@@ -26,11 +30,16 @@ const Component = ({
                     <img src={profile?.avatar} className="w-12 h-12 inline-block rounded-full" />
                 </div>
                 <textarea onChange={onChange}
+                    onPaste={onPaste}
                     autoFocus={true}
                     value={post}
                     onFocus={onfocus}
                     onBlur={onblur}
-                    placeholder="最近どう？いまどうしてる？"
+                    placeholder={
+                        `最近どう？いまどうしてる？${isDesktopEnvironment ?
+                            "\n*クリップボードからの画像・画像ファイルのペーストが可能です。" : ""
+                        }`
+                    }
                     disabled={disabled}
                     className={inputtext_base({
                         kind: "inbound",
