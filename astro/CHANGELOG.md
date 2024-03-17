@@ -1,5 +1,14 @@
 # Skyshare 更新履歴
 
+## 1.3.5
+
+### Patch Changes
+
+- クリップボードから画像ファイルや、画像がペースト可能になりました！
+  - PC(Windows/Mac)の場合に、ファイルの`Ctrl(Command)+C & Ctrl(Command)+V`によるペーストをサポートしました。
+  - クリップボードに保存された画像データ（PrintScreenや、Command+Control+Shift+3などの結果）のペーストも可能です。
+  - [ZEKE/じーく氏(@zeke320.bsky.social)](https://bsky.app/profile/zeke320.bsky.social)、今回もありがとう！PCユーザーの環境が良くなってるのはほぼ彼のおかげです。確認時間かかってすまんかった...
+
 ## 1.3.4
 
 ### Patch Changes
