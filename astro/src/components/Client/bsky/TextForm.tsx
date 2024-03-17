@@ -33,7 +33,7 @@ const Component = ({
                     value={post}
                     onFocus={onfocus}
                     onBlur={onblur}
-                    placeholder="最近どう？いまどうしてる？"
+                    placeholder="最近どう？いまどうしてる？&#13;（クリップボードからの画像・画像ファイルのペーストが可能です。）"
                     disabled={disabled}
                     className={inputtext_base({
                         kind: "inbound",
