@@ -35,7 +35,7 @@ import SelfLabelsSelector from "./SelfLabelsSelect"
 
 import { useKey } from "react-use"
 import type { KeyPredicate } from "react-use/lib/useKey"
-import { addImages } from "@/utils/image"
+import { addImages } from "@/components/Client/lib/image"
 
 const MemoImgViewBox = memo(ImgViewBox)
 const Component = ({

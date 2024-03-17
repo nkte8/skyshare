@@ -1,7 +1,7 @@
 import React, { useRef, Dispatch, SetStateAction } from "react"
 import ProcButton from "../common/ProcButton"
 import pic from "@/images/image.svg"
-import { imageExtensions, addImages } from "@/utils/image"
+import { imageExtensions, addImages } from "@/components/Client/lib/image"
 
 const Component = ({
     disabled,
