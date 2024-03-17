@@ -1,7 +1,7 @@
 import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
 import { Session_context } from "../common/contexts"
 import { type msgInfo, type modes, type popupContent } from "../common/types"
-import { servicename , pagesPrefix } from "@/utils/vars"
+import { servicename, pagesPrefix } from "@/utils/vars"
 
 import {
     buildRecordBase,
@@ -32,11 +32,17 @@ import LanguageSelect from "./LanguageSelect"
 import Details from "./Details"
 import TagInputList from "./TagInputList"
 import SelfLabelsSelector from "./SelfLabelsSelect"
+import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
+
+import MediaPreview from "./MediaPreview"
+import { MediaData } from "./type";
 
 import { useKey } from "react-use"
 import type { KeyPredicate } from "react-use/lib/useKey"
 
 const MemoImgViewBox = memo(ImgViewBox)
+const MemoMediaPreview = memo(MediaPreview)
+
 const Component = ({
     setMsgInfo,
     processing,
@@ -67,6 +73,8 @@ const Component = ({
     const [isPostProcessing, setPostProcessing] = useState<boolean>(false)
     // Postの実行状態を管理する変数とディスパッチャー
     const [language, setLanguage] = useState<Array<string>>(["ja"])
+    // メディアのプレビューに関するStateコンストラクタ
+    const [mediaDataList, setMediaDataList] = useState<Array<MediaData>>([])
     // セッション
     const { session } = useContext(Session_context)
     // Postの入力上限
@@ -348,6 +356,15 @@ const Component = ({
                         setImageFile={setImageFile}
                         className="py-0"
                     />
+                    <LinkcardAttachButton
+                        postText={post}
+                        setMediaDataList={setMediaDataList}
+                        isProcessing={isPostProcessing}
+                        setProcessing={setProcessing}
+                        showAnimation={false}
+                        disabled={isPostProcessing}
+                        setMsgInfo={setMsgInfo}
+                    />
                     <div className="flex-1 my-auto"></div>
                     <LanguageSelect
                         disabled={isPostProcessing}
@@ -383,6 +400,10 @@ const Component = ({
                             setProp={setNoGenerate} />
                     </div>
                 </div>
+                <MemoMediaPreview
+                    mediaDataList={mediaDataList}
+                    setMediaDataList={setMediaDataList}
+                />
                 <MemoImgViewBox
                     imageFiles={imageFiles}
                     setImageFile={setImageFile}
