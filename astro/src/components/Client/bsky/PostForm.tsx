@@ -27,12 +27,13 @@ import NoGenerateToggle from "./options/NoGenerateToggle"
 import ShowTaittsuuToggle from "./options/ShowTaittsuuToggle"
 import ForceIntentToggle from "./options/ForceIntentToggle"
 import AppendVia from "./options/AppendViaToggle"
-import PostButton from "./PostButton"
+// import PostButton from "./PostButton"
 import LanguageSelect from "./LanguageSelect"
 import Details from "./Details"
 import TagInputList from "./TagInputList"
 import SelfLabelsSelector from "./SelfLabelsSelect"
 import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
+import PostButton from "./buttons/PostButton"
 
 import MediaPreview from "./MediaPreview"
 import { MediaData } from "./type";
@@ -74,7 +75,7 @@ const Component = ({
     // Postの実行状態を管理する変数とディスパッチャー
     const [language, setLanguage] = useState<Array<string>>(["ja"])
     // メディアのプレビューに関するStateコンストラクタ
-    const [mediaDataList, setMediaDataList] = useState<Array<MediaData>>([])
+    const [mediaDataList, setMediaDataList] = useState<MediaData | null>(null)
     // セッション
     const { session } = useContext(Session_context)
     // Postの入力上限
@@ -83,6 +84,7 @@ const Component = ({
     const countWarn = 140
     // 保存できるタグの上限
     const maxTagCount = 8
+
     // Options
     // ポスト時に自動でXを開く
     const [autoPop, setAutoPop] = useState<boolean>(false)
@@ -266,6 +268,25 @@ const Component = ({
         setProcessing(false)
         setPostProcessing(false)
     }
+
+    const postCallback = (options: {
+        popupContent: {
+            content: string,
+            url: URL | null
+        }
+    }) => {
+        if (autoPop) {
+            Popup({
+                intentKind: "xcom",
+                content: options.popupContent.content
+            })
+        }
+        setPopupContent(options.popupContent)
+        setMode("xcom")
+        setMediaDataList(null)
+        handlerCancel()
+    }
+
     const handlerCancel = () => {
         setImageFile([])
         setPost("")
@@ -339,10 +360,24 @@ const Component = ({
                         selectedLabel={selfLabel} />
                     <div className="flex-none my-auto">
                         <PostButton
+                            postText={post}
+                            language={language}
+                            selfLabel={selfLabel}
+                            options={{
+                                noGenerateOgp: noGenerate,
+                                appendVia: appendVia
+                            }}
+                            mediaDataList={mediaDataList}
+                            callback={postCallback}
+                            isProcessing={processing}
+                            setProcessing={setProcessing}
+                            setMsgInfo={setMsgInfo}
+                            disabled={!isValidPost()} />
+                        {/* <PostButton
                             handlePost={handlePost}
                             isProcessing={processing}
                             isPostProcessing={isPostProcessing}
-                            disabled={!isValidPost()} />
+                            disabled={!isValidPost()} /> */}
                     </div>
                 </div>
                 <TextForm
@@ -361,7 +396,6 @@ const Component = ({
                         setMediaDataList={setMediaDataList}
                         isProcessing={isPostProcessing}
                         setProcessing={setProcessing}
-                        showAnimation={false}
                         disabled={isPostProcessing}
                         setMsgInfo={setMsgInfo}
                     />

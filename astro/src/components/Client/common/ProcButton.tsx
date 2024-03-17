@@ -1,7 +1,11 @@
+import { buttonID } from "../bsky/type"
+import { clickedButtonContext } from "./contexts"
 import { load_circle, button_base } from "./tailwind_variants"
-import { ReactNode } from "react"
+import { ReactNode, useContext } from "react"
+
 const Component = ({
     handler,
+    buttonID,
     isProcessing,
     context,
     showAnimation = true,
@@ -11,6 +15,7 @@ const Component = ({
     hidden,
 }: {
     handler: () => void,
+    buttonID?: buttonID
     isProcessing: boolean,
     context: ReactNode,
     showAnimation?: boolean,
@@ -19,8 +24,16 @@ const Component = ({
     hidden?: boolean,
     color?: "blue",
 }) => {
+    const { clickedButtonID, setClickedButtonID } = useContext(clickedButtonContext)
+    const handlerWrapper = (callback: () => void) => {
+        callback()
+        const thisButtonID = (typeof buttonID !== "undefined") ? buttonID : ""
+        console.log(thisButtonID)
+        setClickedButtonID(thisButtonID)
+    }
+    const Animation = clickedButtonID !== "" && clickedButtonID === buttonID && showAnimation
     return (
-        <button onClick={handler}
+        <button onClick={() => handlerWrapper(handler)}
             className={button_base({
                 disabled: (isProcessing || disabled),
                 regectinput: disabled,
@@ -34,7 +47,7 @@ const Component = ({
             {
                 isProcessing ? (
                     <>{
-                        showAnimation && <>
+                        Animation && <>
                             <svg className={load_circle({ size: "s" })}
                                 viewBox="-30 -30 160 160" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M94,50 a44,44,0,1,1,-44,-44"

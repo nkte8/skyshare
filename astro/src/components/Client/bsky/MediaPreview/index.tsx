@@ -18,9 +18,9 @@ const Component = ({
     mediaDataList,
     setMediaDataList,
 }: {
-    mediaDataList: Array<MediaData>,
+    mediaDataList: MediaData | null,
     // 配列を操作するだけなのでArray型さえ担保されていれば良い
-    setMediaDataList: Dispatch<SetStateAction<Array<MediaData>>>
+    setMediaDataList: Dispatch<SetStateAction<MediaData | null>>
 }) => {
     // プレビューを構成するコンポーネント
     const PreviewNode = ({
@@ -32,7 +32,15 @@ const Component = ({
         classNameImage?: string,
         className?: string
     }) => {
-        const mediaData = mediaDataList[index]
+        const mediaBlob =
+            mediaDataList !== null ?
+                mediaDataList.blobs[index].blob
+                : null
+
+        const alt =
+            mediaDataList !== null &&
+                mediaDataList.type === "images" ?
+                mediaDataList.blobs[index].alt : undefined
         return (
             <div className={"relative " + className}>
                 <DeleteItemButton
@@ -40,10 +48,10 @@ const Component = ({
                     mediaDataList={mediaDataList}
                     setMediaDataList={setMediaDataList} />
                 {
-                    mediaData.blob !== null &&
+                    mediaBlob !== null &&
                     <img
-                        src={URL.createObjectURL(mediaData.blob)}
-                        alt={mediaData.type === "image" ? mediaData.alt : undefined}
+                        src={URL.createObjectURL(mediaBlob)}
+                        alt={alt}
                         className={classNameImage}
                     />
                 }
@@ -86,7 +94,18 @@ const Component = ({
     const [PreviewForm, setPreviewForm] = useState<ReactNode>(PreviewLayout(-1))
 
     useEffect(() => {
-        setPreviewForm(PreviewLayout(mediaDataList.length))
+        if (mediaDataList !== null) {
+            if (mediaDataList.type === "external") {
+                setPreviewForm(PreviewLayout(
+                    mediaDataList.blobs !== null ? 1 : 0
+                ))
+            }
+            if (mediaDataList.type === "images") {
+                setPreviewForm(PreviewLayout(mediaDataList.blobs.length))
+            }
+        } else {
+            setPreviewForm(PreviewLayout(0))
+        }
     }, [mediaDataList])
 
     return (

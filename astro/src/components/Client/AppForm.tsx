@@ -44,7 +44,7 @@ const Component = ({
     const [mode, setMode] = useState<modes>("bsky")
     return (<>
         {
-            session.accessJwt !== null ? (
+            session.accessJwt !== "" ? (
                 <>
                     {Forms({ mode })}
                     <div className={

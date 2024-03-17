@@ -40,6 +40,9 @@ class richTextFacetParser {
             case "link":
                 this.regex = /(https?:\/\/[^ \r\n\n\r]*)( |\r\n|\n|\r)?/i
                 break
+            case "tag":
+                this.regex = /((#|＃)[^ \r\n\n\r]*)( |\r\n|\n|\r)?/i
+                break
         }
     }
     getFacet = (text: string) => {
@@ -52,7 +55,7 @@ class richTextFacetParser {
         return result
     }
 }
-type richTextFacetType = "link"
+type richTextFacetType = "link" | "tag"
 
 type parsedText = {
     type: richTextFacetType,
@@ -66,10 +69,15 @@ const parseText = async ({
     let result: Array<parsedText> = []
     // link用Parser
     const facetLink = new richTextFacetParser("link")
+    const facetTag = new richTextFacetParser("tag")
     // Parse結果をresultに格納
     result = result.concat({
         type: facetLink.type,
         content: facetLink.getFacet(text)
+    })
+    result = result.concat({
+        type: facetTag.type,
+        content: facetTag.getFacet(text)
     })
     return result
 }

@@ -11,20 +11,18 @@ export const Component = ({
     setMediaDataList,
     isProcessing,
     setProcessing,
-    showAnimation,
     disabled,
     setMsgInfo,
 }: {
     postText: string
-    setMediaDataList: Dispatch<SetStateAction<Array<MediaData>>>,
+    setMediaDataList: Dispatch<SetStateAction<MediaData | null>>,
     isProcessing: boolean,
     setProcessing: Dispatch<SetStateAction<boolean>>,
-    showAnimation: boolean,
     disabled: boolean,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
 }) => {
     const siteurl = location.origin
-    const handlePost = async () => {
+    const handleGetOGP = async () => {
         const richTextLinkParser = new richTextFacetParser("link")
         const parseResult = richTextLinkParser.getFacet(postText)
         if (parseResult.length < 1) {
@@ -57,14 +55,18 @@ export const Component = ({
                     languageCode: "ja"
                 })
             }
-            setMediaDataList([{
-                type: "linkcard",
-                meta: {
-                    ...ogpMeta,
-                    url: externalUrl
-                },
-                blob
-            }])
+            setMediaDataList(
+                {
+                    type: "external",
+                    meta: {
+                        ...ogpMeta,
+                        url: externalUrl
+                    },
+                    blobs: [{
+                        blob
+                    }]
+                }
+            )
             setMsgInfo({
                 isError: false,
                 msg: `リンクカードを取得しました！`
@@ -77,17 +79,17 @@ export const Component = ({
                 })
             }
             //リンクカード設定を解除
-            setMediaDataList([])
+            setMediaDataList(null)
         }
         setProcessing(false)
     }
 
     return (
         <ProcButton
-            handler={handlePost}
+            buttonID="linkcardattach"
+            handler={handleGetOGP}
             isProcessing={isProcessing}
             context="リンクカードを取得"
-            showAnimation={showAnimation}
             className={["mx-1"].join(" ")}
             disabled={disabled} />
     )

@@ -7,21 +7,39 @@ const Component = ({
     setMediaDataList
 }: {
     itemId: number,
-    mediaDataList: Array<MediaData>,
-    setMediaDataList: Dispatch<SetStateAction<Array<MediaData>>>
+    mediaDataList: MediaData | null,
+    setMediaDataList: Dispatch<SetStateAction<MediaData | null>>
 }) => {
     const handleClick = () => {
         if (itemId < 0 || itemId > 3) {
             return
         }
-        if (mediaDataList.length < 0) {
+        if (mediaDataList === null) {
             return
         }
-        // Listから自身のitemIdを取り除き、これをリストに追加する
-        let result: Array<MediaData> = mediaDataList.filter(
-            (_, index) => index !== itemId
-        )
-        setMediaDataList(result)
+        if (mediaDataList.type === "external"){
+            // linkcardは1枚なので消した時点でlistは空
+            setMediaDataList(null)
+            return
+        }
+        if (mediaDataList.type === "images") {
+            if (mediaDataList.blobs.length < 0) {
+                return
+            }
+            // Listから自身のitemIdを取り除き、これをリストに追加する
+            let result = mediaDataList.blobs.filter(
+                (_, index) => index !== itemId
+            )
+            // 全てのメディアが削除された場合は null とする
+            if (result.length <= 0) {
+                setMediaDataList(null)
+                return
+            }
+            setMediaDataList({
+                type: mediaDataList.type,
+                blobs: result
+            })
+        }
     }
     return (
         <>

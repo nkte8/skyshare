@@ -30,8 +30,8 @@ export const Component = ({
             resetJwt()
             resetLoginInfo()
             setSession({
-                did: null,
-                accessJwt: null,
+                did: "",
+                accessJwt: "",
                 refreshJwt: null,
                 handle: null,
             })

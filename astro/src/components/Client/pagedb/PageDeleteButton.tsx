@@ -18,7 +18,7 @@ const Component = ({
     const handleClick = async () => {
         setProcessing(true)
         try {
-            if (session.did === null || session.accessJwt === null) {
+            if (session.did === "" || session.accessJwt === "") {
                 let e: Error = new Error("フロントエンドが想定していない操作が行われました。")
                 e.name = "Unexpected Error@pagedelete.tsx"
                 throw e
