@@ -35,7 +35,7 @@ import SelfLabelsSelector from "./SelfLabelsSelect"
 
 import { useKey } from "react-use"
 import type { KeyPredicate } from "react-use/lib/useKey"
-import { addImages } from "@/utils/image"
+import { addImageFiles } from "@/components/Client/lib/imgFiles"
 
 const MemoImgViewBox = memo(ImgViewBox)
 const Component = ({
@@ -297,7 +297,7 @@ const Component = ({
 
         // NOTE 画像ファイルが含まれている場合は文字列のペーストを抑制
         e.preventDefault()
-        await addImages(newImageFiles, imageFiles, setImageFile)
+        await addImageFiles(newImageFiles, imageFiles, setImageFile)
     }
 
     /**

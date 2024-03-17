@@ -11,7 +11,7 @@ const imageExtensions: string[] = ["png", "jpeg", "jpg"]
  * @param imageFiles 既存の画像ファイル配列
  * @param setImageFile 画像ファイル配列のセッター
  */
-const addImages = async (
+const addImageFiles = async (
     newImageFiles: File[],
     imageFiles: File[],
     setImageFile: Dispatch<SetStateAction<File[]>>,
@@ -33,4 +33,4 @@ const addImages = async (
     setImageFile(resultFiles)
 }
 
-export { imageExtensions, addImages }
+export { imageExtensions, addImageFiles }

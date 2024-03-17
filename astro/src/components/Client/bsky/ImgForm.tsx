@@ -1,7 +1,7 @@
 import React, { useRef, Dispatch, SetStateAction } from "react"
 import ProcButton from "../common/ProcButton"
 import pic from "@/images/image.svg"
-import { imageExtensions, addImages } from "@/utils/image"
+import { imageExtensions, addImageFiles } from "@/components/Client/lib/imgFiles"
 
 const Component = ({
     disabled,
@@ -30,7 +30,7 @@ const Component = ({
             return
         }
 
-        await addImages([...inputFiles], imageFiles, setImageFile)
+        await addImageFiles([...inputFiles], imageFiles, setImageFile)
         event.target.value = ""
     }
 
