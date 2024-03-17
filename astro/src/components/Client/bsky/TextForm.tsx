@@ -18,6 +18,8 @@ const Component = ({
     onblur?: () => void,
 }) => {
     const { profile } = useContext(Profile_context)
+    const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(navigator.userAgent.toLowerCase())
+
     return (
         <div className={inputtext_base({
             kind: "outbound",
@@ -33,7 +35,11 @@ const Component = ({
                     value={post}
                     onFocus={onfocus}
                     onBlur={onblur}
-                    placeholder="最近どう？いまどうしてる？&#13;クリップボードからの画像・画像ファイルのペーストが可能です。"
+                    placeholder={
+                        `最近どう？いまどうしてる？${isDesktopEnvironment ?
+                            "\n*クリップボードからの画像・画像ファイルのペーストが可能です。" : ""
+                        }`
+                    }
                     disabled={disabled}
                     className={inputtext_base({
                         kind: "inbound",
