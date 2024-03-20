@@ -1,8 +1,20 @@
 import getEndpoint, { com_atproto } from "./base"
-import mtype from "./models/uploadBlob.json"
-import etype from "./models/error.json"
 const apiName = com_atproto.repo.uploadBlob
 const endpoint = getEndpoint(apiName)
+
+export type uploadBlobResult = {
+    blob: {
+        $type: "blob",
+        ref: {
+            $link: string
+        },
+        mimeType: string,
+        size: number
+    }
+} & {
+    error: string,
+    message: string,
+}
 
 export const api = async ({
     accessJwt,
@@ -13,7 +25,7 @@ export const api = async ({
     mimeType: string,
     blob: Uint8Array
 }
-): Promise<typeof mtype & typeof etype> => fetch(endpoint,
+): Promise<uploadBlobResult> => fetch(endpoint,
     {
         method: 'POST',
         headers: {
@@ -23,7 +35,11 @@ export const api = async ({
         body: blob,
     }).then(async (response) => {
         if (!response?.ok) {
-            let res: typeof etype = await response.json()
+            let res: {
+                error: string,
+                message: string,
+            } = await response.json()
+
             let e: Error = new Error(res.message)
             e.name = apiName
             throw e

@@ -2,8 +2,8 @@ import { Dispatch, SetStateAction, useState, useEffect } from "react"
 import { type modes } from "./types"
 import ProcButton from "./ProcButton"
 
-const Component = ({ mode, setMode, processing }: {
-    processing: boolean
+const Component = ({ mode, setMode, isProcessing }: {
+    isProcessing: boolean
     mode: modes
     setMode: Dispatch<SetStateAction<modes>>
 }
@@ -46,7 +46,7 @@ const Component = ({ mode, setMode, processing }: {
             isProcessing={false}
             context={label}
             showAnimation={false}
-            disabled={processing} />
+            disabled={isProcessing} />
     )
 }
 export default Component

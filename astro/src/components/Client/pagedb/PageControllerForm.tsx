@@ -20,7 +20,7 @@ const Component = ({
     return (
         <div className="justify-center">
             {
-                session?.accessJwt !== null ? (
+                session.accessJwt !== "" ? (
                     <>
                         <PageDeleteButton id={id} session={session} setMsgInfo={setMsgInfo} />
                     </>

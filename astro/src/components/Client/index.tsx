@@ -2,17 +2,23 @@ import { useState, useEffect } from "react"
 import ReactDOM from "react-dom";
 import { posturl } from "@/utils/envs"
 
-import { Session_context, type Session_info, Profile_context } from "./common/contexts"
+import {
+    Session_context,
+    type Session_info,
+    Profile_context,
+    clickedButtonContext
+} from "./common/contexts"
 import { type msgInfo } from "./common/types"
 import AppForm from "./AppForm"
 import InfoLabel from "./common/InfoLabel"
 import ProcButton from "./common/ProcButton"
 
-import LogoutButton from "./bsky/LogoutButton"
+import LogoutButton from "./bsky/buttons/LogoutButton"
 import LoadSession from "./bsky/LoadSession"
 import PageControllerForm from "./pagedb/PageControllerForm"
 import type model_getProfile from "@/utils/atproto_api/models/getProfile.json";
 import { link } from "./common/tailwind_variants";
+import { buttonID } from "./bsky/types";
 
 const Component = ({
     portalonly = false
@@ -20,16 +26,17 @@ const Component = ({
     portalonly?: boolean
 }) => {
     const [isLoaded, setIsLoad] = useState<boolean>(false)
-    const [processing, setProcessing] = useState<boolean>(false)
+    const [isProcessing, setProcessing] = useState<boolean>(false)
     const [session, setSession] = useState<Session_info>({
-        did: null,
-        accessJwt: null,
+        did: "",
+        accessJwt: "",
         refreshJwt: null,
         handle: null,
     })
     const [profile, setProfile] = useState<typeof model_getProfile | null>(null)
     const buttonstyle = "font-medium rounded-full focus:outline-none"
     const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
+    const [clickedButtonID, setClickedButtonID] = useState<buttonID>("")
 
     const handleClick = () => {
         location.href = posturl
@@ -57,78 +64,80 @@ const Component = ({
     }, [isLoaded])
     return (
         <Session_context.Provider value={{ session, setSession }}>
-            <Profile_context.Provider value={{ profile, setProfile }}>
-                {/* Appページ向けコンポーネント */}
-                {
-                    !isLoaded && (
-                        <>
-                            <LoadSession
-                                setMsgInfo={setMsgInfo}
-                                setIsLoad={setIsLoad} />
+            <clickedButtonContext.Provider value={{ clickedButtonID, setClickedButtonID }}>
+                <Profile_context.Provider value={{ profile, setProfile }}>
+                    {/* Appページ向けコンポーネント */}
+                    {
+                        !isLoaded && (
+                            <>
+                                <LoadSession
+                                    setMsgInfo={setMsgInfo}
+                                    setIsLoad={setIsLoad} />
 
-                        </>
-                    )
-                }
+                            </>
+                        )
+                    }
+                    {
+                        appElem !== null && (isLoaded ? (
+                            ReactDOM.createPortal(<>
+                                <AppForm isProcessing={isProcessing}
+                                    setProcessing={setProcessing}
+                                    session={session}
+                                    setMsgInfo={setMsgInfo} />
+                                <InfoLabel msgInfo={msgInfo} />
+                                <div className={session.accessJwt === "" ?
+                                    ("mb-16") : ("")
+                                }></div>
+                            </>
+                                , appElem
+                            )
+                        ) : (
+                            //* 未ロード時はラベルのみ表示する（くるくるは親コンポーネントに埋め込まれている）
+                            ReactDOM.createPortal(<>
+                                <InfoLabel msgInfo={msgInfo} />
+                            </>, appElem
+                            )
+                        ))
+                    }
+                </Profile_context.Provider>
+                {/* 各OGPページ向けのコンポーネント */}
                 {
-                    appElem !== null && (isLoaded ? (
-                        ReactDOM.createPortal(<>
-                            <AppForm processing={processing}
-                                setProcessing={setProcessing}
-                                session={session}
-                                setMsgInfo={setMsgInfo} />
-                            <InfoLabel msgInfo={msgInfo} />
-                            <div className={session.accessJwt === null ?
-                                ("mb-16") : ("")
-                            }></div>
-                        </>
-                            , appElem
-                        )
-                    ) : (
-                        //* 未ロード時はラベルのみ表示する（くるくるは親コンポーネントに埋め込まれている）
-                        ReactDOM.createPortal(<>
-                            <InfoLabel msgInfo={msgInfo} />
-                        </>, appElem
-                        )
-                    ))
-                }
-            </Profile_context.Provider>
-            {/* 各OGPページ向けのコンポーネント */}
-            {
-                pageElem !== null && isLoaded && (
-                    ReactDOM.createPortal(
-                        <>
-                            <PageControllerForm
-                                id={pageElem.getAttribute("pageid")!}
-                                session={session}
-                                setMsgInfo={setMsgInfo} />
-                            <InfoLabel msgInfo={msgInfo} />
-                        </>
-                        , pageElem)
-                )
-            }
-            {/* 本体のコンポーネント */}
-            {
-                !portalonly && isLoaded && (
-                    session?.accessJwt !== null ? (
-                        <>
-                            <a className={link({ class: ["mx-2"] })} href={posturl}>PostForm</a>
-                            <LogoutButton
-                                className={buttonstyle}
-                                reload={true}
-                                processing={processing}
-                                setProcessing={setIsLoad}
-                            />
-                        </>
-                    ) : (
-                        <ProcButton handler={handleClick}
-                            isProcessing={processing}
-                            disabled={processing}
-                            showAnimation={false}
-                            context="ログイン"
-                            className={buttonstyle} />
+                    pageElem !== null && isLoaded && (
+                        ReactDOM.createPortal(
+                            <>
+                                <PageControllerForm
+                                    id={pageElem.getAttribute("pageid")!}
+                                    session={session}
+                                    setMsgInfo={setMsgInfo} />
+                                <InfoLabel msgInfo={msgInfo} />
+                            </>
+                            , pageElem)
                     )
-                )
-            }
+                }
+                {/* 本体のコンポーネント */}
+                {
+                    !portalonly && isLoaded && (
+                        session.accessJwt !== "" ? (
+                            <>
+                                <a className={link({ class: ["mx-2"] })} href={posturl}>PostForm</a>
+                                <LogoutButton
+                                    className={buttonstyle}
+                                    reload={true}
+                                    isProcessing={isProcessing}
+                                    setProcessing={setIsLoad}
+                                />
+                            </>
+                        ) : (
+                            <ProcButton handler={handleClick}
+                                isProcessing={isProcessing}
+                                disabled={isProcessing}
+                                showAnimation={false}
+                                context="ログイン"
+                                className={buttonstyle} />
+                        )
+                    )
+                }
+            </clickedButtonContext.Provider>
         </Session_context.Provider>
     )
 }

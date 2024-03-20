@@ -1,33 +1,44 @@
-import React, { memo, useRef, Dispatch, SetStateAction, useCallback, useState } from "react";
+// utils
+import React, { memo, useRef, useCallback, useState, useEffect } from "react";
+
+// service
 import { inputtext_base, link } from "../../common/tailwind_variants"
+import { MediaData } from "../../common/types"
 
-
-const Img = ({ file }: { file: File }) => {
+const Img = ({
+    mediaDataItem
+}: {
+    mediaDataItem: {
+        alt: string
+        blob: Blob
+    }
+}) => {
     return (
-        <img src={URL.createObjectURL(file)} className="max-w-md w-full mx-auto" />
+        <img src={URL.createObjectURL(mediaDataItem.blob)} className="max-w-md w-full mx-auto" />
     )
 }
 const MemoImg = memo(Img)
 
 export const Component = ({
     itemId,
-    file,
-    altTexts,
-    setAltText,
+    mediaData
 }: {
     itemId: number,
-    file: File,
-    altTexts: Array<string>,
-    setAltText: Dispatch<SetStateAction<Array<string>>>
+    mediaData: MediaData
 }) => {
+    // mediaDataがimageではない場合はコンポーネントを無効に
+    if (mediaData === null || mediaData.type !== "images") {
+        return
+    }
+    let mediaDataItem = mediaData.images[itemId]
     const ref = useRef<HTMLDialogElement | null>(null);
     const textref = useRef<HTMLTextAreaElement | null>(null);
-    const [tempText, setTempText] = useState<string>("")
+    const [altBoxText, setAltBoxText] = useState<string>(mediaDataItem.alt)
     const maxShowAltLength = 10
-
+    
     const handleOpenDialog = () => {
         if (textref.current) {
-            textref.current.value = altTexts[itemId]
+            textref.current.value = mediaDataItem.alt
         }
         if (ref.current) {
             ref.current.showModal()
@@ -38,16 +49,13 @@ export const Component = ({
         if (ref.current) {
             ref.current.close();
         }
-        let altNewTexts = altTexts
-        altNewTexts[itemId] = tempText
-        setAltText(altNewTexts)
+        mediaDataItem.alt = altBoxText
     };
 
     const handleClickInDialog = useCallback(
         (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             e.stopPropagation();
-        },
-        []
+        }, []
     );
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
@@ -57,43 +65,44 @@ export const Component = ({
     }
 
     const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        let altNewTexts = altTexts
-        altNewTexts[itemId] = event.target.value
-        setTempText(event.target.value)
+        // メディアがimagesの場合のみ処理
+        if (mediaData === null || mediaData.type !== "images") {
+            return
+        }
+        setAltBoxText(event.target.value)
+        mediaDataItem.alt = event.target.value
     }
 
     const handleClick = () => {
-        let altNewTexts = altTexts
-        altNewTexts[itemId] = ""
-        setAltText(altNewTexts)
+        setAltBoxText("")
+        mediaDataItem.alt = ""
         if (textref.current) {
             textref.current.value = ""
-            setTempText("")
         }
     }
 
+    useEffect(() => {
+        // データが更新されたらAltを更新
+        mediaDataItem = mediaData.images[itemId]
+        setAltBoxText(mediaData.images[itemId].alt)
+    }, [mediaData.images])
     return (
         <>
             <button
                 onClick={handleOpenDialog}
                 className={[
-                    "rounded-lg",
-                    "border-1",
-                    "bg-opacity-70",
-                    "px-2",
-                    "bg-black",
-                    "border-white",
-                    "text-white",
-                    "absolute",
-                    "left-1",
-                    "bottom-1",
+                    "rounded-lg", "border-1",
+                    "bg-opacity-70", "px-2",
+                    "bg-black", "border-white",
+                    "text-white", "absolute",
+                    "left-1", "bottom-1",
                 ].join(" ") + (
-                        altTexts[itemId] !== "" ? (" bg-blue-500") : ("")
+                        altBoxText !== "" ? (" bg-blue-500") : ("")
                     )}>
                 {
-                    altTexts[itemId] !== "" ? (
-                        `${altTexts[itemId].slice(0, maxShowAltLength)
-                        }${altTexts[itemId].length >= maxShowAltLength
+                    altBoxText !== "" ? (
+                        `${altBoxText.slice(0, maxShowAltLength)
+                        }${altBoxText.length >= maxShowAltLength
                             ? ("...") : ("")}`
                     ) : (
                         "Altを設定"
@@ -105,7 +114,8 @@ export const Component = ({
                 onClick={handleCloseDialog}
                 onKeyDown={handleKeyDown}>
                 <div onClick={handleClickInDialog} >
-                    <MemoImg file={file} />
+                    <MemoImg
+                        mediaDataItem={mediaDataItem} />
                     <label>画像に設定するAltを入力（ダイアログを閉じると反映）</label>
                     <textarea onChange={handleOnChange}
                         autoFocus={true}
@@ -117,8 +127,8 @@ export const Component = ({
                         })}
                     />
                     <button
-                        className={link({ enabled: !(tempText === "") })}
-                        disabled={tempText === ""}
+                        className={link({ enabled: !(altBoxText === "") })}
+                        disabled={altBoxText === ""}
                         onClick={handleClick}
                     >内容をクリア</button>
                 </div>
@@ -127,6 +137,4 @@ export const Component = ({
 
     );
 };
-
-const memoComponent = memo(Component)
-export default memoComponent
+export default Component
