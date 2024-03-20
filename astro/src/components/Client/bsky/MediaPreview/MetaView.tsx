@@ -1,6 +1,3 @@
-// utils
-import React, { memo, useRef, useCallback, useState, useEffect } from "react";
-
 // service
 import { MediaData } from "../../common/types"
 
