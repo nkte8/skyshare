@@ -4,6 +4,7 @@ import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react"
 // components
 import DeleteItemButton from "./DeleteItemButton"
 import AltDialog from "./AltDialog"
+import MetaView from "./MetaView"
 
 // service
 import { tv } from "tailwind-variants";
@@ -68,6 +69,12 @@ const Component = ({
                         className={classNameImage}
                     />
                 }
+                {
+                    mediaData !== null &&
+                    mediaData.type === "external" &&
+                    <MetaView
+                        mediaData={mediaData} />
+                }
             </div>
         )
     }
@@ -84,7 +91,7 @@ const Component = ({
                     {PreviewNode({
                         index: 0,
                         className: view({ class: "inline-block" }),
-                        classNameImage: view({ class: "rounded-3xl" })
+                        classNameImage: view({ class: "rounded-2xl" })
                     })}
                 </div>)
             case 2:
@@ -92,12 +99,12 @@ const Component = ({
                     {PreviewNode({
                         index: 0,
                         className: view({ class: "inline-block", size: "w_half" }),
-                        classNameImage: view({ class: "rounded-l-3xl" })
+                        classNameImage: view({ class: "rounded-l-2xl" })
                     })}
                     {PreviewNode({
                         index: 1,
                         className: view({ class: "inline-block", size: "w_half" }),
-                        classNameImage: view({ class: "rounded-r-3xl" })
+                        classNameImage: view({ class: "rounded-r-2xl" })
                     })}
                 </div>)
             case 3:
@@ -107,18 +114,18 @@ const Component = ({
                     {PreviewNode({
                         index: 0,
                         className: view({ class: "inline-block", size: "w_half" }),
-                        classNameImage: view({ class: "rounded-l-3xl" })
+                        classNameImage: view({ class: "rounded-l-2xl" })
                     })}
                     <div className="w-1/2 h-full m-0 inline-block">
                         {PreviewNode({
                             index: 1,
                             className: view({ size: "h_half" }),
-                            classNameImage: view({ class: "rounded-tr-3xl" })
+                            classNameImage: view({ class: "rounded-tr-2xl" })
                         })}
                         {PreviewNode({
                             index: 2,
                             className: view({ size: "h_half" }),
-                            classNameImage: view({ class: "rounded-br-3xl" })
+                            classNameImage: view({ class: "rounded-br-2xl" })
                         })}
                     </div>
                 </div>)
@@ -130,24 +137,24 @@ const Component = ({
                         {PreviewNode({
                             index: 0,
                             className: view({ size: "h_half" }),
-                            classNameImage: view({ class: "rounded-tl-3xl" })
+                            classNameImage: view({ class: "rounded-tl-2xl" })
                         })}
                         {PreviewNode({
                             index: 2,
                             className: view({ size: "h_half" }),
-                            classNameImage: view({ class: "rounded-bl-3xl" })
+                            classNameImage: view({ class: "rounded-bl-2xl" })
                         })}
                     </div>
                     <div className="w-1/2 h-full m-0 inline-block">
                         {PreviewNode({
                             index: 1,
                             className: view({ size: "h_half" }),
-                            classNameImage: view({ class: "rounded-tr-3xl" })
+                            classNameImage: view({ class: "rounded-tr-2xl" })
                         })}
                         {PreviewNode({
                             index: 3,
                             className: view({ size: "h_half" }),
-                            classNameImage: view({ class: "rounded-br-3xl" })
+                            classNameImage: view({ class: "rounded-br-2xl" })
                         })}
                     </div>
                 </div>)
@@ -173,7 +180,7 @@ const Component = ({
     }, [mediaData])
 
     return (
-        <div className="aspect-video rounded-3xl border-2 p-2 relative">
+        <div className="aspect-[1.91/1] rounded-2xl border-2 p-2 relative">
             {PreviewForm}
         </div>
     )
