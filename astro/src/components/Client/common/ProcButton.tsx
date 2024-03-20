@@ -1,4 +1,4 @@
-import { buttonID } from "../bsky/type"
+import { buttonID } from "../bsky/types"
 import { clickedButtonContext } from "./contexts"
 import { load_circle, button_base } from "./tailwind_variants"
 import { ReactNode, useContext } from "react"
@@ -28,7 +28,6 @@ const Component = ({
     const handlerWrapper = (callback: () => void) => {
         callback()
         const thisButtonID = (typeof buttonID !== "undefined") ? buttonID : ""
-        console.log(thisButtonID)
         setClickedButtonID(thisButtonID)
     }
     const Animation = clickedButtonID !== "" && clickedButtonID === buttonID && showAnimation

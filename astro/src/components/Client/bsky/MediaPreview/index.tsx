@@ -1,7 +1,13 @@
-import { tv } from "tailwind-variants";
+// utils
 import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react"
+
+// components
 import DeleteItemButton from "./DeleteItemButton"
-import { MediaData } from "../type";
+import AltDialog from "./AltDialog"
+
+// service
+import { tv } from "tailwind-variants";
+import { MediaData } from "../../common/types"
 
 const view = tv({
     base: "object-cover border-2 border-white w-full h-full m-0 p-0",
@@ -15,12 +21,12 @@ const view = tv({
 })
 
 const Component = ({
-    mediaDataList,
-    setMediaDataList,
+    mediaData,
+    setMediaData,
 }: {
-    mediaDataList: MediaData | null,
+    mediaData: MediaData,
     // 配列を操作するだけなのでArray型さえ担保されていれば良い
-    setMediaDataList: Dispatch<SetStateAction<MediaData | null>>
+    setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
     // プレビューを構成するコンポーネント
     const PreviewNode = ({
@@ -33,20 +39,27 @@ const Component = ({
         className?: string
     }) => {
         const mediaBlob =
-            mediaDataList !== null ?
-                mediaDataList.blobs[index].blob
+            mediaData !== null ?
+                mediaData.images[index].blob
                 : null
 
         const alt =
-            mediaDataList !== null &&
-                mediaDataList.type === "images" ?
-                mediaDataList.blobs[index].alt : undefined
+            mediaData !== null &&
+                mediaData.type === "images" ?
+                mediaData.images[index].alt : undefined
         return (
             <div className={"relative " + className}>
                 <DeleteItemButton
                     itemId={index}
-                    mediaDataList={mediaDataList}
-                    setMediaDataList={setMediaDataList} />
+                    mediaData={mediaData}
+                    setMediaData={setMediaData} />
+                {
+                    mediaData !== null &&
+                    mediaData.type === "images" &&
+                    <AltDialog
+                        itemId={index}
+                        mediaData={mediaData} />
+                }
                 {
                     mediaBlob !== null &&
                     <img
@@ -87,6 +100,57 @@ const Component = ({
                         classNameImage: view({ class: "rounded-r-3xl" })
                     })}
                 </div>)
+            case 3:
+                return (<div className={[
+                    "h-full", "m-0"
+                ].join(" ")}>
+                    {PreviewNode({
+                        index: 0,
+                        className: view({ class: "inline-block", size: "w_half" }),
+                        classNameImage: view({ class: "rounded-l-3xl" })
+                    })}
+                    <div className="w-1/2 h-full m-0 inline-block">
+                        {PreviewNode({
+                            index: 1,
+                            className: view({ size: "h_half" }),
+                            classNameImage: view({ class: "rounded-tr-3xl" })
+                        })}
+                        {PreviewNode({
+                            index: 2,
+                            className: view({ size: "h_half" }),
+                            classNameImage: view({ class: "rounded-br-3xl" })
+                        })}
+                    </div>
+                </div>)
+            case 4:
+                return (<div className={[
+                    "h-full", "m-0"
+                ].join(" ")}>
+                    <div className="w-1/2 h-full m-0 inline-block">
+                        {PreviewNode({
+                            index: 0,
+                            className: view({ size: "h_half" }),
+                            classNameImage: view({ class: "rounded-tl-3xl" })
+                        })}
+                        {PreviewNode({
+                            index: 2,
+                            className: view({ size: "h_half" }),
+                            classNameImage: view({ class: "rounded-bl-3xl" })
+                        })}
+                    </div>
+                    <div className="w-1/2 h-full m-0 inline-block">
+                        {PreviewNode({
+                            index: 1,
+                            className: view({ size: "h_half" }),
+                            classNameImage: view({ class: "rounded-tr-3xl" })
+                        })}
+                        {PreviewNode({
+                            index: 3,
+                            className: view({ size: "h_half" }),
+                            classNameImage: view({ class: "rounded-br-3xl" })
+                        })}
+                    </div>
+                </div>)
             default:
                 break;
         }
@@ -94,19 +158,19 @@ const Component = ({
     const [PreviewForm, setPreviewForm] = useState<ReactNode>(PreviewLayout(-1))
 
     useEffect(() => {
-        if (mediaDataList !== null) {
-            if (mediaDataList.type === "external") {
+        if (mediaData !== null) {
+            if (mediaData.type === "external") {
                 setPreviewForm(PreviewLayout(
-                    mediaDataList.blobs !== null ? 1 : 0
+                    mediaData.images !== null ? 1 : 0
                 ))
             }
-            if (mediaDataList.type === "images") {
-                setPreviewForm(PreviewLayout(mediaDataList.blobs.length))
+            if (mediaData.type === "images") {
+                setPreviewForm(PreviewLayout(mediaData.images.length))
             }
         } else {
             setPreviewForm(PreviewLayout(0))
         }
-    }, [mediaDataList])
+    }, [mediaData])
 
     return (
         <div className="aspect-video rounded-3xl border-2 p-2 relative">

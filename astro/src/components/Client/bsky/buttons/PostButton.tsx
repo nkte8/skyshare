@@ -1,29 +1,38 @@
+// utils
 import { useContext, Dispatch, SetStateAction } from "react"
-import { MediaData } from "../type"
-import { msgInfo, popupContent } from "../../common/types"
-import { servicename, pagesPrefix } from "@/utils/vars"
+import { useKey } from "react-use"
+import type { KeyPredicate } from "react-use/lib/useKey"
 
+// components
 import { Session_context } from "../../common/contexts"
 import ProcButton from "../../common/ProcButton"
 
+// atproto
 import { label } from "@/utils/atproto_api/labels";
 import detectFacets from "@/utils/atproto_api/detectFacets";
 import createRecord from "@/utils/atproto_api/createRecord";
 import type record from "@/utils/atproto_api/record";
-import { richTextFacetParser } from "@/utils/richTextParser"
-import { compressImage } from "@/utils/compressimage"
-
-import createPage from "@/utils/backend_api/createPage";
 import uploadBlob, { type uploadBlobResult } from "@/utils/atproto_api/uploadBlob";
 
+// backend api
+import createPage from "@/utils/backend_api/createPage";
+import { richTextFacetParser } from "@/utils/richTextParser"
+import { compressImage } from "@/utils/compressimage"
+import { getOgpBlob, getOgpMeta } from "@/utils/getOgp"
+
+// service
 import { setSavedTags, readSavedTags } from "@/utils/localstorage";
+import { callbackPostOptions } from "../PostForm"
+import { msgInfo, MediaData } from "../../common/types"
+import { servicename, pagesPrefix } from "@/utils/vars"
+
 
 export const Component = ({
     postText,
     language,
     selfLabel,
     options,
-    mediaDataList,
+    mediaData,
     callback,
     isProcessing,
     setProcessing,
@@ -31,32 +40,35 @@ export const Component = ({
     disabled,
 }: {
     postText: string,
-    language: Array<string>,
+    language: string,
     selfLabel: label.value | null,
     options: {
         appendVia: boolean
         noGenerateOgp: boolean
         // autoPopup: boolean
     },
-    mediaDataList: MediaData | null,
-    callback: (options: {
-        popupContent: popupContent
-    }) => void,
+    mediaData: MediaData | null,
+    callback: (options: callbackPostOptions) => void,
     isProcessing: boolean,
     setProcessing: Dispatch<SetStateAction<boolean>>,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
     disabled: boolean
 }) => {
+    // 配置されたサイトのURL
+    const siteurl = location.origin
     // セッション
     const { session } = useContext(Session_context)
     // 保存できるタグの上限
     const maxTagCount = 8
+    /** Apple製品利用者の可能性がある場合True */
+    const isAssumedAsAppleProdUser =
+        navigator.userAgent.toLowerCase().includes("mac os x")
 
     const handlePost = async () => {
         const isValidPost = (): boolean => {
             let result: boolean = postText.length >= 1
-            if (mediaDataList !== null) {
-                result = result || mediaDataList.blobs.length > 0
+            if (mediaData !== null) {
+                result = result || mediaData.images.length > 0
             }
             return result
         }
@@ -79,12 +91,19 @@ export const Component = ({
             isError: false
         })
         try {
+            // プレビューへ送るテキストを別途初期化
+            const callbackPostPotions: callbackPostOptions = {
+                postText,
+                previewTitle: null,
+                previewData: null
+            }
+            // facetを取得
             const facets = await detectFacets({ text: postText })
             // 今後公式APIを使うことを考慮し、recordBuilder.tsの利用を終了
             let Record: record = {
                 text: postText,
                 createdAt: new Date(),
-                langs: language,
+                langs: [language],
                 $type: "app.bsky.feed.post",
                 labels: (selfLabel !== null) ? {
                     $type: "com.atproto.label.defs#selfLabels",
@@ -118,25 +137,22 @@ export const Component = ({
             })
             setSavedTags(taglist.slice(0, maxTagCount))
 
-            // intent向けに発行する情報
-            let popupContent: popupContent = {
-                url: null,
-                content: postText
-            }
             // 投稿の文字制限を解除（API側に処理させる）
             // また、ツリー投稿機能の実装の際は分割方法を検討すること
 
-            const noImagesAttached = (
-                mediaDataList === null || mediaDataList.blobs.length <= 0
+            const ImageAttached = (
+                mediaData !== null &&
+                mediaData.images.length > 0 &&
+                mediaData.images[0].blob !== null
             )
             // uploadBlobを行なった場合は結果が格納される
             let resultUploadBlob: Array<uploadBlobResult> = []
 
             // メディアデータが存在する場合はRecordに対して特定の処理を行う
-            if (!noImagesAttached) {
+            if (ImageAttached) {
                 // メディアのデータを圧縮
                 let compressTasks: Array<Promise<ArrayBuffer>> = []
-                mediaDataList.blobs.forEach((value, index) => {
+                mediaData.images.forEach((value, index) => {
                     if (value.blob !== null) {
                         const file: File = new File(
                             [value.blob],
@@ -183,7 +199,7 @@ export const Component = ({
                     }
                 })
                 // Recordの作成
-                switch (mediaDataList.type) {
+                switch (mediaData.type) {
                     case "images":
                         Record = {
                             ...Record,
@@ -193,7 +209,7 @@ export const Component = ({
                                     (value, index) => {
                                         return {
                                             image: value.blob,
-                                            alt: mediaDataList.blobs[index].alt
+                                            alt: mediaData.images[index].alt
                                         }
                                     }
                                 )
@@ -201,23 +217,25 @@ export const Component = ({
                         }
                         break
                     case "external":
+                        // 外部OGPがない場合はthumbはundefinedとする
                         Record = {
                             ...Record,
                             embed: {
                                 $type: "app.bsky.embed.external",
                                 external: {
-                                    thumb: resultUploadBlob[0].blob,
-                                    uri: mediaDataList.meta.url,
-                                    title: mediaDataList.meta.title,
-                                    description: mediaDataList.meta.description
+                                    thumb: resultUploadBlob.length >= 1 ? resultUploadBlob[0].blob : undefined,
+                                    uri: mediaData.meta.url,
+                                    title: mediaData.meta.title,
+                                    description: mediaData.meta.description
                                 }
                             }
                         }
+                        // Bluesky側Post本文にURLのリンクカードがない場合はintent宛に埋め込む
+                        if (callbackPostPotions.postText.indexOf(mediaData.meta.url) < 0) {
+                            callbackPostPotions.postText +=
+                                `${postText !== "" ? ("\n") : ("")}${mediaData.meta.url}`
+                        }
                         break
-                }
-                // linkcardの場合はurlを設定する
-                if (mediaDataList.type === "external") {
-                    popupContent.url = new URL(mediaDataList.meta.url)
                 }
             }
             setMsgInfo({
@@ -238,8 +256,9 @@ export const Component = ({
                 msg: "Blueskyへポストしました!",
                 isError: false
             })
-            // noGenerateの場合はTwitter用ページは生成しない
-            if (!options.noGenerateOgp && !noImagesAttached) {
+            // noGenerateではない場合かつ、添付メディアがimagesタイプの場合
+            if (!options.noGenerateOgp &&
+                ImageAttached && mediaData.type === "images") {
                 setMsgInfo({
                     msg: "Twitter用ページ生成中...",
                     isError: false
@@ -258,13 +277,40 @@ export const Component = ({
                     isError: false
                 })
                 const [id, rkey] = createPageResult.uri.split("/")
-                const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, 'relative:///')
-                popupContent.url = ogpUrl
-                popupContent.content += `${popupContent.content !== "" ? ("\n") : ("")}${ogpUrl.toString()}`
+                const ogpUrl = new URL(
+                    `${pagesPrefix}/${id}@${rkey}/`, siteurl)
+                //　 本文に生成URLを付与
+                callbackPostPotions.postText += `${postText !== "" ? ("\n") : ("")
+                    }${ogpUrl.toString()}`
+                // 生成URLからogpを取得
+                const getOgpMetaResult = await getOgpMeta({
+                    siteurl,
+                    externalUrl: ogpUrl.toString(),
+                    languageCode: language
+                })
+                if (getOgpMetaResult.type === "error") {
+                    let e: Error = new Error(getOgpMetaResult.message)
+                    e.name = getOgpMetaResult.error
+                    throw e
+                }
+                callbackPostPotions.previewTitle = getOgpMetaResult.title
+                if (getOgpMetaResult.image !== "") {
+                    callbackPostPotions.previewData = await getOgpBlob({
+                        siteurl,
+                        externalUrl: getOgpMetaResult.image,
+                        languageCode: language
+                    })
+                }
             }
-            callback({
-                popupContent
-            })
+            // 外部URLの場合は取得済みであろう内容を使用する
+            if (mediaData !== null && mediaData.type === "external") {
+                if (ImageAttached) {
+                    const blob = mediaData.images[0].blob!
+                    callbackPostPotions.previewData = blob
+                }
+                callbackPostPotions.previewTitle = mediaData.meta.title
+            }
+            callback(callbackPostPotions)
         } catch (error: unknown) {
             let msg: string = "Unexpected Unknown Error"
             if (error instanceof Error) {
@@ -277,6 +323,36 @@ export const Component = ({
         }
         setProcessing(false)
     }
+
+    /**
+     * Ctrl+Enterが押されたかどうかを判定します
+     * @param e キーボードイベント
+     * @returns Ctrl+Enterが押された場合true
+     */
+    const isCtrlEnterPressed: KeyPredicate = (e) => {
+        if (e.key === "Enter") {
+            if (isAssumedAsAppleProdUser) {
+                return e.metaKey === true
+            }
+            return e.ctrlKey === true
+        }
+        return false
+    }
+
+    // Ctrl+Enterが押された場合に投稿する
+    useKey(isCtrlEnterPressed, () => {
+        handlePost().catch((e: unknown) => {
+            const msg: string =
+                e instanceof Error
+                    ? `${e.name}: ${e.message}`
+                    : "Unexpected Error@PostForm.tsx"
+            setMsgInfo({
+                msg: msg,
+                isError: true,
+            })
+        })
+    })
+
     return (
         <ProcButton
             buttonID="post"

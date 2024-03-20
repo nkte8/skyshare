@@ -2,7 +2,7 @@ import React, {
     createContext
 } from "react"
 import type getProfile from "@/utils/atproto_api/models/getProfile.json";
-import { buttonID } from "../bsky/type";
+import { buttonID } from "../bsky/types";
 
 export type Session_info = {
     did: string,

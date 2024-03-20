@@ -1,21 +1,28 @@
+// utils
 import { useState, useContext, Dispatch, SetStateAction } from "react"
-import { Session_context } from "../common/contexts"
-import { type msgInfo } from "../common/types"
+
+// components
+import ProcButton from "../../common/ProcButton"
+
+// atproto
 import deleteSession from "@/utils/atproto_api/deleteSession";
+
+// service
+import { Session_context } from "../../common/contexts"
+import { type msgInfo } from "../../common/types"
 import { resetJwt, resetLoginInfo } from "@/utils/localstorage";
-import ProcButton from "../common/ProcButton"
 
 export const Component = ({
     className,
     setMsgInfo,
     reload,
-    processing,
+    isProcessing,
     setProcessing
 }: {
     className?: string,
     setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
     reload: boolean
-    processing: boolean,
+    isProcessing: boolean,
     setProcessing: Dispatch<SetStateAction<boolean>>
 }) => {
     const { session, setSession } = useContext(Session_context)
@@ -66,7 +73,7 @@ export const Component = ({
     return (
         <ProcButton
             handler={handleLogout}
-            isProcessing={processing}
+            isProcessing={isProcessing}
             context="ログアウト"
             showAnimation={loading}
             className={className} />

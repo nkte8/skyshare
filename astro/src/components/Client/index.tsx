@@ -13,12 +13,12 @@ import AppForm from "./AppForm"
 import InfoLabel from "./common/InfoLabel"
 import ProcButton from "./common/ProcButton"
 
-import LogoutButton from "./bsky/LogoutButton"
+import LogoutButton from "./bsky/buttons/LogoutButton"
 import LoadSession from "./bsky/LoadSession"
 import PageControllerForm from "./pagedb/PageControllerForm"
 import type model_getProfile from "@/utils/atproto_api/models/getProfile.json";
 import { link } from "./common/tailwind_variants";
-import { buttonID } from "./bsky/type";
+import { buttonID } from "./bsky/types";
 
 const Component = ({
     portalonly = false
@@ -26,7 +26,7 @@ const Component = ({
     portalonly?: boolean
 }) => {
     const [isLoaded, setIsLoad] = useState<boolean>(false)
-    const [processing, setProcessing] = useState<boolean>(false)
+    const [isProcessing, setProcessing] = useState<boolean>(false)
     const [session, setSession] = useState<Session_info>({
         did: "",
         accessJwt: "",
@@ -66,7 +66,6 @@ const Component = ({
         <Session_context.Provider value={{ session, setSession }}>
             <clickedButtonContext.Provider value={{ clickedButtonID, setClickedButtonID }}>
                 <Profile_context.Provider value={{ profile, setProfile }}>
-
                     {/* Appページ向けコンポーネント */}
                     {
                         !isLoaded && (
@@ -81,7 +80,7 @@ const Component = ({
                     {
                         appElem !== null && (isLoaded ? (
                             ReactDOM.createPortal(<>
-                                <AppForm processing={processing}
+                                <AppForm isProcessing={isProcessing}
                                     setProcessing={setProcessing}
                                     session={session}
                                     setMsgInfo={setMsgInfo} />
@@ -100,7 +99,6 @@ const Component = ({
                             )
                         ))
                     }
-
                 </Profile_context.Provider>
                 {/* 各OGPページ向けのコンポーネント */}
                 {
@@ -125,14 +123,14 @@ const Component = ({
                                 <LogoutButton
                                     className={buttonstyle}
                                     reload={true}
-                                    processing={processing}
+                                    isProcessing={isProcessing}
                                     setProcessing={setIsLoad}
                                 />
                             </>
                         ) : (
                             <ProcButton handler={handleClick}
-                                isProcessing={processing}
-                                disabled={processing}
+                                isProcessing={isProcessing}
+                                disabled={isProcessing}
                                 showAnimation={false}
                                 context="ログイン"
                                 className={buttonstyle} />

@@ -1,33 +1,34 @@
+// utils
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
+// components
 import ProcButton from "../../common/ProcButton"
-import { Dispatch, SetStateAction } from "react"
-import { richTextFacetParser } from "@/utils/richTextParser"
+
+// backend api
 import { getOgpMeta, getOgpBlob } from "@/utils/getOgp"
-import { MediaData } from "../type"
-import { msgInfo } from "../../common/types"
+
+// service
+import { richTextFacetParser } from "@/utils/richTextParser"
+import { msgInfo, MediaData } from "../../common/types"
 
 export const Component = ({
     postText,
-    setMediaDataList,
+    setMediaData,
     isProcessing,
     setProcessing,
-    disabled,
     setMsgInfo,
 }: {
     postText: string
-    setMediaDataList: Dispatch<SetStateAction<MediaData | null>>,
+    setMediaData: Dispatch<SetStateAction<MediaData | null>>,
     isProcessing: boolean,
-    setProcessing: Dispatch<SetStateAction<boolean>>,
-    disabled: boolean,
+    setProcessing: Dispatch<SetStateAction<boolean>>
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
 }) => {
     const siteurl = location.origin
+    const linkMaxLength = 50
+    const [linkUrl, setLinkUrl] = useState<string | null>(null)
     const handleGetOGP = async () => {
-        const richTextLinkParser = new richTextFacetParser("link")
-        const parseResult = richTextLinkParser.getFacet(postText)
-        if (parseResult.length < 1) {
-            return
-        }
+        if (linkUrl === null) return
         setProcessing(true)
         setMsgInfo({
             isError: false,
@@ -35,12 +36,9 @@ export const Component = ({
         })
         try {
             let blob: Blob | null = null
-            // 貼られた最後のlinkからOGPを取得する
-            // いずれは任意のURLを選べるようにしたい
-            const externalUrl = parseResult[parseResult.length - 1]
             const ogpMeta = await getOgpMeta({
                 siteurl,
-                externalUrl: externalUrl,
+                externalUrl: linkUrl,
                 languageCode: "ja"
             })
             if (ogpMeta.type === "error") {
@@ -55,14 +53,14 @@ export const Component = ({
                     languageCode: "ja"
                 })
             }
-            setMediaDataList(
+            setMediaData(
                 {
                     type: "external",
                     meta: {
                         ...ogpMeta,
-                        url: externalUrl
+                        url: linkUrl
                     },
-                    blobs: [{
+                    images: [{
                         blob
                     }]
                 }
@@ -79,19 +77,41 @@ export const Component = ({
                 })
             }
             //リンクカード設定を解除
-            setMediaDataList(null)
+            setMediaData(null)
         }
         setProcessing(false)
     }
-
+    useEffect(() => {
+        const richTextLinkParser = new richTextFacetParser("link")
+        const parseResult = richTextLinkParser.getFacet(postText)
+        if (parseResult.length < 1) {
+            setLinkUrl(null)
+        } else {
+            // 貼られた最後のlinkからOGPを取得する
+            // いずれは任意のURLを選べるようにしたい
+            setLinkUrl(parseResult[parseResult.length - 1])
+        }
+    }, [postText])
     return (
         <ProcButton
             buttonID="linkcardattach"
             handler={handleGetOGP}
             isProcessing={isProcessing}
-            context="リンクカードを取得"
-            className={["mx-1"].join(" ")}
-            disabled={disabled} />
+            context={<>
+                <span className="m-0">リンクカードを追加</span>
+                {linkUrl !== null &&
+                    <div className="text-xs m-0">
+                        {`${new URL(linkUrl).href.slice(0, linkMaxLength)
+                            }${linkUrl.length > linkMaxLength ? "..." : ""
+                            }`}
+                    </div>
+                }
+            </>}
+            className={[
+                "mx-1",
+                "w-full"
+            ].join(" ")}
+            disabled={linkUrl === null} />
     )
 }
 export default Component

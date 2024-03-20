@@ -1,43 +1,46 @@
+// utils
 import { Dispatch, SetStateAction } from "react"
-import { MediaData } from "../type"
+
+// service
+import { MediaData } from "../../common/types"
 
 const Component = ({
     itemId,
-    mediaDataList,
-    setMediaDataList
+    mediaData,
+    setMediaData
 }: {
     itemId: number,
-    mediaDataList: MediaData | null,
-    setMediaDataList: Dispatch<SetStateAction<MediaData | null>>
+    mediaData: MediaData,
+    setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
     const handleClick = () => {
         if (itemId < 0 || itemId > 3) {
             return
         }
-        if (mediaDataList === null) {
+        if (mediaData === null) {
             return
         }
-        if (mediaDataList.type === "external"){
+        if (mediaData.type === "external") {
             // linkcardは1枚なので消した時点でlistは空
-            setMediaDataList(null)
+            setMediaData(null)
             return
         }
-        if (mediaDataList.type === "images") {
-            if (mediaDataList.blobs.length < 0) {
+        if (mediaData.type === "images") {
+            if (mediaData.images.length < 0) {
                 return
             }
             // Listから自身のitemIdを取り除き、これをリストに追加する
-            let result = mediaDataList.blobs.filter(
+            let result = mediaData.images.filter(
                 (_, index) => index !== itemId
             )
             // 全てのメディアが削除された場合は null とする
             if (result.length <= 0) {
-                setMediaDataList(null)
+                setMediaData(null)
                 return
             }
-            setMediaDataList({
-                type: mediaDataList.type,
-                blobs: result
+            setMediaData({
+                type: mediaData.type,
+                images: result
             })
         }
     }

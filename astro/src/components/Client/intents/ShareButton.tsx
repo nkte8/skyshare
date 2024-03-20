@@ -1,30 +1,25 @@
 import { ReactNode, useState } from "react"
 import { button_base } from "../common/tailwind_variants"
-import Popup from "./popup"
-import { intentInfo } from "./types"
+import callPopup from "./callPopup"
+import { popupOptions } from "./types"
 
 export const Component = ({
-    content,
+    options,
     disabled,
     labeltext,
     clikedtext,
-    intentKind,
     className,
 }: {
-    content: string,
+    options: popupOptions,
     disabled: boolean,
     labeltext: ReactNode,
     clikedtext: ReactNode,
-    intentKind: intentInfo["kind"],
     className?: string,
 }) => {
     const [clicked, setCliked] = useState<ReactNode>(<></>)
     const [color, setColor] = useState<"sky" | "blue" | "gray">("sky")
     const handleClick = () => {
-        Popup({
-            intentKind,
-            content,
-        })
+        callPopup(options)
         setCliked(clikedtext)
         setColor("gray")
     }
