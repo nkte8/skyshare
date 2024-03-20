@@ -1,7 +1,13 @@
+// utils
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react"
+
+// components
+import DeleteItemButton from "./DeleteItemButton"
+import AltDialog from "./AltDialog"
+
+// service
 import { tv } from "tailwind-variants";
-import { Dispatch, ReactNode, SetStateAction } from "react"
-import ImgDeleteButton from "./ImgDeleteButton"
-import ImgAltDialog from "./ImgAltDialog"
+import { MediaData } from "../../common/types"
 
 const view = tv({
     base: "object-cover border-2 border-white w-full h-full m-0 p-0",
@@ -15,18 +21,15 @@ const view = tv({
 })
 
 const Component = ({
-    imageFiles,
-    setImageFile,
-    altTexts,
-    setAltText,
+    mediaData,
+    setMediaData,
 }: {
-    imageFiles: Array<File>,
-    setImageFile: Dispatch<SetStateAction<File[]>>
-    altTexts: Array<string>,
-    setAltText: Dispatch<SetStateAction<Array<string>>>
+    mediaData: MediaData,
+    // 配列を操作するだけなのでArray型さえ担保されていれば良い
+    setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
-
-    const imgBox = ({
+    // プレビューを構成するコンポーネント
+    const PreviewNode = ({
         index,
         classNameImage,
         className
@@ -35,96 +38,113 @@ const Component = ({
         classNameImage?: string,
         className?: string
     }) => {
+        const mediaBlob =
+            mediaData !== null ?
+                mediaData.images[index].blob
+                : null
+
+        const alt =
+            mediaData !== null &&
+                mediaData.type === "images" ?
+                mediaData.images[index].alt : undefined
         return (
             <div className={"relative " + className}>
-                <ImgDeleteButton
+                <DeleteItemButton
                     itemId={index}
-                    imageFiles={imageFiles}
-                    setImageFile={setImageFile}
-                    altTexts={altTexts}
-                    setAltText={setAltText} />
-                <ImgAltDialog
-                    file={imageFiles[index]}
-                    itemId={index}
-                    altTexts={altTexts}
-                    setAltText={setAltText} />
-                <img
-                    src={URL.createObjectURL(imageFiles[index])}
-                    alt={imageFiles[index].name}
-                    className={classNameImage}
-                />
+                    mediaData={mediaData}
+                    setMediaData={setMediaData} />
+                {
+                    mediaData !== null &&
+                    mediaData.type === "images" &&
+                    <AltDialog
+                        itemId={index}
+                        mediaData={mediaData} />
+                }
+                {
+                    mediaBlob !== null &&
+                    <img
+                        src={URL.createObjectURL(mediaBlob)}
+                        alt={alt}
+                        className={classNameImage}
+                    />
+                }
             </div>
         )
     }
-
-    const imgFrame = (index: number): ReactNode => {
+    const PreviewLayout = (index: number): ReactNode => {
         switch (index) {
             case 0:
+                return (
+                    <div className="h-fit w-fit m-auto align-middle absolute top-0 bottom-0 right-0 left-0">
+                        プレビューが表示されます
+                    </div>
+                )
+            case 1:
                 return (<div className="w-full h-full m-0">
-                    {imgBox({
+                    {PreviewNode({
                         index: 0,
                         className: view({ class: "inline-block" }),
                         classNameImage: view({ class: "rounded-3xl" })
                     })}
                 </div>)
-            case 1:
+            case 2:
                 return (<div className="w-full h-full m-0">
-                    {imgBox({
+                    {PreviewNode({
                         index: 0,
                         className: view({ class: "inline-block", size: "w_half" }),
                         classNameImage: view({ class: "rounded-l-3xl" })
                     })}
-                    {imgBox({
+                    {PreviewNode({
                         index: 1,
                         className: view({ class: "inline-block", size: "w_half" }),
                         classNameImage: view({ class: "rounded-r-3xl" })
                     })}
                 </div>)
-            case 2:
+            case 3:
                 return (<div className={[
                     "h-full", "m-0"
                 ].join(" ")}>
-                    {imgBox({
+                    {PreviewNode({
                         index: 0,
                         className: view({ class: "inline-block", size: "w_half" }),
                         classNameImage: view({ class: "rounded-l-3xl" })
                     })}
                     <div className="w-1/2 h-full m-0 inline-block">
-                        {imgBox({
+                        {PreviewNode({
                             index: 1,
                             className: view({ size: "h_half" }),
                             classNameImage: view({ class: "rounded-tr-3xl" })
                         })}
-                        {imgBox({
+                        {PreviewNode({
                             index: 2,
                             className: view({ size: "h_half" }),
                             classNameImage: view({ class: "rounded-br-3xl" })
                         })}
                     </div>
                 </div>)
-            case 3:
+            case 4:
                 return (<div className={[
                     "h-full", "m-0"
                 ].join(" ")}>
                     <div className="w-1/2 h-full m-0 inline-block">
-                        {imgBox({
+                        {PreviewNode({
                             index: 0,
                             className: view({ size: "h_half" }),
                             classNameImage: view({ class: "rounded-tl-3xl" })
                         })}
-                        {imgBox({
+                        {PreviewNode({
                             index: 2,
                             className: view({ size: "h_half" }),
                             classNameImage: view({ class: "rounded-bl-3xl" })
                         })}
                     </div>
                     <div className="w-1/2 h-full m-0 inline-block">
-                        {imgBox({
+                        {PreviewNode({
                             index: 1,
                             className: view({ size: "h_half" }),
                             classNameImage: view({ class: "rounded-tr-3xl" })
                         })}
-                        {imgBox({
+                        {PreviewNode({
                             index: 3,
                             className: view({ size: "h_half" }),
                             classNameImage: view({ class: "rounded-br-3xl" })
@@ -135,20 +155,26 @@ const Component = ({
                 break;
         }
     }
+    const [PreviewForm, setPreviewForm] = useState<ReactNode>(PreviewLayout(-1))
+
+    useEffect(() => {
+        if (mediaData !== null) {
+            if (mediaData.type === "external") {
+                setPreviewForm(PreviewLayout(
+                    mediaData.images !== null ? 1 : 0
+                ))
+            }
+            if (mediaData.type === "images") {
+                setPreviewForm(PreviewLayout(mediaData.images.length))
+            }
+        } else {
+            setPreviewForm(PreviewLayout(0))
+        }
+    }, [mediaData])
 
     return (
         <div className="aspect-video rounded-3xl border-2 p-2 relative">
-            {
-                imageFiles.length > 0 ? (
-                    <>
-                        {imgFrame(imageFiles.length - 1)}
-                    </>
-                ) : (
-                    <div className="h-fit w-fit m-auto align-middle absolute top-0 bottom-0 right-0 left-0">
-                        画像のプレビューが表示されます
-                    </div>
-                )
-            }
+            {PreviewForm}
         </div>
     )
 }

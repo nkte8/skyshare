@@ -15,7 +15,7 @@ export const loadProfile = async ({
 }): Promise<void | typeof etype> => {
     try {
         setProfile(null)
-        if (session.accessJwt === null || session.handle === null) {
+        if (session.accessJwt === "" || session.handle === null) {
             return
         }
         const res = await getProfile({

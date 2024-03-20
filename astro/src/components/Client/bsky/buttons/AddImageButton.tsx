@@ -1,18 +1,26 @@
+// utils
 import React, { useRef, Dispatch, SetStateAction } from "react"
-import ProcButton from "../common/ProcButton"
+
+// components
+import ProcButton from "../../common/ProcButton"
+
+// service
+import { imageExtensions, addImageMediaData } from "../lib/addImageMediaData"
+import { MediaData } from "../../common/types"
+
+// resources
 import pic from "@/images/image.svg"
-import { imageExtensions, addImageFiles } from "@/components/Client/lib/imgFiles"
 
 const Component = ({
     disabled,
-    imageFiles,
-    setImageFile,
     className,
+    mediaData,
+    setMediaData
 }: {
     disabled: boolean
-    imageFiles: Array<File>
-    setImageFile: Dispatch<SetStateAction<File[]>>
     className?: string
+    mediaData: MediaData,
+    setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
     const inputRef = useRef<HTMLInputElement>(null!);
     const handleClick = () => { inputRef.current.click() }
@@ -29,8 +37,7 @@ const Component = ({
             event.target.value = ""
             return
         }
-
-        await addImageFiles([...inputFiles], imageFiles, setImageFile)
+        await addImageMediaData(Array.from(inputFiles), mediaData, setMediaData)
         event.target.value = ""
     }
 
@@ -42,16 +49,18 @@ const Component = ({
                 style={{ display: "none" }}
                 onChange={handleFilechanged}
                 multiple />
-            <ProcButton handler={handleClick}
+            <ProcButton
+                handler={handleClick}
                 isProcessing={disabled}
                 className={className}
                 context={
-                    <>
-                        <img src={pic.src}
-                            className="w-7 h-7 p-0.5 inline-block align-middle" />
-                    </>}
+                    <img src={pic.src}
+                        className={[
+                            "w-7", "h-7", "p-0.5",
+                            "inline-block", "align-middle"
+                        ].join(" ")}
+                    />}
                 showAnimation={false} />
-
         </>
     )
 }
