@@ -38,10 +38,10 @@ class richTextFacetParser {
         // typeが定まったらregexパターンも定まる
         switch (type) {
             case "link":
-                this.regex = /(https?:\/\/.[^ \r\n\n\r]*)( |\r\n|\n|\r)?/i
+                this.regex = /(https?:\/\/[^ \r\n]+)( |\r\n|\n|\r)?/i
                 break
             case "tag":
-                this.regex = /((#|＃)[^ \r\n\n\r]*)( |\r\n|\n|\r)?/i
+                this.regex = /((#|#️⃣)[^ \r\n]*)( |\r\n|\n|\r)?/i
                 break
         }
     }

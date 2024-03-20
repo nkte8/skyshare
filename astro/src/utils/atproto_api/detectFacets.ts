@@ -53,7 +53,7 @@ const createLinkFacet = ({
 }: {
     encoded: string,
 }): Array<facets.link> => {
-    const Regex = /(https?:\/\/.[^ \r\n\n\r]*)( |\r\n|\n|\r)?/i
+    const Regex = /(https?:\/\/[^ \r\n]+)( |\r\n|\n|\r)?/i
     let result: Array<facets.link> = []
     let regexResult: Array<regexResult> = []
     regexSeacrh({
@@ -112,7 +112,7 @@ const createHashtagFacet = async ({
 }: {
     encoded: string,
 }): Promise<Array<facets.hashtag>> => {
-    const Regex = /((#|#️⃣)[^ ]*) ?/i
+    const Regex = /((#|#️⃣)[^ \r\n]*)( |\r\n|\n|\r)?/i
     let result: Array<facets.hashtag> = []
     let regexResult: Array<regexResult> = []
     regexSeacrh({

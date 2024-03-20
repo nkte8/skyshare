@@ -5,16 +5,27 @@ import { readSavedTags } from "@/utils/localstorage";
 
 export const Component = ({
     disabled,
-    post,
-    setPost
+    postText,
+    setPostText
 }: {
     disabled: boolean,
-    post: string,
-    setPost: Dispatch<SetStateAction<string>>
+    postText: string,
+    setPostText: Dispatch<SetStateAction<string>>
 }) => {
     const handleClick = (tag: string) => {
-        const newText = post + ` ${tag}`
-        setPost(newText)
+        let outputText = postText
+        // 内容がない場合の初回のtag挿入の場合は前スペースで挿入
+        if (postText === "") {
+            outputText = [tag + " "].join("")
+        } else {
+            // 末尾が改行文字か、半角文字の場合は区切り記号を挿入しない
+            console.log(`last : \"${postText.slice(-1)}\"`)
+            outputText = [postText,
+                new RegExp(/[ \n\r]/).test(
+                    postText.slice(-1)) ? "" : " ",
+                tag].join("")
+        }
+        setPostText(outputText)
     }
     const TagButton = ({ tag }: { tag: string }) => {
         return (

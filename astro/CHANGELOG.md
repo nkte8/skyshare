@@ -1,5 +1,17 @@
 # Skyshare 更新履歴
 
+## 1.4.1
+
+### Patch Changes
+
+- URL入力時、http(s)://の直後にスペースキーが挿入された場合にURLとして検知されてしまう問題を修正しました。
+  - テキストのfacet検出の仕組みで、誤った正規表現が用いられていたことが原因で、スペース文字や改行文字が`//`直後も検出対象に含まれてしまっていました。
+  - ハッシュタグの記録についても同様の動作となっていたため、これを修正しました。
+- レイアウトの微修正を実施しました。
+  - リンクカードの取得時、タイトルや説明などのメタ情報は、リンクカード画像の外に表示されるように修正しました。
+- よく使うタグ機能の使い勝手を改善しました。
+  - テキストが何も入力されていない場合および、テキストの文末にすでに改行記号・またはスペースが入力済みの場合はハッシュタグより前にスペースが入らないようにしました。
+
 ## 1.4.0
 
 ### Minor Changes
@@ -15,25 +27,27 @@
 #### 【Collaborator/Contributor向け情報】
 
 - 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
+
 ```ts
-export type MediaData = LinkCard | Images | null
+export type MediaData = LinkCard | Images | null;
 type LinkCard = {
-    type: "external",
-    images: Array<{
-        blob: Blob | null,
-    }>
-    meta: ogpMetaData & {
-        url: string
-    }
-}
+  type: "external";
+  images: Array<{
+    blob: Blob | null;
+  }>;
+  meta: ogpMetaData & {
+    url: string;
+  };
+};
 type Images = {
-    type: "images",
-    images: Array<{
-        alt: string,
-        blob: Blob,
-    }>
-}
+  type: "images";
+  images: Array<{
+    alt: string;
+    blob: Blob;
+  }>;
+};
 ```
+
 - これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。
   - 代わりに（画像の入力時に受け付けた）`File`型は即座に`Blob`型に変換され、このデータがそのまま`uploadBlob`APIに用いられます。かなりオーバーヘットを減らせたのではないでしょうか。
   - 画像の圧縮処理についても画像の入力時点ではなく、`createRecord`の直前に実行するようにしました。OGP画像がBlueskyのデータサイズの受付上限に到達する心配が、これにより無くなりました。

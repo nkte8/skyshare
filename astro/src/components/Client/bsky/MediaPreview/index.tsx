@@ -69,12 +69,6 @@ const Component = ({
                         className={classNameImage}
                     />
                 }
-                {
-                    mediaData !== null &&
-                    mediaData.type === "external" &&
-                    <MetaView
-                        mediaData={mediaData} />
-                }
             </div>
         )
     }
@@ -180,8 +174,20 @@ const Component = ({
     }, [mediaData])
 
     return (
-        <div className="aspect-[1.91/1] rounded-2xl border-2 p-2 relative">
-            {PreviewForm}
+        <div className={[
+            "border-2",
+            "rounded-2xl",
+            "p-2"
+        ].join(" ")}>
+            <div className="aspect-[1.91/1] relative m-0">
+                {PreviewForm}
+            </div>
+            {
+                mediaData !== null &&
+                mediaData.type === "external" &&
+                <MetaView
+                    mediaData={mediaData} />
+            }
         </div>
     )
 }

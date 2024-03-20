@@ -16,7 +16,7 @@ export const Component = ({
             "rounded-2xl", "border-2",
             "bg-opacity-90", "p-2",
             "bg-white", "border-gray-200",
-            "text-black", "absolute",
+            "text-black", "block",
             "left-0", "bottom-0",
             "w-full", "m-0"
         ].join(" ")}>
