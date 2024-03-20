@@ -12,6 +12,37 @@
 - その他、細かなレイアウトの調整を実施しました。
   - Xの投稿プレビューにおいて、リンクカードのアスペクト比が誤っていたため、これをXの仕様に乗っ取った設定に修正しました。
 
+#### 【Collaborator/Contributor向け情報】
+
+- 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
+```ts
+export type MediaData = LinkCard | Images | null
+type LinkCard = {
+    type: "external",
+    images: Array<{
+        blob: Blob | null,
+    }>
+    meta: ogpMetaData & {
+        url: string
+    }
+}
+type Images = {
+    type: "images",
+    images: Array<{
+        alt: string,
+        blob: Blob,
+    }>
+}
+```
+- これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。
+  - 代わりに（画像の入力時に受け付けた）`File`型は即座に`Blob`型に変換され、このデータがそのまま`uploadBlob`APIに用いられます。かなりオーバーヘットを減らせたのではないでしょうか。
+  - 画像の圧縮処理についても画像の入力時点ではなく、`createRecord`の直前に実行するようにしました。OGP画像がBlueskyのデータサイズの受付上限に到達する心配が、これにより無くなりました。
+- `handlePost`は`components/Client/bsky/buttons/PostButton.tsx`へ移動しました。
+  - `utils/recordBuilder`についても、今後`atproto`のフレームワークを採用したいという意志から廃止し、`PostButton.tsx`内部から直接`utils/atproto_api`の関数を呼び出しています。
+  - まだ最適化が済んでいないコンポーネントが多数存在しますが、特殊な事情がない限り、基本的には処理はこれを担当するコンポーネント内で閉じているべきであり、他のコンポーネントに値を渡す当を実現したい場合は、`callback`等を用いて疎結合にすべきだという方針で、作り替えていこうと考えています。
+- 一部のType型と連動する変数群をClass型に再定義しました。
+  - `A`値が決定した時点で`B`値も決定するといった変数において、Type型でそれぞれを列挙するのはコードとして難解であると考えたためです（ただ、もっと上手いやり方があるかもしれません...）
+
 ## 1.3.5
 
 ### Patch Changes

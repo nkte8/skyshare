@@ -239,7 +239,6 @@ const Component = ({
                         setPost={setPostText}
                         disabled={isProcessing} />
                 </div>
-
                 <div className="flex flex-wrap mb-4">
                     <AutoXPopupToggle
                         labeltext={"Xを自動で開く"}
