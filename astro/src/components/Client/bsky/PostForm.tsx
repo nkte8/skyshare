@@ -196,7 +196,7 @@ const Component = ({
                 </div>
             </div>
             <TextForm
-                post={postText}
+                postText={postText}
                 disabled={isProcessing}
                 onChange={handleOnChange}
                 onPaste={handleOnPaste}
@@ -235,8 +235,8 @@ const Component = ({
                 <div className="flex w-full">
                     <div className="flex-none my-auto">よく使うタグ: </div>
                     <TagInputList
-                        post={postText}
-                        setPost={setPostText}
+                        postText={postText}
+                        setPostText={setPostText}
                         disabled={isProcessing} />
                 </div>
                 <div className="flex flex-wrap mb-4">

@@ -3,14 +3,14 @@ import { Profile_context } from "../common/contexts"
 import { useContext } from "react"
 
 const Component = ({
-    post,
+    postText,
     onChange,
     onPaste,
     onfocus = (): void => { },
     onblur = (): void => { },
     disabled
 }: {
-    post: string,
+    postText: string,
     disabled: boolean,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
     onPaste?: (event: React.ClipboardEvent<HTMLTextAreaElement>) => void,
@@ -32,7 +32,7 @@ const Component = ({
                 <textarea onChange={onChange}
                     onPaste={onPaste}
                     autoFocus={true}
-                    value={post}
+                    value={postText}
                     onFocus={onfocus}
                     onBlur={onblur}
                     placeholder={
