@@ -1,5 +1,10 @@
-import ToggleSwitch from "../ToggleSwitch"
+// utils
 import { Dispatch, ReactNode, SetStateAction } from "react"
+
+// components
+import ToggleSwitch from "../../common/ToggleSwitch"
+
+// service
 import { readForceIntent, setForceIntent } from "@/utils/localstorage"
 
 const Component = ({

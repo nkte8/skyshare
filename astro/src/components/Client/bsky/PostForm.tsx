@@ -1,81 +1,65 @@
-import { memo, useState, useContext, Dispatch, SetStateAction } from "react"
-import { Session_context } from "../common/contexts"
-import { type msgInfo, type modes, type popupContent } from "../common/types"
-import { servicename , pagesPrefix } from "@/utils/vars"
+import { memo, useState, Dispatch, SetStateAction } from "react"
+import { type msgInfo, type modes, MediaData } from "../common/types"
 
-import {
-    buildRecordBase,
-    attachImageToRecord,
-    attachExternalToRecord,
-    type SessionNecessary
-} from "@/utils/recordBuilder";
-
-import createRecord from "@/utils/atproto_api/createRecord";
-import createPage from "@/utils/backend_api/createPage";
 import { label } from "@/utils/atproto_api/labels";
-import { setSavedTags, readSavedTags } from "@/utils/localstorage";
-
 import { link } from "../common/tailwind_variants";
 
 import Tweetbox from "../common/Tweetbox"
-import ImgForm from "./ImgForm"
-import ImgViewBox from "./imgctrl/ImgViewBox"
 import TextForm from "./TextForm"
-import Popup from "../intents/popup"
+import callPopup from "../intents/callPopup"
 import AutoXPopupToggle from "./options/AutoXPopupToggle"
 import NoGenerateToggle from "./options/NoGenerateToggle"
 import ShowTaittsuuToggle from "./options/ShowTaittsuuToggle"
 import ForceIntentToggle from "./options/ForceIntentToggle"
 import AppendVia from "./options/AppendViaToggle"
-import PostButton from "./PostButton"
 import LanguageSelect from "./LanguageSelect"
 import Details from "./Details"
 import TagInputList from "./TagInputList"
 import SelfLabelsSelector from "./SelfLabelsSelect"
+import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
+import PostButton from "./buttons/PostButton"
+import AddImageButton from "./buttons/AddImageButton"
 
-import { useKey } from "react-use"
-import type { KeyPredicate } from "react-use/lib/useKey"
-import { addImageFiles } from "@/components/Client/lib/imgFiles"
+import MediaPreview from "./MediaPreview"
 
-const MemoImgViewBox = memo(ImgViewBox)
+import { popupPreviewOptions } from "../intents/types";
+import { addImageMediaData } from "./lib/addImageMediaData";
+
+const MemoMediaPreview = memo(MediaPreview)
+
+export type callbackPostOptions = {
+    postText: string,
+    previewTitle: string | null
+    previewData: Blob | null
+}
+
 const Component = ({
     setMsgInfo,
-    processing,
+    isProcessing,
     setProcessing,
     setMode,
-    setPopupContent
+    mediaData,
+    setMediaData,
+    setPopupPreviewOptions,
 }: {
-    processing: boolean,
-    setProcessing: Dispatch<SetStateAction<boolean>>,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+    isProcessing: boolean,
+    setProcessing: Dispatch<SetStateAction<boolean>>,
     setMode: Dispatch<SetStateAction<modes>>,
-    setPopupContent: Dispatch<SetStateAction<popupContent>>,
+    mediaData: MediaData,
+    setMediaData: Dispatch<SetStateAction<MediaData>>,
+    setPopupPreviewOptions: Dispatch<SetStateAction<popupPreviewOptions>>,
 }) => {
-    const siteurl = location.origin
-
-    /** Apple製品利用者の可能性がある場合True */
-    const isAssumedAsAppleProdUser = navigator.userAgent.toLowerCase().includes("mac os x")
-
-    // ImgFormにて格納されるimageとディスパッチャー
-    const [imageFiles, setImageFile] = useState<Array<File>>([]);
-    // ImgFormにて格納されるAltテキストのリスト
-    const [altTexts, setAltText] = useState<Array<string>>(["", "", "", ""]);
     // Post内容を格納する変数とディスパッチャー
-    const [post, setPost] = useState<string>("")
+    const [postText, setPostText] = useState<string>("")
     // Postの文字数を格納する変数とディスパッチャー
     const [count, setCount] = useState<number>(0)
     // Postの実行状態を管理する変数とディスパッチャー
-    const [isPostProcessing, setPostProcessing] = useState<boolean>(false)
-    // Postの実行状態を管理する変数とディスパッチャー
-    const [language, setLanguage] = useState<Array<string>>(["ja"])
-    // セッション
-    const { session } = useContext(Session_context)
+    const [language, setLanguage] = useState<string>("ja")
     // Postの入力上限
     const countMax = 300
     // PostのWarining上限
     const countWarn = 140
-    // 保存できるタグの上限
-    const maxTagCount = 8
     // Options
     // ポスト時に自動でXを開く
     const [autoPop, setAutoPop] = useState<boolean>(false)
@@ -90,182 +74,38 @@ const Component = ({
     // viaを付与する
     const [appendVia, setAppendVia] = useState<boolean>(false)
 
-    const handlePost = async () => {
-        if (!isValidPost()) {
-            return
-        }
-
-        const initializePost = () => {
-            setPostProcessing(true)
-            setProcessing(true)
-            // Postを押したら強制的にフォーカスアウトイベントを発火
-        }
-        initializePost()
-        setMsgInfo({
-            msg: "レコードに変換中...",
-            isError: false
-        })
-        try {
-            let record = await buildRecordBase({
-                text: post,
-                createdAt: new Date(),
-                langs: language,
-                $type: "app.bsky.feed.post",
-                labels: (selfLabel !== null) ? {
-                        $type: "com.atproto.label.defs#selfLabels",
-                        values: [selfLabel]
-                    } : undefined,
-                via: (appendVia !== false) ? servicename : undefined
-            })
-            // Hashtagが含まれている場合はブラウザに保存
-            const savedTag = readSavedTags()
-            let taglist: string[] = (savedTag !== null) ? savedTag : []
-            record.facets?.forEach((value) => {
-                const facet = value.features[0]
-                if (facet.$type === "app.bsky.richtext.facet#tag") {
-                    const tagName = `#${facet.tag}`
-                    const tagIndex = taglist.indexOf(tagName)
-                    if (tagIndex < 0) {
-                        // タグが存在しない場合は先頭に追加
-                        taglist.unshift(tagName)
-                    } else {
-                        // タグが存在する場合は先頭に移動
-                        taglist.splice(tagIndex, 1)
-                        taglist.unshift(tagName)
-                    }
-                }
-            })
-            setSavedTags(taglist.slice(0, maxTagCount))
-
-            let popupContent: popupContent = {
-                url: null,
-                content: post
-            }
-            // ボタンはログインしている前提で表示される
-            if (session.accessJwt === null || session.did === null) {
-                let e: Error = new Error("フロントエンドが想定していない操作が行われました。")
-                e.name = "Unexpected Error@postform.tsx"
-                throw e
-            }
-            const sessionNecessary: SessionNecessary = {
-                did: session.did,
-                accessJwt: session.accessJwt,
-            }
-            // 文字数が制限数を超えていた場合は終了
-            if (count > countMax) {
-                let e: Error = new Error("文字数制限を超えています。")
-                e.name = "postform.tsx"
-                throw e
-            }
-            const noImagesAttached = (imageFiles.length <= 0)
-            // 画像のアップロードを行う場合の処理(Bluesky側)
-            if (!noImagesAttached) {
-                record = await attachImageToRecord({
-                    base: record,
-                    session: sessionNecessary,
-                    imageFiles: imageFiles,
-                    handleProcessing: setMsgInfo,
-                    altTexts: altTexts
-                })
-            }
-            if (typeof record.facets !== "undefined" && record.facets.length > 0) {
-                let linkcardUrl: string | null = null
-                // メンションではなくリンクを検出する
-                record.facets.forEach((value) => {
-                    const facetObj = value.features[0]
-                    if (facetObj.$type === "app.bsky.richtext.facet#link") {
-                        linkcardUrl = facetObj.uri
-                    }
-                })
-                if (linkcardUrl !== null) {
-                    popupContent.url = new URL(linkcardUrl)
-                }
-                if (linkcardUrl !== null) {
-                    // OGPを生成する必要がない場合(!noGenerate but noImageAttached)
-                    // またはOGPの生成を抑制している場合(noGenerate)で
-                    // 外部リンクが添付されている場合はlinkcardを付与する
-                    if (noGenerate || noImagesAttached) {
-                        record = await attachExternalToRecord({
-                            apiUrl: siteurl,
-                            base: record,
-                            session: sessionNecessary,
-                            externalUrl: new URL(linkcardUrl),
-                            handleProcessing: setMsgInfo
-                        })
-                    }
-                }
-            }
-            setMsgInfo({
-                msg: "Blueskyへポスト中...",
-                isError: false
-            })
-            const rec_res = await createRecord({
-                repo: session.did,
-                accessJwt: session.accessJwt,
-                record: record,
-            })
-            if (typeof rec_res?.error !== "undefined") {
-                let e: Error = new Error(rec_res.message)
-                e.name = rec_res.error
-                throw e
-            }
-            setMsgInfo({
-                msg: "Blueskyへポストしました!",
-                isError: false
-            })
-            // noGenerateの場合はTwitter用ページは生成しない
-            if (!noGenerate && !noImagesAttached) {
-                setMsgInfo({
-                    msg: "Twitter用ページ生成中...",
-                    isError: false
-                })
-                const get_res = await createPage({
-                    accessJwt: session.accessJwt,
-                    uri: rec_res.uri
-                })
-                if (typeof get_res?.error !== "undefined") {
-                    let e: Error = new Error(get_res.message)
-                    e.name = `pstform.tsx ${get_res.error}`
-                    throw e
-                }
-                setMsgInfo({
-                    msg: "Twitter用リンクを生成しました!",
-                    isError: false
-                })
-                const [id, rkey] = get_res.uri.split("/")
-                const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
-                popupContent.url = ogpUrl
-                popupContent.content += `${popupContent.content !== "" ? ("\n") : ("")}${ogpUrl.toString()}`
-            }
-            if (autoPop) {
-                Popup({
-                    intentKind: "xcom",
-                    content: popupContent.content
-                })
-            }
-            setPopupContent(popupContent)
-            setMode("xcom")
-            handlerCancel()
-        } catch (error: unknown) {
-            let msg: string = "Unexpected Unknown Error"
-            if (error instanceof Error) {
-                msg = error.name + ": " + error.message
-            }
-            setMsgInfo({
-                msg: msg,
-                isError: true
+    /**
+     * PostButtonコマンド実行後のcallback関数
+     * @param options callback元から取得したいオプション
+     */
+    const callbackPost = (options: callbackPostOptions
+    ) => {
+        if (autoPop) {
+            callPopup({
+                postText: options.postText,
+                kind: "xcom"
             })
         }
-        setProcessing(false)
-        setPostProcessing(false)
+        const mediaObjectURL: string | null = options.previewData ? (
+            URL.createObjectURL(options.previewData)
+        ) : (null)
+        const popupPreviewOptions: popupPreviewOptions = {
+            postText: options.postText,
+            mediaObjectURL: mediaObjectURL,
+            ogpTitle: options.previewTitle
+        }
+        setPopupPreviewOptions(popupPreviewOptions)
+        setMode("xcom")
+        handlerCancel()
     }
+
     const handlerCancel = () => {
-        setImageFile([])
-        setPost("")
+        setMediaData(null)
+        setPostText("")
         setCount(0)
     }
     const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setPost(event.target.value)
+        setPostText(event.target.value)
         try {
             const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
             const segments = segmenterJa.segment(event.currentTarget.value)
@@ -288,16 +128,13 @@ const Component = ({
         if (items.length <= 0) {
             return
         }
-
         const newImageFiles = collectNewImages(items)
-
         if (newImageFiles.length <= 0) {
             return
         }
-
         // NOTE 画像ファイルが含まれている場合は文字列のペーストを抑制
         e.preventDefault()
-        await addImageFiles(newImageFiles, imageFiles, setImageFile)
+        await addImageMediaData(newImageFiles, mediaData, setMediaData)
     }
 
     /**
@@ -307,7 +144,6 @@ const Component = ({
      */
     const collectNewImages = (items: DataTransferItemList): File[] => {
         const newImageFiles: File[] = []
-
         for (const item of items) {
             const file: File | null = item.getAsFile()
 
@@ -315,44 +151,15 @@ const Component = ({
                 newImageFiles.push(file)
             }
         }
-
         return newImageFiles
     }
-
-    /**
-     * Ctrl+Enterが押されたかどうかを判定します
-     * @param e キーボードイベント
-     * @returns Ctrl+Enterが押された場合true
-     */
-    const isCtrlEnterPressed: KeyPredicate = (e) => {
-        if (e.key === "Enter") {
-            if (isAssumedAsAppleProdUser) {
-                return e.metaKey === true
-            }
-            return e.ctrlKey === true
-        }
-        return false
-    }
-
-    // Ctrl+Enterが押された場合に投稿する
-    useKey(isCtrlEnterPressed, () => {
-        handlePost().catch((e: unknown) => {
-            const msg: string =
-                e instanceof Error
-                    ? `${e.name}: ${e.message}`
-                    : "Unexpected Error@PostForm.tsx"
-            setMsgInfo({
-                msg: msg,
-                isError: true,
-            })
-        })
-    })
 
     /**
      * ポスト可能かどうかを判定します
      * @returns ポスト可能な場合true
      */
-    const isValidPost = () => post.length >= 1 || imageFiles.length > 0
+    const isValidPost = () => postText.length >= 1 || (
+        mediaData !== null && mediaData.images.length > 0)
 
     return (
         <Tweetbox>
@@ -368,34 +175,51 @@ const Component = ({
                 </button>
                 <div className="flex-1"></div>
                 <SelfLabelsSelector
-                    disabled={processing}
+                    disabled={isProcessing}
                     setSelfLabel={setSelfLabel}
                     selectedLabel={selfLabel} />
                 <div className="flex-none my-auto">
                     <PostButton
-                        handlePost={handlePost}
-                        isProcessing={processing}
-                        isPostProcessing={isPostProcessing}
+                        postText={postText}
+                        language={language}
+                        selfLabel={selfLabel}
+                        options={{
+                            noGenerateOgp: noGenerate,
+                            appendVia: appendVia
+                        }}
+                        mediaData={mediaData}
+                        callback={callbackPost}
+                        isProcessing={isProcessing}
+                        setProcessing={setProcessing}
+                        setMsgInfo={setMsgInfo}
                         disabled={!isValidPost()} />
                 </div>
             </div>
             <TextForm
-                post={post}
-                disabled={isPostProcessing}
+                post={postText}
+                disabled={isProcessing}
                 onChange={handleOnChange}
                 onPaste={handleOnPaste}
             />
+            <LinkcardAttachButton
+                postText={postText}
+                setMediaData={setMediaData}
+                isProcessing={isProcessing}
+                setProcessing={setProcessing}
+                setMsgInfo={setMsgInfo}
+            />
             <div className="flex">
-                <ImgForm
-                    disabled={isPostProcessing}
-                    imageFiles={imageFiles}
-                    setImageFile={setImageFile}
+                <AddImageButton
+                    disabled={isProcessing}
                     className="py-0"
+                    mediaData={mediaData}
+                    setMediaData={setMediaData}
                 />
                 <div className="flex-1 my-auto"></div>
                 <LanguageSelect
-                    disabled={isPostProcessing}
+                    disabled={isProcessing}
                     setLanguage={setLanguage} />
+                {/* テキスト数の表示 コンポーネント化したい */}
                 <div className={
                     `align-middle my-auto mr-1 px-2 flex-none w-20 rounded-lg ${(
                         count > countMax
@@ -411,9 +235,9 @@ const Component = ({
                 <div className="flex w-full">
                     <div className="flex-none my-auto">よく使うタグ: </div>
                     <TagInputList
-                        post={post}
-                        setPost={setPost}
-                        disabled={processing} />
+                        post={postText}
+                        setPost={setPostText}
+                        disabled={isProcessing} />
                 </div>
 
                 <div className="flex flex-wrap mb-4">
@@ -427,11 +251,10 @@ const Component = ({
                         setProp={setNoGenerate} />
                 </div>
             </div>
-            <MemoImgViewBox
-                imageFiles={imageFiles}
-                setImageFile={setImageFile}
-                altTexts={altTexts}
-                setAltText={setAltText} />
+            <MemoMediaPreview
+                mediaData={mediaData}
+                setMediaData={setMediaData}
+            />
             <div className="mx-2 my-auto">
                 <Details initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
                     <div className="flex flex-wrap">
