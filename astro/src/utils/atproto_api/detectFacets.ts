@@ -53,7 +53,7 @@ const createLinkFacet = ({
 }: {
     encoded: string,
 }): Array<facets.link> => {
-    const Regex = /(https?:\/\/[^ ]*) ?/i
+    const Regex = /(https?:\/\/.[^ \r\n\n\r]*)( |\r\n|\n|\r)?/i
     let result: Array<facets.link> = []
     let regexResult: Array<regexResult> = []
     regexSeacrh({
