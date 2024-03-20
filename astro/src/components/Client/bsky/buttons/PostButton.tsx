@@ -120,11 +120,11 @@ export const Component = ({
             // Hashtagが含まれている場合はブラウザに保存
             const richTextLinkParser = new richTextFacetParser("tag")
             const parseResult = richTextLinkParser.getFacet(postText)
-
+            console.log(parseResult)
             const savedTag = readSavedTags()
             let taglist: string[] = (savedTag !== null) ? savedTag : []
             parseResult.forEach((value) => {
-                const tagName = `#${value}`
+                const tagName = value
                 const tagIndex = taglist.indexOf(tagName)
                 if (tagIndex < 0) {
                     // タグが存在しない場合は先頭に追加
