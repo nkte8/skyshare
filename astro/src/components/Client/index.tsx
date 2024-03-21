@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import ReactDOM from "react-dom";
-import { posturl } from "@/utils/envs"
+import { posturl } from "@/env/envs"
 
 import {
     Session_context,
@@ -17,7 +17,7 @@ import LogoutButton from "./bsky/buttons/LogoutButton"
 import LoadSession from "./bsky/LoadSession"
 import PageControllerForm from "./pagedb/PageControllerForm"
 import type model_getProfile from "@/utils/atproto_api/models/getProfile.json";
-import { link } from "./common/tailwind_variants";
+import { link } from "./common/tailwindVariants";
 import { buttonID } from "./bsky/types";
 
 const Component = ({
@@ -34,7 +34,7 @@ const Component = ({
         handle: null,
     })
     const [profile, setProfile] = useState<typeof model_getProfile | null>(null)
-    const buttonstyle = "font-medium rounded-full focus:outline-none"
+    const buttonstyle = ["font-medium", "rounded-full", "focus:outline-none"]
     const [msgInfo, setMsgInfo] = useState<msgInfo>({ msg: "", isError: false })
     const [clickedButtonID, setClickedButtonID] = useState<buttonID>("")
 

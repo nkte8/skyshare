@@ -1,6 +1,7 @@
+import Loadingcircle from "./LoadingCircle"
 import { buttonID } from "../bsky/types"
 import { clickedButtonContext } from "./contexts"
-import { load_circle, button_base } from "./tailwind_variants"
+import { button_base } from "./tailwindVariants"
 import { ReactNode, useContext } from "react"
 
 const Component = ({
@@ -19,7 +20,7 @@ const Component = ({
     isProcessing: boolean,
     context: ReactNode,
     showAnimation?: boolean,
-    className?: string,
+    className?: Array<string>,
     disabled?: boolean,
     hidden?: boolean,
     color?: "blue",
@@ -36,29 +37,23 @@ const Component = ({
             className={button_base({
                 disabled: (isProcessing || disabled),
                 regectinput: disabled,
-                class: "my-1 mx-px " + className,
+                class: className,
                 color: color,
                 hidden: hidden,
                 noshadow: disabled
             })}
             type="button" disabled={(isProcessing || disabled)}>
-
             {
                 isProcessing ? (
-                    <>{
-                        Animation && <>
-                            <svg className={load_circle({ size: "s" })}
-                                viewBox="-30 -30 160 160" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M94,50 a44,44,0,1,1,-44,-44"
-                                    stroke="#7dd3fc" fill="none"
-                                    strokeWidth="20" strokeLinecap="round" />
-                            </svg>
-                        </>
-                    }
-                        <span>{context}</span>
-                    </>
+                    Animation ? (
+                        <span className={["flex", "items-center", "w-fit", "mx-auto"].join(" ")}>
+                            <Loadingcircle size="s" />
+                        </span>
+                    ) : (
+                        <>{context}</>
+                    )
                 ) : (
-                    <span>{context}</span>
+                    <>{context}</>
                 )
             }
         </button>

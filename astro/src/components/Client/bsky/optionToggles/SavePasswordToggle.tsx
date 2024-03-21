@@ -5,7 +5,7 @@ import { Dispatch, ReactNode, SetStateAction } from "react"
 import ToggleSwitch from "../../common/ToggleSwitch"
 
 // service
-import { readNoGenerate, setNoGenerate } from "@/utils/localstorage"
+import { readSavePassword, setSavePassword } from "@/utils/useLocalStorage"
 
 const Component = ({
     labeltext,
@@ -20,8 +20,8 @@ const Component = ({
         <ToggleSwitch
             prop={prop}
             setProp={setProp}
-            initialValue={readNoGenerate(false)}
-            setPropConfig={setNoGenerate}
+            initialValue={readSavePassword(false)}
+            setPropConfig={setSavePassword}
             labeltext={labeltext} />
     )
 }

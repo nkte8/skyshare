@@ -5,7 +5,7 @@ interface Props {
     robots: string[];
 }
 const { cardPath, pageTitle, robots } = Astro.props;
-import { servicename, servicedesc } from "@/utils/vars";
+import { servicename, servicedesc } from "@/env/vars";
 
 const url = Astro.url;
 const cardUrl = new URL(cardPath, Astro.url);

@@ -2,7 +2,7 @@
 import React, { memo, useRef, useCallback, useState, useEffect } from "react";
 
 // service
-import { inputtext_base, link } from "../../common/tailwind_variants"
+import { inputtext_base, link } from "../../common/tailwindVariants"
 import { MediaData } from "../../common/types"
 
 const Img = ({

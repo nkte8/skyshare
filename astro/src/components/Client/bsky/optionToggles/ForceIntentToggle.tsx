@@ -5,7 +5,7 @@ import { Dispatch, ReactNode, SetStateAction } from "react"
 import ToggleSwitch from "../../common/ToggleSwitch"
 
 // service
-import { readForceIntent, setForceIntent } from "@/utils/localstorage"
+import { readForceIntent, setForceIntent } from "@/utils/useLocalStorage"
 
 const Component = ({
     labeltext,

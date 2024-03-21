@@ -1,6 +1,6 @@
 import imageCompression, { Options } from "browser-image-compression";
 
-export const compressImage = async (
+export const browserImageCompression = async (
     file: File,
     options: Options = {
         maxSizeMB: 0.925,
@@ -17,3 +17,4 @@ export const compressImage = async (
         return Promise.reject(new Error(`compress failed: ${err}`));
     }
 };
+export default browserImageCompression

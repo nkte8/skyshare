@@ -1,4 +1,4 @@
-import { readForceIntent } from "@/utils/localstorage"
+import { readForceIntent } from "@/utils/useLocalStorage"
 import { Intents } from "./intents"
 import { popupOptions } from "./types"
 

@@ -1,5 +1,5 @@
 import createErrResponse from "./createErrResponse";
-import { isNotProduction } from "@/utils/envs"
+import { isNotProduction } from "@/lib/vars"
 import { apiRequest, errorResponse } from "./types";
 
 const protocol_validation: RegExp = /(dict|file|ftp|gopher|ldap|smtp|telnet|tftp):\/\//

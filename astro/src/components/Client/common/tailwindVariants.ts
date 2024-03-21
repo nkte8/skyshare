@@ -45,17 +45,17 @@ export const button_base = tv({
 			false: ""
 		},
 		noshadow: {
-			false: "sm:shadow-md shadow",
+			false: "shadow",
 			true: "shadow-none"
 		}
 	}
 })
 
 export const load_circle = tv({
-	base: "animate-spin inline-block",
+	base: ["inline-block","animate-spin"],
 	variants: {
 		size: {
-			s: "h-6 w-6",
+			s: "h-[20px] w-[20px]",
 			l: "h-24 w-24",
 		}
 	}

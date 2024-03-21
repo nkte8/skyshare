@@ -5,7 +5,7 @@ import { Dispatch, ReactNode, SetStateAction } from "react"
 import ToggleSwitch from "../../common/ToggleSwitch"
 
 // service
-import { readAppendVia, setAppendVia } from "@/utils/localstorage"
+import { readAppendVia, setAppendVia } from "@/utils/useLocalStorage"
 
 const Component = ({
     labeltext,

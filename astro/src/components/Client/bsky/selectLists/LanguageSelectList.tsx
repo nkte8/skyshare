@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import SelectList from "../common/SelectList"
+import SelectList from "../../common/SelectList"
 const langList = [
     {
         label: "日本語",

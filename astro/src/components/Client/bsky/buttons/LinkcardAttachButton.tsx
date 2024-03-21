@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ProcButton from "../../common/ProcButton"
 
 // backend api
-import { getOgpMeta, getOgpBlob } from "@/utils/getOgp"
+import { getOgpMeta, getOgpBlob } from "@/lib/getOgp"
 
 // service
 import { richTextFacetParser } from "@/utils/richTextParser"
@@ -109,8 +109,9 @@ export const Component = ({
             </>}
             className={[
                 "mx-1",
-                "w-full"
-            ].join(" ")}
+                "w-full",
+                "mb-1"
+            ]}
             disabled={linkUrl === null} />
     )
 }

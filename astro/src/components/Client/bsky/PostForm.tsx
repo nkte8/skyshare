@@ -2,20 +2,20 @@ import { memo, useState, Dispatch, SetStateAction } from "react"
 import { type msgInfo, type modes, MediaData } from "../common/types"
 
 import { label } from "@/utils/atproto_api/labels";
-import { link } from "../common/tailwind_variants";
+import { link } from "../common/tailwindVariants";
 
 import Tweetbox from "../common/Tweetbox"
 import TextForm from "./TextForm"
 import callPopup from "../intents/callPopup"
-import AutoXPopupToggle from "./options/AutoXPopupToggle"
-import NoGenerateToggle from "./options/NoGenerateToggle"
-import ShowTaittsuuToggle from "./options/ShowTaittsuuToggle"
-import ForceIntentToggle from "./options/ForceIntentToggle"
-import AppendVia from "./options/AppendViaToggle"
-import LanguageSelect from "./LanguageSelect"
-import Details from "./Details"
+import AutoXPopupToggle from "./optionToggles/AutoXPopupToggle"
+import NoGenerateToggle from "./optionToggles/NoGenerateToggle"
+import ShowTaittsuuToggle from "./optionToggles/ShowTaittsuuToggle"
+import ForceIntentToggle from "./optionToggles/ForceIntentToggle"
+import AppendVia from "./optionToggles/AppendViaToggle"
+import LanguageSelectList from "./selectLists/LanguageSelectList"
+import Details from "../common/Details"
 import TagInputList from "./TagInputList"
-import SelfLabelsSelector from "./SelfLabelsSelect"
+import SelfLabelsSelectList from "./selectLists/SelfLabelsSelectList"
 import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
@@ -174,7 +174,7 @@ const Component = ({
                     下書きを消す
                 </button>
                 <div className="flex-1"></div>
-                <SelfLabelsSelector
+                <SelfLabelsSelectList
                     disabled={isProcessing}
                     setSelfLabel={setSelfLabel}
                     selectedLabel={selfLabel} />
@@ -211,12 +211,11 @@ const Component = ({
             <div className="flex">
                 <AddImageButton
                     disabled={isProcessing}
-                    className="py-0"
                     mediaData={mediaData}
                     setMediaData={setMediaData}
                 />
                 <div className="flex-1 my-auto"></div>
-                <LanguageSelect
+                <LanguageSelectList
                     disabled={isProcessing}
                     setLanguage={setLanguage} />
                 {/* テキスト数の表示 コンポーネント化したい */}
@@ -255,7 +254,9 @@ const Component = ({
                 setMediaData={setMediaData}
             />
             <div className="mx-2 my-auto">
-                <Details initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
+                <Details 
+                    summaryLabel="実験的な機能" 
+                    initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
                     <div className="flex flex-wrap">
                         <ShowTaittsuuToggle
                             labeltext={"タイッツーの投稿ボタンも表示する"}

@@ -1,9 +1,9 @@
 import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
-import { pagesPrefix } from "@/utils/vars"
-import getIds from "@/utils/backend_api/geIds"
+import { pagesPrefix } from "@/env/envs"
+import getIds from "@/lib/pagedbAPI/geIds"
 import { Session_context } from "../common/contexts"
-import { load_circle, link } from "../common/tailwind_variants"
-import ProfileCard from "../bsky/ProfileCard"
+import { load_circle, link } from "../common/tailwindVariants"
+import ProfileCard from "./ProfileCard"
 import { type msgInfo } from "../common/types"
 
 const Component = ({

@@ -15,16 +15,17 @@ import type record from "@/utils/atproto_api/record";
 import uploadBlob, { type uploadBlobResult } from "@/utils/atproto_api/uploadBlob";
 
 // backend api
-import createPage from "@/utils/backend_api/createPage";
+import createPage from "@/lib/pagedbAPI/createPage";
 import { richTextFacetParser } from "@/utils/richTextParser"
-import { compressImage } from "@/utils/compressimage"
-import { getOgpBlob, getOgpMeta } from "@/utils/getOgp"
+import browserImageCompression from "@/utils/browserImageCompression"
+import { getOgpBlob, getOgpMeta } from "@/lib/getOgp"
 
 // service
-import { setSavedTags, readSavedTags } from "@/utils/localstorage";
+import { setSavedTags, readSavedTags } from "@/utils/useLocalStorage";
 import { callbackPostOptions } from "../PostForm"
 import { msgInfo, MediaData } from "../../common/types"
-import { servicename, pagesPrefix } from "@/utils/vars"
+import { servicename } from "@/env/vars"
+import { pagesPrefix } from "@/env/envs"
 
 
 export const Component = ({
@@ -159,7 +160,7 @@ export const Component = ({
                             `media${index}.data`,
                             { type: value.blob.type })
                         compressTasks.push(
-                            compressImage(file).then(
+                            browserImageCompression(file).then(
                                 async value => await value.arrayBuffer()
                             ))
                     }
@@ -358,9 +359,13 @@ export const Component = ({
             buttonID="post"
             handler={handlePost}
             isProcessing={isProcessing}
-            context="Post"
+            context={<span className={[
+                "my-auto"
+            ].join(" ")}>
+                投稿
+            </span>}
             color="blue"
-            className={["my-0", "py-0.5"].join(" ")}
+            className={["my-0", "py-0.5", "align-middle"]}
             disabled={disabled} />
     )
 }

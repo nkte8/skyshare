@@ -13,12 +13,10 @@ import pic from "@/images/image.svg"
 
 const Component = ({
     disabled,
-    className,
     mediaData,
     setMediaData
 }: {
     disabled: boolean
-    className?: string
     mediaData: MediaData,
     setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
@@ -52,7 +50,7 @@ const Component = ({
             <ProcButton
                 handler={handleClick}
                 isProcessing={disabled}
-                className={className}
+                className={["py-0"]}
                 context={
                     <img src={pic.src}
                         className={[
