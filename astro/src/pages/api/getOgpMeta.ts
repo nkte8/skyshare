@@ -1,7 +1,7 @@
 import type { APIContext, APIRoute } from "astro";
-import type { ogpMetaData, errorResponse } from "@/lib/types";
-import { corsAllowOrigin } from "@/utils/envs";
-import validateRequestReturnURL from "@/lib/validateRequest"
+import type { ogpMetaData, errorResponse } from "@/lib/api/types";
+import { corsAllowOrigin } from "@/lib/vars";
+import validateRequestReturnURL from "@/lib/api/validateRequest"
 // SSRを有効化
 export const prerender = false;
 
@@ -108,8 +108,8 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
             headers: {
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": validateResult.language,
-                "User-Agent": "node",
                 "Cache-Control": "no-cache",
+                "User-Agent" : "bot"
             }
         }
         ).then((res) => res.blob()).catch((res: Error) => {

@@ -1,4 +1,4 @@
-import { ogpMetaData } from "@/lib/types"
+import { ogpMetaData } from "@/lib/api/types"
 export type modes = "bsky" | "pagedb" | "xcom"
 
 export type msgInfo = {

@@ -1,10 +1,12 @@
 import { useState, ReactNode, useEffect } from 'react'
-import { link } from "../common/tailwind_variants";
+import { link } from "./tailwindVariants";
 
 const Component = ({
+    summaryLabel,
     children,
     initHidden,
 }: {
+    summaryLabel: string
     children: ReactNode
     initHidden: boolean
 }) => {
@@ -18,7 +20,7 @@ const Component = ({
     return (
         <>
             <button className={link({ class: "block text-sm" })}
-                onClick={onClick}>実験的な機能{hidden ? ("▼") : ("△")}</button>
+                onClick={onClick}>{summaryLabel}{hidden ? ("▼") : ("△")}</button>
             <div className={`transition-all pt-1 ${hidden ? ("hidden h-0") : ("h-full")}`}>
                 {children}
             </div>

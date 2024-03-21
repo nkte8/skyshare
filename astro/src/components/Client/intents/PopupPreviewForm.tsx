@@ -2,7 +2,7 @@ import { Fragment, useContext } from "react"
 import { Profile_context } from "../common/contexts"
 import ShareButton from "./ShareButton"
 import Tweetbox from "../common/Tweetbox"
-import { readShowTaittsuu } from "@/utils/localstorage"
+import { readShowTaittsuu } from "@/utils/useLocalStorage"
 import { popupPreviewOptions } from "./types"
 
 export const Component = ({

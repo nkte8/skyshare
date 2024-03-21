@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import SelectList from "../common/SelectList"
+import SelectList from "../../common/SelectList"
 import { label } from "@/utils/atproto_api/labels"
 import pic from "@/images/warn.svg"
 

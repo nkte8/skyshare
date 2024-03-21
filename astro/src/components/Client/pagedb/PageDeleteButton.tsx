@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react"
-import deletePage from "@/utils/backend_api/deletePage"
+import deletePage from "@/lib/pagedbAPI/deletePage"
 import ProcButton from "../common/ProcButton"
 import { type Session_info } from "../common/contexts"
 import { type msgInfo } from "../common/types"
@@ -59,7 +59,7 @@ const Component = ({
                 isProcessing={isProcessing}
                 showAnimation={true}
                 context="ページを削除"
-                className="bg-red-100 hover:bg-red-300" />
+                className={["bg-red-100", "hover:bg-red-300"]} />
         </>
     )
 }

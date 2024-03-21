@@ -1,7 +1,7 @@
 
 import { Dispatch, SetStateAction } from "react";
-import { button_base } from "../common/tailwind_variants";
-import { readSavedTags } from "@/utils/localstorage";
+import { button_base } from "../common/tailwindVariants";
+import { readSavedTags } from "@/utils/useLocalStorage";
 
 export const Component = ({
     disabled,

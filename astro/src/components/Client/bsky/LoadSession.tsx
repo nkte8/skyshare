@@ -5,9 +5,9 @@ import {
 } from "react"
 import { Session_context, Profile_context } from "../common/contexts"
 import { type msgInfo } from "../common/types"
-import { readJwt, resetJwt } from "@/utils/localstorage"
+import { readJwt, resetJwt } from "@/utils/useLocalStorage"
 import refreshSession from "@/utils/atproto_api/refreshSession";
-import loadProfile from "./loadProfile";
+import loadProfile from "./lib/loadProfile";
 
 export const Component = ({
     setIsLoad,

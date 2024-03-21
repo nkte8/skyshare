@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react"
-import { button_base } from "../common/tailwind_variants"
+import { button_base } from "../common/tailwindVariants"
 import callPopup from "./callPopup"
 import { popupOptions } from "./types"
 

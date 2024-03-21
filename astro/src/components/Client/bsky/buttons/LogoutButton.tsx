@@ -10,7 +10,7 @@ import deleteSession from "@/utils/atproto_api/deleteSession";
 // service
 import { Session_context } from "../../common/contexts"
 import { type msgInfo } from "../../common/types"
-import { resetJwt, resetLoginInfo } from "@/utils/localstorage";
+import { resetJwt, resetLoginInfo } from "@/utils/useLocalStorage";
 
 export const Component = ({
     className,
@@ -19,7 +19,7 @@ export const Component = ({
     isProcessing,
     setProcessing
 }: {
-    className?: string,
+    className?: Array<string>,
     setMsgInfo?: Dispatch<SetStateAction<msgInfo>>,
     reload: boolean
     isProcessing: boolean,

@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext, Dispatch, SetStateAction } from "react"
-import { inputtext_base, link } from "../common/tailwind_variants"
+import { inputtext_base, link } from "../common/tailwindVariants"
 import { Session_context, Profile_context } from "../common/contexts"
 import { type msgInfo } from "../common/types"
 import createSession from "@/utils/atproto_api/createSession";
-import loadProfile from "./loadProfile";
+import loadProfile from "./lib/loadProfile";
 
-import { writeJwt } from "@/utils/localstorage"
+import { writeJwt } from "@/utils/useLocalStorage"
 import ProcButton from "../common/ProcButton"
 import Tooltip from "../common/Tooltip"
-import SavePasswordToggle from "./options/SavePasswordToggle"
-import { readLogininfo, setLogininfo } from "@/utils/localstorage"
+import SavePasswordToggle from "./optionToggles/SavePasswordToggle"
+import { readLogininfo, setLogininfo } from "@/utils/useLocalStorage"
 
 export const Component = ({
     setMsgInfo,

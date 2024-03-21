@@ -2,7 +2,6 @@ export const serviceurl = "skyshare.uk"
 export const githuburl = "https://github.com/nkte8/skyshare"
 export const zennprofile = "https://zenn.dev/nkte8"
 export const zennurl = "https://zenn.dev/nkte8/articles/2024-02-03-r01"
-export const pagesPrefix = "posts"
 export const servicename = "Skyshare"
 export const servicedesc = `${servicename} is a web application helps bluesky users post to both bluesky or x.com.`;
 export const authorlink = "https://bsky.app/profile/nekono.dev"

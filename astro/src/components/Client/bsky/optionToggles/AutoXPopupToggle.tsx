@@ -5,7 +5,7 @@ import { Dispatch, ReactNode, SetStateAction } from "react"
 import ToggleSwitch from "../../common/ToggleSwitch"
 
 // service
-import { readAutoXPopup, setAutoXPopup } from "@/utils/localstorage"
+import { readAutoXPopup, setAutoXPopup } from "@/utils/useLocalStorage"
 
 const Component = ({
     labeltext,

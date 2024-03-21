@@ -1,9 +1,9 @@
 ---
 import Pagelayout from "@/layouts/Indexlayout.astro";
-import { servicename, githuburl } from "@/utils/vars";
-import { posturl, qaurl, changeurl, featureurl } from "@/utils/envs";
+import { servicename, githuburl } from "@/env/vars";
+import { posturl, qaurl, changeurl, featureurl } from "@/env/envs";
 const title = `${servicename} - Share Bluesky to X`;
-import version from "@/utils/version";
+import version from "@/env/version";
 
 import Xicon from "@/components/Xicon.astro";
 import Bskyicon from "@/components/Bskyicon.astro";

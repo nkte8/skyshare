@@ -1,8 +1,8 @@
 import type { APIContext, APIRoute } from "astro";
-import validateRequestReturnURL from "@/lib/validateRequest"
-import createErrResponse from "@/lib/createErrResponse";
-import { corsAllowOrigin } from "@/utils/envs";
-import { errorResponse } from "@/lib/types";
+import validateRequestReturnURL from "@/lib/api/validateRequest"
+import createErrResponse from "@/lib/api/createErrResponse";
+import { corsAllowOrigin } from "@/lib/vars";
+import { errorResponse } from "@/lib/api/types";
 // SSRを有効化
 export const prerender = false;
 
@@ -45,8 +45,8 @@ export const GET: APIRoute = async ({ request }: APIContext) => {
             method: 'GET',
             headers: {
                 "Accept-Language": validateResult.language,
-                "User-Agent": "node",
                 "Cache-Control": "no-cache",
+                "User-Agent" : "bot"
             }
         }).then((res) => res.blob());
         const response: Response = new Response(blob, {

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { posturl } from "@/utils/envs"
+import { posturl } from "@/env/envs"
 import { type Session_info } from "../common/contexts"
 import { type msgInfo } from "../common/types"
 import PageDeleteButton from "./PageDeleteButton"
