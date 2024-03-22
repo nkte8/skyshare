@@ -13,6 +13,7 @@ const LSKeyName: Obj = {
     savePassword: "savePassword",
     loginInfo: "loginInfo",
     savedTags: "savedTags",
+    drafts: "drafts",
     appendVia: "appendVia"
 }
 type loginInfo = {
@@ -39,7 +40,7 @@ export const setAppendVia = (flag: boolean): void => {
 
 // 将来的にはローカルではなく、DB側に保存したい
 // DB構造を変えることになると思われるため,大きなアップデートの時の次タスクとして積みたい
-export const readSavedTags = (): string[] | null => {
+export const readSavedTags = (): Array<string> => {
     const value = get_ls_value(LSKeyName.savedTags)
     if (value !== null) {
         const Logininfo: string[] =
@@ -47,7 +48,7 @@ export const readSavedTags = (): string[] | null => {
         return Logininfo
     }
     rm_ls_value(LSKeyName.savedTags)
-    return null
+    return []
 }
 
 export const setSavedTags = (Tags: string[]): void => {
@@ -55,6 +56,23 @@ export const setSavedTags = (Tags: string[]): void => {
         Base64.encode(JSON.stringify(Tags)
         )
     set_ls_value(LSKeyName.savedTags, savedTags)
+}
+
+export const readDrafts = (): Array<string> => {
+    const value = get_ls_value(LSKeyName.drafts)
+    if (value !== null) {
+        const drafts: string[] =
+            JSON.parse(Base64.decode(value))
+        return drafts
+    }
+    rm_ls_value(LSKeyName.drafts)
+    return []
+}
+
+export const saveDrafts = (Drafts: string[]): void => {
+    const savedDrafts: string =
+        Base64.encode(JSON.stringify(Drafts))
+    set_ls_value(LSKeyName.drafts, savedDrafts)
 }
 
 export const resetLoginInfo = () => {

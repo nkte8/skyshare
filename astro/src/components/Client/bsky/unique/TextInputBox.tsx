@@ -1,5 +1,5 @@
 // utils
-import { Dispatch, SetStateAction, useContext } from "react"
+import { Dispatch, ReactNode, SetStateAction, useContext } from "react"
 import twitterText from 'twitter-text';
 
 // service
@@ -14,12 +14,14 @@ const Component = ({
     mediaData,
     setMediaData,
     disabled,
+    children
 }: {
     postText: string,
     setPostText: Dispatch<SetStateAction<string>>,
     mediaData: MediaData,
     setMediaData: Dispatch<SetStateAction<MediaData>>,
     disabled: boolean,
+    children?: ReactNode
 }) => {
     // Postの入力上限 (Bsky)
     const countMax = 300
@@ -29,6 +31,7 @@ const Component = ({
     const { profile } = useContext(Profile_context)
     const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(navigator.userAgent.toLowerCase())
 
+    // textareaの変更イベント
     const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPostText(event.target.value)
     }
@@ -128,7 +131,7 @@ const Component = ({
             {/* positionによる自由配置要素 */}
             <div className={[
                 "absolute", "rounded-lg",
-                "opacity-75", "text-sm",
+                "opacity-85", "text-sm",
                 "px-2", "m-0", "bottom-1", "right-1",
                 "w-fit", "flex", "text-right"].join(" ") +
                 ` ${(textCount() > countMax) ? "bg-red-300" : ""}${(
@@ -137,13 +140,15 @@ const Component = ({
                 <span className={
                     ["w-fit",
                     ].join(" ")}>
-                    {`${textCountOnX()}/${countMax} (X)`}
+                    {`${textCountOnX()}/${countWarn}:X`}
                 </span>
                 {/* ガタガタさせないように固定長 */}
-                <span className={["w-36"].join(" ")}>
-                    {`${textCount()}/${countMax} (Bluesky)`}
+                <span className={["w-32"].join(" ")}>
+                    {`${textCount()}/${countMax}:Bluesky`}
                 </span>
             </div>
+            {/* 子コンポーネントがある場合はこれも配置 */}
+            {children}
         </div>
     )
 }
