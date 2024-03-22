@@ -18,6 +18,8 @@ import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
 import MediaPreview from "./MediaPreview"
+import DraftSaveButton from "./buttons/DraftSaveButton";
+import DraftDialog from "./unique/DraftDialog"
 
 // atproto
 import { label } from "@/utils/atproto_api/labels";
@@ -56,6 +58,9 @@ const Component = ({
     const [postText, setPostText] = useState<string>("")
     // Postの実行状態を管理する変数とディスパッチャー
     const [language, setLanguage] = useState<string>("ja")
+    // 下書きのstate情報
+    const [drafts, setDrafts] = useState<Array<string>>([]);
+
     // Options
     // ポスト時に自動でXを開く
     const [autoPop, setAutoPop] = useState<boolean>(false)
@@ -69,6 +74,7 @@ const Component = ({
     const [selfLabel, setSelfLabel] = useState<label.value | null>(null)
     // viaを付与する
     const [appendVia, setAppendVia] = useState<boolean>(false)
+
 
     /**
      * 投稿リセット（下書きを削除）ボタンを押した際の動作
@@ -150,7 +156,19 @@ const Component = ({
                 mediaData={mediaData}
                 setMediaData={setMediaData}
                 disabled={isProcessing}
-            />
+            >
+                <DraftSaveButton
+                    postText={postText}
+                    setPostText={setPostText}
+                    setDrafts={setDrafts}
+                    setMsgInfo={setMsgInfo}
+                    className={[
+                        "absolute",
+                        "bottom-1",
+                        "left-1",
+                        "text-xs",
+                        "py-0.5"]} />
+            </TextInputBox>
             <LinkcardAttachButton
                 postText={postText}
                 setMediaData={setMediaData}
@@ -165,6 +183,10 @@ const Component = ({
                     setMediaData={setMediaData}
                 />
                 <div className="flex-1 my-auto"></div>
+                <DraftDialog
+                    setPostText={setPostText}
+                    drafts={drafts}
+                    setDrafts={setDrafts} />
                 <LanguageSelectList
                     disabled={isProcessing}
                     setLanguage={setLanguage} />
