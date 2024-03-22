@@ -1,6 +1,8 @@
-
+// utils
 import { Dispatch, SetStateAction } from "react";
-import { button_base } from "../common/tailwindVariants";
+
+// service
+import { button_base } from "../../common/tailwindVariants";
 import { readSavedTags } from "@/utils/useLocalStorage";
 
 export const Component = ({
