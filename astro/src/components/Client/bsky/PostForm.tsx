@@ -1,11 +1,9 @@
+// utils
 import { memo, useState, Dispatch, SetStateAction } from "react"
-import { type msgInfo, type modes, MediaData } from "../common/types"
 
-import { label } from "@/utils/atproto_api/labels";
-import { link } from "../common/tailwindVariants";
-
+// components
 import Tweetbox from "../common/Tweetbox"
-import TextForm from "./unique/TextInputBox"
+import TextInputBox from "./unique/TextInputBox"
 import callPopup from "../intents/callPopup"
 import AutoXPopupToggle from "./optionToggles/AutoXPopupToggle"
 import NoGenerateToggle from "./optionToggles/NoGenerateToggle"
@@ -19,11 +17,15 @@ import SelfLabelsSelectList from "./selectLists/SelfLabelsSelectList"
 import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
-import twitterText from 'twitter-text';
-
 import MediaPreview from "./MediaPreview"
 
+// atproto
+import { label } from "@/utils/atproto_api/labels";
+
+// service
+import { link } from "../common/tailwindVariants";
 import { popupPreviewOptions } from "../intents/types";
+import { type msgInfo, type modes, MediaData } from "../common/types"
 
 const MemoMediaPreview = memo(MediaPreview)
 
@@ -31,10 +33,6 @@ export type callbackPostOptions = {
     postText: string,
     previewTitle: string | null
     previewData: Blob | null
-}
-
-export type callbackTextInputBoxOptions = {
-    postText: string,
 }
 
 const Component = ({
@@ -56,16 +54,8 @@ const Component = ({
 }) => {
     // Post内容を格納する変数とディスパッチャー
     const [postText, setPostText] = useState<string>("")
-    // Postの文字数を格納する変数とディスパッチャー
-    const [count, setCount] = useState<number>(0)
     // Postの実行状態を管理する変数とディスパッチャー
     const [language, setLanguage] = useState<string>("ja")
-    // Postの入力上限 (Bsky)
-    const countMax = 300
-    // PostのWarining上限
-    const countWarn = 140
-    // Postの入力上限 (X)
-    const countMaxX = 140
     // Options
     // ポスト時に自動でXを開く
     const [autoPop, setAutoPop] = useState<boolean>(false)
@@ -86,7 +76,6 @@ const Component = ({
     const handlerCancel = () => {
         setMediaData(null)
         setPostText("")
-        setCount(0)
     }
 
     /**
@@ -115,36 +104,11 @@ const Component = ({
     }
 
     /**
-     * TextInputBoxコンポーネントのcallback関数
-     * @param options callback元から取得したいオプション
-     */
-    const callbackTextImputBox = (options: callbackTextInputBoxOptions) => {
-        setPostText(options.postText)
-        try {
-            const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
-            const segments = segmenterJa.segment(options.postText)
-            setCount(Array.from(segments).length)
-        } catch (e) {
-            // Intl.Segmenterがfirefoxでは未対応であるため、やむをえずレガシーな方法で対処
-            // 絵文字のカウント数が想定より多く設定されてしまうため、firefox_v125までは非推奨ブラウザとする
-            setCount(options.postText.length)
-        }
-    }
-
-    /**
      * ポスト可能かどうかを判定します
      * @returns ポスト可能な場合true
      */
     const isValidPost = () => postText.length >= 1 || (
         mediaData !== null && mediaData.images.length > 0)
-
-    /**
-     * X での文字数カウントを返します
-     * @returns 文字数
-     */
-    const textCountOnX = (): number => {
-        return twitterText.parseTweet(postText).weightedLength / 2
-    }
 
     return (
         <Tweetbox>
@@ -180,27 +144,13 @@ const Component = ({
                         disabled={!isValidPost()} />
                 </div>
             </div>
-            <TextForm
+            <TextInputBox
                 postText={postText}
+                setPostText={setPostText}
                 mediaData={mediaData}
                 setMediaData={setMediaData}
-                callback={callbackTextImputBox}
                 disabled={isProcessing}
-            >
-                {/* テキスト数の表示 コンポーネント化したい */}
-                <div className={
-                    `rounded-lg opacity-75 text-sm px-2 ${(
-                        count > countMax
-                    ) && "bg-red-300"
-                    } ${(
-                        count > countWarn && count <= countMax
-                    ) && "bg-amber-300"
-                    }`}>
-                    <span>{textCountOnX()}/{countMaxX} {' (X)'}</span>
-                    <span className="ml-2">{count}/{countMax}</span>
-                    {` (Bluesky)`}
-                </div>
-            </TextForm>
+            />
             <LinkcardAttachButton
                 postText={postText}
                 setMediaData={setMediaData}
