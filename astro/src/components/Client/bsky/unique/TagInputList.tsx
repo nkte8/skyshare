@@ -1,6 +1,8 @@
-
+// utils
 import { Dispatch, SetStateAction } from "react";
-import { button_base } from "../common/tailwindVariants";
+
+// service
+import { button_base } from "../../common/tailwindVariants";
 import { readSavedTags } from "@/utils/useLocalStorage";
 
 export const Component = ({
@@ -52,7 +54,7 @@ export const Component = ({
     return (
         <div className="my-auto overflow-x-scroll flex w-fit minimum-scrollbars">
             {
-                readSavedTags()?.map((value) => {
+                readSavedTags().map((value) => {
                     return <TagButton tag={value} />
                 })
             }
