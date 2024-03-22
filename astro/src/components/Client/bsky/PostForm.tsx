@@ -203,6 +203,16 @@ const Component = ({
 
         setPostText(draft)
 
+        try {
+            const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
+            const segments = segmenterJa.segment(draft)
+            setCount(Array.from(segments).length)
+        } catch (e) {
+            // Intl.Segmenterがfirefoxでは未対応であるため、やむをえずレガシーな方法で対処
+            // 絵文字のカウント数が想定より多く設定されてしまうため、firefox_v125までは非推奨ブラウザとする
+            setCount(draft.length)
+        }
+
         const newDrafts = [...drafts]
         newDrafts.splice(index, 1)
 
