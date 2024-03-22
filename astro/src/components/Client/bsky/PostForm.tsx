@@ -1,5 +1,5 @@
 // utils
-import { memo, useState, Dispatch, SetStateAction } from "react"
+import { memo, useState, Dispatch, SetStateAction, useEffect } from "react"
 
 // components
 import Tweetbox from "../common/Tweetbox"
@@ -18,7 +18,7 @@ import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
 import MediaPreview from "./MediaPreview"
-import SaveButton from "./buttons/SaveButton";
+import DraftSaveButton from "./buttons/DraftSaveButton";
 
 // atproto
 import { label } from "@/utils/atproto_api/labels";
@@ -117,12 +117,7 @@ const Component = ({
      */
     const isValidPost = () => postText.length >= 1 || (
         mediaData !== null && mediaData.images.length > 0)
-    
-    /**
-     * 下書きとして保存可能かどうかを判定します
-     * @returns ポスト可能な場合true
-     */
-    const isValidDraft = () => postText.length >= 1
+
 
     /**
      * 下書きのリストから index 番目を削除します
@@ -151,16 +146,6 @@ const Component = ({
         }
 
         setPostText(draft)
-
-        try {
-            const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
-            const segments = segmenterJa.segment(draft)
-            setCount(Array.from(segments).length)
-        } catch (e) {
-            // Intl.Segmenterがfirefoxでは未対応であるため、やむをえずレガシーな方法で対処
-            // 絵文字のカウント数が想定より多く設定されてしまうため、firefox_v125までは非推奨ブラウザとする
-            setCount(draft.length)
-        }
 
         const newDrafts = [...drafts]
         newDrafts.splice(index, 1)
@@ -201,14 +186,13 @@ const Component = ({
                         setProcessing={setProcessing}
                         setMsgInfo={setMsgInfo}
                         disabled={!isValidPost()} />
-                    <SaveButton
+                    <DraftSaveButton
                         postText={postText}
                         setPostText={setPostText}
                         setDrafts={setDrafts}
                         isProcessing={isProcessing}
                         setProcessing={setProcessing}
-                        setMsgInfo={setMsgInfo}
-                        disabled={!isValidDraft()} />
+                        setMsgInfo={setMsgInfo}/>
                 </div>
             </div>
             <TextInputBox
@@ -282,16 +266,16 @@ const Component = ({
 
             {drafts && drafts.length > 0 &&
                 <div className="mx-2 my-auto">
-                    <Details 
-                    summaryLabel="下書き" 
-                    initHidden={true}>
+                    <Details
+                        summaryLabel="下書き"
+                        initHidden={true}>
                         <div className="text-left overflow-hidden">
                             {drafts.map((draft, index) => (
                                 <div key={index} className={`flex items-center py-4 ${index !== drafts.length - 1 ? "border-b border-gray-200" : ""}`}>
                                     <div className="flex-1 cursor-pointer line-clamp-1 break-all"
-                                    onClick={() => {
-                                        handleClickDraft(draft, index)
-                                    }}>
+                                        onClick={() => {
+                                            handleClickDraft(draft, index)
+                                        }}>
                                         {draft.trim()}
                                     </div>
 
@@ -304,7 +288,7 @@ const Component = ({
                                     </button>
                                 </div>
                             ))}
-                        </div>                    
+                        </div>
                     </Details>
                 </div>
             }

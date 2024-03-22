@@ -26,7 +26,7 @@ import { callbackPostOptions } from "../PostForm"
 import { msgInfo, MediaData } from "../../common/types"
 import { servicename } from "@/env/vars"
 import { pagesPrefix } from "@/env/envs"
-
+import saveTagToSavedTags from "../lib/saveTagList";
 
 export const Component = ({
     postText,
@@ -118,25 +118,8 @@ export const Component = ({
                 ) ? facets : undefined
             }
 
-            // Hashtagが含まれている場合はブラウザに保存
-            const richTextLinkParser = new richTextFacetParser("tag")
-            const parseResult = richTextLinkParser.getFacet(postText)
-            console.log(parseResult)
-            const savedTag = readSavedTags()
-            let taglist: string[] = (savedTag !== null) ? savedTag : []
-            parseResult.forEach((value) => {
-                const tagName = value
-                const tagIndex = taglist.indexOf(tagName)
-                if (tagIndex < 0) {
-                    // タグが存在しない場合は先頭に追加
-                    taglist.unshift(tagName)
-                } else {
-                    // タグが存在する場合は先頭に移動
-                    taglist.splice(tagIndex, 1)
-                    taglist.unshift(tagName)
-                }
-            })
-            setSavedTags(taglist.slice(0, maxTagCount))
+            // ポストにタグが含まれる場合は保存
+            saveTagToSavedTags({postText})
 
             // 投稿の文字制限を解除（API側に処理させる）
             // また、ツリー投稿機能の実装の際は分割方法を検討すること

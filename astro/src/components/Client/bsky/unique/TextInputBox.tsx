@@ -1,5 +1,5 @@
 // utils
-import { Dispatch, SetStateAction, useContext } from "react"
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import twitterText from 'twitter-text';
 
 // service
@@ -29,6 +29,7 @@ const Component = ({
     const { profile } = useContext(Profile_context)
     const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(navigator.userAgent.toLowerCase())
 
+    // textareaの変更イベント
     const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPostText(event.target.value)
     }
