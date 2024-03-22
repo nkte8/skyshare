@@ -1,6 +1,9 @@
 // utils
 import React, { memo, useRef, useCallback, useState, useEffect } from "react";
 
+// component
+import OverlayDialog from "../../common/OverlayDialog"
+
 // service
 import { inputtext_base, link } from "../../common/tailwindVariants"
 import { MediaData } from "../../common/types"
@@ -31,24 +34,17 @@ export const Component = ({
         return
     }
     let mediaDataItem = mediaData.images[itemId]
-    const ref = useRef<HTMLDialogElement | null>(null);
     const textref = useRef<HTMLTextAreaElement | null>(null);
     const [altBoxText, setAltBoxText] = useState<string>(mediaDataItem.alt)
     const maxShowAltLength = 10
-    
+
     const handleOpenDialog = () => {
         if (textref.current) {
             textref.current.value = mediaDataItem.alt
         }
-        if (ref.current) {
-            ref.current.showModal()
-        }
     };
 
     const handleCloseDialog = () => {
-        if (ref.current) {
-            ref.current.close();
-        }
         mediaDataItem.alt = altBoxText
     };
 
@@ -57,12 +53,6 @@ export const Component = ({
             e.stopPropagation();
         }, []
     );
-
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
-        if (event.key === "Escape") {
-            handleCloseDialog()
-        }
-    }
 
     const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         // メディアがimagesの場合のみ処理
@@ -87,19 +77,19 @@ export const Component = ({
         setAltBoxText(mediaData.images[itemId].alt)
     }, [mediaData.images])
     return (
-        <>
-            <button
-                onClick={handleOpenDialog}
-                className={[
+        <OverlayDialog
+            callbackOpenDialog={handleOpenDialog}
+            callbackCloseDialog={handleCloseDialog}
+            buttonOption={{
+                className: [
                     "rounded-lg", "border-1",
                     "bg-opacity-70", "px-2",
                     "bg-black", "border-white",
                     "text-white", "absolute",
-                    "left-1", "bottom-1",
-                ].join(" ") + (
+                    "left-1", "bottom-1"].join(" ") + (
                         altBoxText !== "" ? (" bg-blue-500") : ("")
-                    )}>
-                {
+                    ),
+                content:
                     altBoxText !== "" ? (
                         `${altBoxText.slice(0, maxShowAltLength)
                         }${altBoxText.length >= maxShowAltLength
@@ -107,34 +97,27 @@ export const Component = ({
                     ) : (
                         "Altを設定"
                     )
-                }
-            </button>
-            <dialog ref={ref}
-                className="p-10 rounded-2xl"
-                onClick={handleCloseDialog}
-                onKeyDown={handleKeyDown}>
-                <div onClick={handleClickInDialog} >
-                    <MemoImg
-                        mediaDataItem={mediaDataItem} />
-                    <label>画像に設定するAltを入力（ダイアログを閉じると反映）</label>
-                    <textarea onChange={handleOnChange}
-                        autoFocus={true}
-                        ref={textref}
-                        placeholder="上記に設定するAltを入力してください"
-                        className={inputtext_base({
-                            kind: "outbound",
-                            class: "p-4 w-full md:w-lg resize-y overflow-y-auto h-32"
-                        })}
-                    />
-                    <button
-                        className={link({ enabled: !(altBoxText === "") })}
-                        disabled={altBoxText === ""}
-                        onClick={handleClick}
-                    >内容をクリア</button>
-                </div>
-            </dialog>
-        </>
-
+            }}>
+            <div onClick={handleClickInDialog} >
+                <MemoImg
+                    mediaDataItem={mediaDataItem} />
+                <label>画像に設定するAltを入力（ダイアログを閉じると反映）</label>
+                <textarea onChange={handleOnChange}
+                    autoFocus={true}
+                    ref={textref}
+                    placeholder="上記に設定するAltを入力してください"
+                    className={inputtext_base({
+                        kind: "outbound",
+                        class: "p-4 w-full md:w-lg resize-y overflow-y-auto h-32"
+                    })}
+                />
+                <button
+                    className={link({ enabled: !(altBoxText === "") })}
+                    disabled={altBoxText === ""}
+                    onClick={handleClick}
+                >内容をクリア</button>
+            </div>
+        </OverlayDialog>
     );
 };
 export default Component
