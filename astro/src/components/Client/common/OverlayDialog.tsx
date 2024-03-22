@@ -15,8 +15,8 @@ export const Component = ({
     buttonOption,
     children
 }: {
-    callbackOpenDialog: () => void,
-    callbackCloseDialog: () => void,
+    callbackOpenDialog?: () => void,
+    callbackCloseDialog?: () => void,
     buttonOption: {
         className: string,
         content: ReactNode
@@ -26,7 +26,7 @@ export const Component = ({
     const ref = useRef<HTMLDialogElement | null>(null);
 
     const handleOpenDialog = () => {
-        callbackOpenDialog()
+        typeof callbackOpenDialog !== "undefined" && callbackOpenDialog()
         if (ref.current) {
             ref.current.showModal()
         }
@@ -36,7 +36,7 @@ export const Component = ({
         if (ref.current) {
             ref.current.close();
         }
-        callbackCloseDialog()
+        typeof callbackCloseDialog !== "undefined" && callbackCloseDialog()
     };
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {

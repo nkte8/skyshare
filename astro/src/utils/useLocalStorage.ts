@@ -40,7 +40,7 @@ export const setAppendVia = (flag: boolean): void => {
 
 // 将来的にはローカルではなく、DB側に保存したい
 // DB構造を変えることになると思われるため,大きなアップデートの時の次タスクとして積みたい
-export const readSavedTags = (): string[] | null => {
+export const readSavedTags = (): Array<string> => {
     const value = get_ls_value(LSKeyName.savedTags)
     if (value !== null) {
         const Logininfo: string[] =
@@ -48,7 +48,7 @@ export const readSavedTags = (): string[] | null => {
         return Logininfo
     }
     rm_ls_value(LSKeyName.savedTags)
-    return null
+    return []
 }
 
 export const setSavedTags = (Tags: string[]): void => {
@@ -58,7 +58,7 @@ export const setSavedTags = (Tags: string[]): void => {
     set_ls_value(LSKeyName.savedTags, savedTags)
 }
 
-export const readDrafts = (): string[] | null => {
+export const readDrafts = (): Array<string> => {
     const value = get_ls_value(LSKeyName.drafts)
     if (value !== null) {
         const drafts: string[] =
@@ -66,7 +66,7 @@ export const readDrafts = (): string[] | null => {
         return drafts
     }
     rm_ls_value(LSKeyName.drafts)
-    return null
+    return []
 }
 
 export const saveDrafts = (Drafts: string[]): void => {

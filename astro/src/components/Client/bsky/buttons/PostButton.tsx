@@ -16,12 +16,10 @@ import uploadBlob, { type uploadBlobResult } from "@/utils/atproto_api/uploadBlo
 
 // backend api
 import createPage from "@/lib/pagedbAPI/createPage";
-import { richTextFacetParser } from "@/utils/richTextParser"
 import browserImageCompression from "@/utils/browserImageCompression"
 import { getOgpBlob, getOgpMeta } from "@/lib/getOgp"
 
 // service
-import { setSavedTags, readSavedTags } from "@/utils/useLocalStorage";
 import { callbackPostOptions } from "../PostForm"
 import { msgInfo, MediaData } from "../../common/types"
 import { servicename } from "@/env/vars"
@@ -59,8 +57,6 @@ export const Component = ({
     const siteurl = location.origin
     // セッション
     const { session } = useContext(Session_context)
-    // 保存できるタグの上限
-    const maxTagCount = 8
     /** Apple製品利用者の可能性がある場合True */
     const isAssumedAsAppleProdUser =
         navigator.userAgent.toLowerCase().includes("mac os x")

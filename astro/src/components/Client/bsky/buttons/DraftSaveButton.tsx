@@ -13,16 +13,14 @@ export const Component = ({
     postText,
     setPostText,
     setDrafts,
-    isProcessing,
-    setProcessing,
     setMsgInfo,
+    className = []
 }: {
     postText: string,
     setPostText: Dispatch<SetStateAction<string>>,
-    setDrafts: Dispatch<SetStateAction<string[] | null>>,
-    isProcessing: boolean,
-    setProcessing: Dispatch<SetStateAction<boolean>>,
+    setDrafts: Dispatch<SetStateAction<Array<string>>>,
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+    className?: Array<string>
 }) => {
 
     /**
@@ -46,22 +44,13 @@ export const Component = ({
             return
         }
 
-        const initializePost = () => {
-            setProcessing(true)
-            // Postを押したら強制的にフォーカスアウトイベントを発火
-        }
-
-        initializePost()
         saveTagToSavedTags({ postText })
 
         const newDrafts = [postText, ...readDrafts() || []]
 
         saveDrafts(newDrafts)
         setDrafts(newDrafts)
-
         setPostText("")
-
-        setProcessing(false)
 
         setMsgInfo({
             msg: "下書きを保存しました。",
@@ -73,14 +62,13 @@ export const Component = ({
         <ProcButton
             buttonID="post"
             handler={handleSavePost}
-            isProcessing={isProcessing}
+            isProcessing={false}
             context={<span className={[
                 "my-auto"
             ].join(" ")}>
-                保存
+                下書きを保存
             </span>}
-            color="blue"
-            className={["my-0", "py-0.5", "align-middle"]}
+            className={["my-0", "py-0.5", "align-middle"].concat(className)}
             disabled={!isValidDraft()} />
     )
 }
