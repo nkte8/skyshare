@@ -14,7 +14,7 @@ import InfoLabel from "./common/InfoLabel"
 import ProcButton from "./common/ProcButton"
 
 import LogoutButton from "./bsky/buttons/LogoutButton"
-import LoadSession from "./bsky/LoadSession"
+import LoadSession from "./bsky/unique/LoadSession"
 import PageControllerForm from "./pagedb/PageControllerForm"
 import type model_getProfile from "@/utils/atproto_api/models/getProfile.json";
 import { link } from "./common/tailwindVariants";

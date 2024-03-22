@@ -5,7 +5,7 @@ import { label } from "@/utils/atproto_api/labels";
 import { link } from "../common/tailwindVariants";
 
 import Tweetbox from "../common/Tweetbox"
-import TextForm from "./TextForm"
+import TextForm from "./unique/TextInputBox"
 import callPopup from "../intents/callPopup"
 import AutoXPopupToggle from "./optionToggles/AutoXPopupToggle"
 import NoGenerateToggle from "./optionToggles/NoGenerateToggle"
@@ -14,7 +14,7 @@ import ForceIntentToggle from "./optionToggles/ForceIntentToggle"
 import AppendVia from "./optionToggles/AppendViaToggle"
 import LanguageSelectList from "./selectLists/LanguageSelectList"
 import Details from "../common/Details"
-import TagInputList from "./TagInputList"
+import TagInputList from "./unique/TagInputList"
 import SelfLabelsSelectList from "./selectLists/SelfLabelsSelectList"
 import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
@@ -24,7 +24,6 @@ import twitterText from 'twitter-text';
 import MediaPreview from "./MediaPreview"
 
 import { popupPreviewOptions } from "../intents/types";
-import { addImageMediaData } from "./lib/addImageMediaData";
 
 const MemoMediaPreview = memo(MediaPreview)
 
@@ -32,6 +31,10 @@ export type callbackPostOptions = {
     postText: string,
     previewTitle: string | null
     previewData: Blob | null
+}
+
+export type callbackTextInputBoxOptions = {
+    postText: string,
 }
 
 const Component = ({
@@ -78,7 +81,16 @@ const Component = ({
     const [appendVia, setAppendVia] = useState<boolean>(false)
 
     /**
-     * PostButtonコマンド実行後のcallback関数
+     * 投稿リセット（下書きを削除）ボタンを押した際の動作
+     */
+    const handlerCancel = () => {
+        setMediaData(null)
+        setPostText("")
+        setCount(0)
+    }
+
+    /**
+     * PostButtonコンポーネントのcallback関数
      * @param options callback元から取得したいオプション
      */
     const callbackPost = (options: callbackPostOptions
@@ -102,59 +114,21 @@ const Component = ({
         handlerCancel()
     }
 
-    const handlerCancel = () => {
-        setMediaData(null)
-        setPostText("")
-        setCount(0)
-    }
-    const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setPostText(event.target.value)
+    /**
+     * TextInputBoxコンポーネントのcallback関数
+     * @param options callback元から取得したいオプション
+     */
+    const callbackTextImputBox = (options: callbackTextInputBoxOptions) => {
+        setPostText(options.postText)
         try {
             const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
-            const segments = segmenterJa.segment(event.currentTarget.value)
+            const segments = segmenterJa.segment(options.postText)
             setCount(Array.from(segments).length)
         } catch (e) {
             // Intl.Segmenterがfirefoxでは未対応であるため、やむをえずレガシーな方法で対処
             // 絵文字のカウント数が想定より多く設定されてしまうため、firefox_v125までは非推奨ブラウザとする
-            setCount(event.currentTarget.value.length)
+            setCount(options.postText.length)
         }
-    }
-
-    /**
-     * ペーストイベントを処理します
-     * @param e クリップボードイベント
-     */
-    const handleOnPaste = async (
-        e: React.ClipboardEvent<HTMLTextAreaElement>,
-    ) => {
-        const items: DataTransferItemList = e.clipboardData.items
-        if (items.length <= 0) {
-            return
-        }
-        const newImageFiles = collectNewImages(items)
-        if (newImageFiles.length <= 0) {
-            return
-        }
-        // NOTE 画像ファイルが含まれている場合は文字列のペーストを抑制
-        e.preventDefault()
-        await addImageMediaData(newImageFiles, mediaData, setMediaData)
-    }
-
-    /**
-     * データ転送アイテムリストから画像ファイルのリストを作成します
-     * @param items データ転送アイテムリスト
-     * @returns 画像ファイルのリスト
-     */
-    const collectNewImages = (items: DataTransferItemList): File[] => {
-        const newImageFiles: File[] = []
-        for (const item of items) {
-            const file: File | null = item.getAsFile()
-
-            if (file != null && file.type.startsWith("image")) {
-                newImageFiles.push(file)
-            }
-        }
-        return newImageFiles
     }
 
     /**
@@ -163,7 +137,7 @@ const Component = ({
      */
     const isValidPost = () => postText.length >= 1 || (
         mediaData !== null && mediaData.images.length > 0)
-    
+
     /**
      * X での文字数カウントを返します
      * @returns 文字数
@@ -208,9 +182,10 @@ const Component = ({
             </div>
             <TextForm
                 postText={postText}
+                mediaData={mediaData}
+                setMediaData={setMediaData}
+                callback={callbackTextImputBox}
                 disabled={isProcessing}
-                onChange={handleOnChange}
-                onPaste={handleOnPaste}
             >
                 {/* テキスト数の表示 コンポーネント化したい */}
                 <div className={
@@ -268,8 +243,8 @@ const Component = ({
                 setMediaData={setMediaData}
             />
             <div className="mx-2 my-auto">
-                <Details 
-                    summaryLabel="実験的な機能" 
+                <Details
+                    summaryLabel="実験的な機能"
                     initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
                     <div className="flex flex-wrap">
                         <ShowTaittsuuToggle

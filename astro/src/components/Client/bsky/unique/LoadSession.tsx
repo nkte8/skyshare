@@ -1,13 +1,17 @@
-
+// utils
 import {
     Dispatch, SetStateAction,
     useContext, useEffect
 } from "react"
-import { Session_context, Profile_context } from "../common/contexts"
-import { type msgInfo } from "../common/types"
-import { readJwt, resetJwt } from "@/utils/useLocalStorage"
+
+// atproto
 import refreshSession from "@/utils/atproto_api/refreshSession";
-import loadProfile from "./lib/loadProfile";
+
+// service
+import { type msgInfo } from "../../common/types"
+import { readJwt, resetJwt } from "@/utils/useLocalStorage"
+import loadProfile from "../lib/loadProfile";
+import { Session_context, Profile_context } from "../../common/contexts"
 
 export const Component = ({
     setIsLoad,
