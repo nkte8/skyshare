@@ -137,7 +137,7 @@ const Component = ({
                 <span className={
                     ["w-fit",
                     ].join(" ")}>
-                    {`${textCountOnX()}/${countMax} (X)`}
+                    {`${textCountOnX()}/${countWarn} (X)`}
                 </span>
                 {/* ガタガタさせないように固定長 */}
                 <span className={["w-36"].join(" ")}>
