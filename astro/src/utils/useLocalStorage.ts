@@ -13,6 +13,7 @@ const LSKeyName: Obj = {
     savePassword: "savePassword",
     loginInfo: "loginInfo",
     savedTags: "savedTags",
+    drafts: "drafts",
     appendVia: "appendVia"
 }
 type loginInfo = {
@@ -55,6 +56,23 @@ export const setSavedTags = (Tags: string[]): void => {
         Base64.encode(JSON.stringify(Tags)
         )
     set_ls_value(LSKeyName.savedTags, savedTags)
+}
+
+export const readDrafts = (): string[] | null => {
+    const value = get_ls_value(LSKeyName.drafts)
+    if (value !== null) {
+        const drafts: string[] =
+            JSON.parse(Base64.decode(value))
+        return drafts
+    }
+    rm_ls_value(LSKeyName.drafts)
+    return null
+}
+
+export const saveDrafts = (Drafts: string[]): void => {
+    const savedDrafts: string =
+        Base64.encode(JSON.stringify(Drafts))
+    set_ls_value(LSKeyName.drafts, savedDrafts)
 }
 
 export const resetLoginInfo = () => {

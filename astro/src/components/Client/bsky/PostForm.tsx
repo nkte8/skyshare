@@ -1,4 +1,4 @@
-import { memo, useState, Dispatch, SetStateAction } from "react"
+import { memo, useState, Dispatch, SetStateAction, useEffect } from "react"
 import { type msgInfo, type modes, MediaData } from "../common/types"
 
 import { label } from "@/utils/atproto_api/labels";
@@ -19,11 +19,13 @@ import SelfLabelsSelectList from "./selectLists/SelfLabelsSelectList"
 import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
+import SaveButton from "./buttons/SaveButton";
 
 import MediaPreview from "./MediaPreview"
 
 import { popupPreviewOptions } from "../intents/types";
 import { addImageMediaData } from "./lib/addImageMediaData";
+import { readDrafts, saveDrafts } from "@/utils/useLocalStorage";
 
 const MemoMediaPreview = memo(MediaPreview)
 
@@ -73,6 +75,12 @@ const Component = ({
     const [selfLabel, setSelfLabel] = useState<label.value | null>(null)
     // viaを付与する
     const [appendVia, setAppendVia] = useState<boolean>(false)
+    // 下書き
+    const [drafts, setDrafts] = useState<string[] | null>(null);
+
+    useEffect(() => {
+        setDrafts(readDrafts());
+    }, [])
 
     /**
      * PostButtonコマンド実行後のcallback関数
@@ -160,6 +168,47 @@ const Component = ({
      */
     const isValidPost = () => postText.length >= 1 || (
         mediaData !== null && mediaData.images.length > 0)
+    
+    /**
+     * 下書きとして保存可能かどうかを判定します
+     * @returns ポスト可能な場合true
+     */
+    const isValidDraft = () => postText.length >= 1
+
+    /**
+     * 下書きのリストから index 番目を削除します
+     * @param index 削除する下書きの index
+     */
+    const handleDeleteDraft = (index: number) => {
+        if (!drafts || drafts.length <= 0) {
+            return
+        }
+
+        const newDrafts = [...drafts]
+        newDrafts.splice(index, 1)
+
+        setDrafts(newDrafts)
+        saveDrafts(newDrafts)
+    }
+
+    /**
+     * 下書きを適用し、リストから削除します
+     * @param draft 適用する下書き
+     * @param index 下書きの index
+     */
+    const handleClickDraft = (draft: string, index: number) => {
+        if (!drafts || drafts.length <= 0) {
+            return
+        }
+
+        setPostText(draft)
+
+        const newDrafts = [...drafts]
+        newDrafts.splice(index, 1)
+
+        setDrafts(newDrafts)
+        saveDrafts(newDrafts)
+    }
 
     return (
         <Tweetbox>
@@ -193,6 +242,14 @@ const Component = ({
                         setProcessing={setProcessing}
                         setMsgInfo={setMsgInfo}
                         disabled={!isValidPost()} />
+                    <SaveButton
+                        postText={postText}
+                        setPostText={setPostText}
+                        setDrafts={setDrafts}
+                        isProcessing={isProcessing}
+                        setProcessing={setProcessing}
+                        setMsgInfo={setMsgInfo}
+                        disabled={!isValidDraft()} />
                 </div>
             </div>
             <TextForm
@@ -273,6 +330,35 @@ const Component = ({
                     </div>
                 </Details>
             </div>
+
+            {drafts && drafts.length > 0 &&
+                <div className="mx-2 my-auto">
+                    <Details 
+                    summaryLabel="下書き" 
+                    initHidden={true}>
+                        <div className="text-left overflow-hidden">
+                            {drafts.map((draft, index) => (
+                                <div key={index} className={`flex items-center py-4 ${index !== drafts.length - 1 ? "border-b border-gray-200" : ""}`}>
+                                    <div className="flex-1 cursor-pointer line-clamp-1 break-all"
+                                    onClick={() => {
+                                        handleClickDraft(draft, index)
+                                    }}>
+                                        {draft.trim()}
+                                    </div>
+
+                                    <button
+                                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                                        onClick={() => {
+                                            handleDeleteDraft(index)
+                                        }}>
+                                        削除
+                                    </button>
+                                </div>
+                            ))}
+                        </div>                    
+                    </Details>
+                </div>
+            }
         </Tweetbox>
     );
 }
