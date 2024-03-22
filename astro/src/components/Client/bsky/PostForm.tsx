@@ -19,6 +19,7 @@ import SelfLabelsSelectList from "./selectLists/SelfLabelsSelectList"
 import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
+import twitterText from 'twitter-text';
 
 import MediaPreview from "./MediaPreview"
 
@@ -56,10 +57,12 @@ const Component = ({
     const [count, setCount] = useState<number>(0)
     // Postの実行状態を管理する変数とディスパッチャー
     const [language, setLanguage] = useState<string>("ja")
-    // Postの入力上限
+    // Postの入力上限 (Bsky)
     const countMax = 300
     // PostのWarining上限
     const countWarn = 140
+    // Postの入力上限 (X)
+    const countMaxX = 140
     // Options
     // ポスト時に自動でXを開く
     const [autoPop, setAutoPop] = useState<boolean>(false)
@@ -160,6 +163,14 @@ const Component = ({
      */
     const isValidPost = () => postText.length >= 1 || (
         mediaData !== null && mediaData.images.length > 0)
+    
+    /**
+     * X での文字数カウントを返します
+     * @returns 文字数
+     */
+    const textCountOnX = (): number => {
+        return twitterText.parseTweet(postText).weightedLength / 2
+    }
 
     return (
         <Tweetbox>
@@ -200,7 +211,21 @@ const Component = ({
                 disabled={isProcessing}
                 onChange={handleOnChange}
                 onPaste={handleOnPaste}
-            />
+            >
+                {/* テキスト数の表示 コンポーネント化したい */}
+                <div className={
+                    `rounded-lg opacity-75 text-sm px-2 ${(
+                        count > countMax
+                    ) && "bg-red-300"
+                    } ${(
+                        count > countWarn && count <= countMax
+                    ) && "bg-amber-300"
+                    }`}>
+                    <span>{textCountOnX()}/{countMaxX} {' (X)'}</span>
+                    <span className="ml-2">{count}/{countMax}</span>
+                    {` (Bluesky)`}
+                </div>
+            </TextForm>
             <LinkcardAttachButton
                 postText={postText}
                 setMediaData={setMediaData}
@@ -218,17 +243,6 @@ const Component = ({
                 <LanguageSelectList
                     disabled={isProcessing}
                     setLanguage={setLanguage} />
-                {/* テキスト数の表示 コンポーネント化したい */}
-                <div className={
-                    `align-middle my-auto mr-1 px-2 flex-none w-20 rounded-lg ${(
-                        count > countMax
-                    ) && "bg-red-300"
-                    } ${(
-                        count > countWarn && count <= countMax
-                    ) && "bg-amber-300"
-                    }`}>
-                    {count}/{countMax}
-                </div>
             </div>
             <div className="mx-2 my-auto">
                 <div className="flex w-full">
