@@ -73,15 +73,20 @@ const Component = ({
     }
 
     /**
-     * X での文字数カウントを返します（端数切り上げ）
+     * Xでの文字数カウントを返します（端数切り上げ）
      * @returns 文字数
      */
     const textCountOnX = (): number => {
-        return Math.ceil(twitterText.parseTweet(postText).weightedLength / 2)
+        try {
+            return Math.ceil(twitterText.parseTweet(postText).weightedLength / 2)
+        }catch {
+            // 念の為例外を追加
+            return postText.length
+        }
     }
 
     /**
-     * bluesky での文字数カウントを返却
+     * blueskyでの文字数カウントを返却
      * @returns 文字数
      */
     const textCount = (): number => {
