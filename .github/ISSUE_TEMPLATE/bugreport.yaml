@@ -2,8 +2,7 @@ name: Bug Report
 description: "About unexpected work of application report"
 title: "[Bug Report]: "
 labels: ["bug"]
-assignees: 
-  - nkte8
+assignees: []
 
 body:
   - type: markdown
