@@ -2,8 +2,7 @@ name: Improve code
 description: "More nice cording, more nice developing"
 title: "[Improve code]: "
 labels: ["invalid"]
-assignees: 
-  - nkte8
+assignees: []
 
 body:
   - type: markdown

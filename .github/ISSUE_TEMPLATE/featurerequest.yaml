@@ -2,8 +2,8 @@ name: Feature Request
 description: "Create new feature request"
 title: "[Feature Request]: "
 labels: ["enhancement"]
-assignees: 
-  - nkte8
+assignees: []
+
 body:
   - type: markdown
     attributes:
