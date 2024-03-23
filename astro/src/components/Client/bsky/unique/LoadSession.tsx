@@ -9,7 +9,7 @@ import refreshSession from "@/utils/atproto_api/refreshSession";
 
 // service
 import { type msgInfo } from "../../common/types"
-import { readJwt, resetJwt } from "@/utils/useLocalStorage"
+import { readJwt, resetJwt, writeJwt } from "@/utils/useLocalStorage"
 import loadProfile from "../lib/loadProfile";
 import { Session_context, Profile_context } from "../../common/contexts"
 
@@ -43,6 +43,9 @@ export const Component = ({
                     refreshJwt: refreshResult.refreshJwt,
                     handle: refreshResult.handle,
                 })
+                // リフレッシュしたトークンを上書き
+                writeJwt(refreshResult.refreshJwt)
+                
                 setMsgInfo({
                     msg: "セッションを再開しました!", isError: false
                 })
