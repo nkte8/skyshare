@@ -2,46 +2,49 @@ import type { APIContext, APIRoute } from "astro";
 import type { ogpMetaData, errorResponse } from "@/lib/api/types";
 import { corsAllowOrigin } from "@/lib/vars";
 import validateRequestReturnURL from "@/lib/api/validateRequest"
+
+import ogs from "open-graph-scraper-lite"
+
 // SSRを有効化
 export const prerender = false;
 
 // Cloudflare環境 ≠ Nodejsであるため、jsdomやhappy-domが使えなかった
 // 正規表現芸人をせざるをえない...
-const extractHead = (html: string): ogpMetaData => {
-    let metas: Array<string> = []
+// const extractHead = (html: string): ogpMetaData => {
+//     let metas: Array<string> = []
 
-    const titleFilter: Array<RegExp> = [
-        /(?: *< *meta +name=["']?twitter:title["']? +content=)["']?([^"']*)["']?/,
-        /(?: *< *meta +property=["']?og:title["']? +content=)["']?([^"']*)["']?/,
-    ]
-    const descriptionFilter: Array<RegExp> = [
-        /(?: *< *meta +name=["']?twitter:description["']? +content=)["']?([^"']*)["']?/,
-        /(?: *< *meta +property=["']?og:description["']? +content=)["']?([^"']*)["']?/,
-    ]
-    const imageFilter: Array<RegExp> = [
-        /(?: *< *meta +name=["']?twitter:image["']? +content=)["']?([^"']*)["']?/,
-        /(?: *< *meta +property=["']?og:image["']? +content=)["']?([^"']*)["']?/
-    ]
-    // やるとしたらこの部分の効率化がしたい
-    // ただし、twitter:XXX系→og:XXX系の順序性は崩したくない
-    for (let filters of [titleFilter, descriptionFilter, imageFilter]) {
-        let result: string = ""
-        for (let filter of filters) {
-            const regResult = filter.exec(html)
-            if (regResult !== null) {
-                result = regResult[1]
-                break
-            }
-        }
-        metas.push(result)
-    }
-    return {
-        type: "meta",
-        title: metas[0],
-        description: metas[1],
-        image: metas[2]
-    }
-};
+//     const titleFilter: Array<RegExp> = [
+//         /(?: *< *meta +name=["']?twitter:title["']? +content=)["']?([^"']*)["']?/,
+//         /(?: *< *meta +property=["']?og:title["']? +content=)["']?([^"']*)["']?/,
+//     ]
+//     const descriptionFilter: Array<RegExp> = [
+//         /(?: *< *meta +name=["']?twitter:description["']? +content=)["']?([^"']*)["']?/,
+//         /(?: *< *meta +property=["']?og:description["']? +content=)["']?([^"']*)["']?/,
+//     ]
+//     const imageFilter: Array<RegExp> = [
+//         /(?: *< *meta +name=["']?twitter:image["']? +content=)["']?([^"']*)["']?/,
+//         /(?: *< *meta +property=["']?og:image["']? +content=)["']?([^"']*)["']?/
+//     ]
+//     // やるとしたらこの部分の効率化がしたい
+//     // ただし、twitter:XXX系→og:XXX系の順序性は崩したくない
+//     for (let filters of [titleFilter, descriptionFilter, imageFilter]) {
+//         let result: string = ""
+//         for (let filter of filters) {
+//             const regResult = filter.exec(html)
+//             if (regResult !== null) {
+//                 result = regResult[1]
+//                 break
+//             }
+//         }
+//         metas.push(result)
+//     }
+//     return {
+//         type: "meta",
+//         title: metas[0],
+//         description: metas[1],
+//         image: metas[2]
+//     }
+// };
 
 const findEncoding = async (htmlBlob: Blob): Promise<string> => {
     const text = await htmlBlob.text()
@@ -121,7 +124,26 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
         const html: string = unescapeHtml(
             await decodeAsText(htmlBlob, encoding)
         )
-        const meta: ogpMetaData = extractHead(html);
+
+        // const meta = extractHead(html)
+
+        const { result } = await ogs({ html })
+
+        let image: string = ""
+
+        if (result.ogImage && result.ogImage.length > 0) {
+            image = result.ogImage[0].url
+        } else if (result.twitterImage && result.twitterImage.length > 0) {
+            image = result.twitterImage[0].url
+        }
+
+        const meta: ogpMetaData = {
+            type: "meta",
+            title: result.ogTitle || result.twitterTitle || "",
+            description: result.ogDescription || result.twitterDescription || "",
+            image,
+        }
+
         const response = new Response(
             JSON.stringify(meta),
             {
