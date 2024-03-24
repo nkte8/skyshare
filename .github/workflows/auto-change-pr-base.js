@@ -6,12 +6,18 @@ module.exports = async ({ context, github }) => {
   const headBranch = pullRequest?.head.ref;
   const baseBranch = pullRequest?.base.ref;
 
+  const dangerousBaseBranches = ["main", "hotfix"];
+  const productionReadyHeadBranch = ["main", "hotfix", "develop"];
+
+  const isDangerousBaseBranch = dangerousBaseBranches.includes(baseBranch);
+  const isProductionReadyHeadBranch = productionReadyHeadBranch.includes(headBranch);
+
   if (
-    pull_number == undefined ||
-    baseBranch !== "main" ||
-    ["develop", "hotfix"].includes(headBranch)
+    pull_number == null ||
+    !isDangerousBaseBranch ||
+    isProductionReadyHeadBranch
   ) {
-    console.log("No changes has been occurred to the base branch.");
+    console.log("No changes has been occurred.");
     return;
   }
 
