@@ -1,5 +1,5 @@
 // utils
-import { Dispatch, ReactNode, SetStateAction, useContext } from "react"
+import { Dispatch, ReactNode, SetStateAction, useContext, useEffect, useRef } from "react"
 import twitterText from 'twitter-text';
 
 // service
@@ -29,12 +29,39 @@ const Component = ({
     const countWarn = 140
 
     const { profile } = useContext(Profile_context)
+
+    const textAreaRef = useRef<HTMLTextAreaElement>(null)
+    
     const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(navigator.userAgent.toLowerCase())
+
+    const isMobileDevice = () => {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // FIXME: ChatGPT の出力そのままなので精査が必要
+    }
+
+    useEffect(() => {
+        if (textAreaRef.current && !isMobileDevice()) {
+            textAreaRef.current.focus()
+        }
+    }, []);
+        
+    // textarea のフォーカスイベントを処理します
+    const handleOnFocus = () => {
+        setTimeout(() => {
+            if (textAreaRef.current && isMobileDevice()) {
+                const scrollToY =
+                    textAreaRef.current.getBoundingClientRect().top + window.scrollY - 50
+                        // FIXME: いまは数字が適当（50 のところ）
+                
+                window.scrollTo({ top: scrollToY, behavior: "smooth" })
+            }
+        }, 100) // FIXME: 数字調整が必要かも？
+    }
 
     // textareaの変更イベント
     const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPostText(event.target.value)
     }
+
     /**
      * ペーストイベントを処理します
      * @param e クリップボードイベント
@@ -113,9 +140,11 @@ const Component = ({
                     <img src={profile ? profile.avatar : undefined} className="w-12 h-12 inline-block rounded-full bg-sky-400" />
                 </div>
                 <textarea
+                    ref={textAreaRef}
                     onChange={handleOnChange}
                     onPaste={handleOnPaste}
-                    autoFocus={true}
+                    // autoFocus={true}
+                    onFocus={handleOnFocus}
                     value={postText}
                     placeholder={
                         `最近どう？いまどうしてる？${isDesktopEnvironment ?

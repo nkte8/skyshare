@@ -1,5 +1,26 @@
 # Skyshare 更新履歴
 
+## 1.4.4
+
+### Patch Changes
+
+- スマートフォン等のユーザビリティに試験的改善を加えました。
+  - Postの入力スペースにカーソルをフォーカスした際、ヘッダーが隠れる位置まで自動的にスクロールするコードを追加しました。
+    - 時々動作しないこともあり挙動不審であるため、試験的導入になります。
+  - 根本的な解決については、UIの整理等で実施する予定です。
+  - 今回の修正も[So Asano氏(@so-asano.com)](https://bsky.app/profile/so-asano.com)が対応してくれました！ありがとう！
+- その他、各種ページのレイアウト調節を実施しました。
+
+#### 【Collaborator/Contributor向け情報】
+
+- Linter/Formatterを導入しました。
+  - 現在は導入のみで、fixについては未実施の状態になります。
+    - fix対応は各Contributorが対象のファイルを修正する際に実施していただき、少しずつ修正していければいいなと考えています。
+    - また、各種設定についてはignoreするよう、設定値を更新しました。
+  - `npm run fix ./src/...`により、フォーマッタとリンターが動作します。対応時はご活用ください。
+    - `Prettier`についてはVSCode拡張を導入することで`Shift+Opt(Alt)+f`で自動整形が可能です。
+  - 導入にあたってルールの作成・設定値の定義を[ZEKE/じーく氏(@zeke320.bsky.social)](https://bsky.app/profile/zeke320.bsky.social)が実施してくれました！ありがとうございます！品質のよいコードを作っていきましょう。
+
 ## 1.4.3
 
 ### Patch Changes
@@ -72,23 +93,23 @@
 - 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
 
 ```ts
-export type MediaData = LinkCard | Images | null;
+export type MediaData = LinkCard | Images | null
 type LinkCard = {
-  type: "external";
+  type: "external"
   images: Array<{
-    blob: Blob | null;
-  }>;
+    blob: Blob | null
+  }>
   meta: ogpMetaData & {
-    url: string;
-  };
-};
+    url: string
+  }
+}
 type Images = {
-  type: "images";
+  type: "images"
   images: Array<{
-    alt: string;
-    blob: Blob;
-  }>;
-};
+    alt: string
+    blob: Blob
+  }>
+}
 ```
 
 - これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。
