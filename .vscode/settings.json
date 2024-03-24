@@ -17,4 +17,5 @@
         "astro"
     ],
     "eslint.run": "onType",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
 }

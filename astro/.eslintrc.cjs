@@ -34,7 +34,13 @@ module.exports = {
             { destructuredArrayIgnorePattern: "^_" },
         ],
     },
-    ignorePatterns: ["dist", "node_modules"],
+    ignorePatterns: [
+        "dist", 
+        "node_modules", 
+        "tailwind.config.mjs",
+        "jest.config.cjs",
+        "astro.config.mjs"
+    ],
     overrides: [
         {
             files: ["*.{tsx, jsx}"],

@@ -7,7 +7,7 @@ import PageViewForm from "./pagedb/PageViewForm"
 import ModeSelectButton from "./common/ModeSelectButton"
 import LogoutButton from "./bsky/buttons/LogoutButton"
 import PopupPreviewForm from "./intents/PopupPreviewForm"
-import { MediaData } from "./common/types";
+import { MediaData } from "./common/types"
 import { popupPreviewOptions } from "./intents/types"
 
 const Component = ({
@@ -16,62 +16,65 @@ const Component = ({
     setProcessing,
     setMsgInfo,
 }: {
-    session: Session_info,
+    session: Session_info
     isProcessing: boolean
     setProcessing: Dispatch<SetStateAction<boolean>>
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
-}
-) => {
+}) => {
     // メディアのプレビューに関するStateコンストラクタ
     const [mediaData, setMediaData] = useState<MediaData>(null)
-    const [popupPreviewOptions,
-        setPopupPreviewOptions] = useState<popupPreviewOptions>(null!)
-    const Forms = ({ mode }: {
-        mode: modes
-    }) => {
+    const [popupPreviewOptions, setPopupPreviewOptions] =
+        useState<popupPreviewOptions>(null!)
+    const Forms = ({ mode }: { mode: modes }) => {
         switch (mode) {
             case "bsky":
-                return <PostForm
-                    setMode={setMode}
-                    setMsgInfo={setMsgInfo}
-                    isProcessing={isProcessing}
-                    setProcessing={setProcessing}
-                    mediaData={mediaData}
-                    setMediaData={setMediaData}
-                    setPopupPreviewOptions={setPopupPreviewOptions}
-                />
+                return (
+                    <PostForm
+                        setMode={setMode}
+                        setMsgInfo={setMsgInfo}
+                        isProcessing={isProcessing}
+                        setProcessing={setProcessing}
+                        mediaData={mediaData}
+                        setMediaData={setMediaData}
+                        setPopupPreviewOptions={setPopupPreviewOptions}
+                    />
+                )
             case "pagedb":
                 return <PageViewForm setMsgInfo={setMsgInfo} />
             case "xcom":
-                return <PopupPreviewForm
-                    popupPreviewOptions={popupPreviewOptions} />
+                return (
+                    <PopupPreviewForm
+                        popupPreviewOptions={popupPreviewOptions}
+                    />
+                )
         }
     }
 
     const [mode, setMode] = useState<modes>("bsky")
     return (
         <>
-            {
-                session.accessJwt !== "" ? (
-                    <>
-                        {Forms({ mode })}
-                        <div className={
-                            `flex justify-center`}>
-                            <ModeSelectButton
-                                mode={mode}
-                                setMode={setMode}
-                                isProcessing={isProcessing} />
-                            <LogoutButton
-                                setMsgInfo={setMsgInfo}
-                                reload={false}
-                                isProcessing={isProcessing}
-                                setProcessing={setProcessing} />
-                        </div>
-                    </>
-                ) : (
-                    <LoginForm setMsgInfo={setMsgInfo} />
-                )
-            }
+            {session.accessJwt !== "" ? (
+                <>
+                    {Forms({ mode })}
+                    <div
+                        className={["flex", "justify-center", "my-1"].join("")}
+                    >
+                        <ModeSelectButton
+                            mode={mode}
+                            setMode={setMode}
+                            isProcessing={isProcessing}
+                        />
+                        <LogoutButton
+                            setMsgInfo={setMsgInfo}
+                            reload={false}
+                            isProcessing={isProcessing}
+                            setProcessing={setProcessing}
+                        />
+                    </div>
+                </>
+            ) : (
+                <LoginForm setMsgInfo={setMsgInfo} />
+            )}
         </>
     )
 }
