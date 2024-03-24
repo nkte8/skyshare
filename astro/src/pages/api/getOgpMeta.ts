@@ -3,7 +3,7 @@ import type { ogpMetaData, errorResponse } from "@/lib/api/types";
 import { corsAllowOrigin } from "@/lib/vars";
 import validateRequestReturnURL from "@/lib/api/validateRequest"
 
-import ogs from "open-graph-scraper-lite"
+import ogs, {ErrorResult, SuccessResult} from "open-graph-scraper-lite"
 
 // SSRを有効化
 export const prerender = false;
@@ -104,7 +104,11 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
 
     // 正常な場合はURLとして扱う
     const url: string = validateResult.decodedUrl
-    const decodeAsText = async (arrayBuffer: Blob, encoding: string) => new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer());
+    const decodeAsText = async (arrayBuffer: Blob, encoding: string) => new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer())
+
+    let responseHTML: string = ""
+    let responseOGPResult: ErrorResult | SuccessResult | undefined = undefined
+
     try {
         const htmlBlob: Blob = await fetch(url, {
             method: 'GET',
@@ -125,9 +129,14 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
             await decodeAsText(htmlBlob, encoding)
         )
 
+        responseHTML = html
+
         // const meta = extractHead(html)
 
-        const { result } = await ogs({ html })
+        const data = await ogs({ html })
+        const result = data.result
+
+        responseOGPResult = data
 
         let image: string = ""
 
@@ -157,11 +166,14 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
             name = error.name
             msg = error.message
         }
-        return new Response(JSON.stringify(<errorResponse>{
+        // return new Response(JSON.stringify(<errorResponse>{
+        return new Response(JSON.stringify({
             type: "error",
             error: name,
             message: msg,
             status: 500,
+            html: responseHTML,
+            ogpResult: responseOGPResult,
         }), {
             status: 500,
             headers: headers
