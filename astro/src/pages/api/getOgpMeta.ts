@@ -161,11 +161,17 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
             })
         return response
     } catch (error: unknown) {
-        let [name, msg]: string = "Unexpected Error"
+        let name: string = ""
+        let msg: string = ""
+
         if (error instanceof Error) {
             name = error.name
             msg = error.message
+        } else {
+            name = "Unexpected Error"
+            msg = `${String(error)}`
         }
+
         // return new Response(JSON.stringify(<errorResponse>{
         return new Response(JSON.stringify({
             type: "error",
