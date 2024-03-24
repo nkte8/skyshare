@@ -8,7 +8,10 @@
     "build": "astro check && PUBLIC_VERSION=$npm_package_version astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "PUBLIC_VERSION=$npm_package_version jest"
+    "test": "PUBLIC_VERSION=$npm_package_version jest",
+    "fix:format": "prettier --write",
+    "fix:lint": "eslint --fix",
+    "fix": "npm-run-all -p \"fix:* {1}\" --"
   },
   "dependencies": {
     "@astrojs/check": "^0.4.1",
@@ -25,6 +28,7 @@
     "browser-image-compression": "^2.0.2",
     "js-base64": "^3.7.6",
     "markdown-it": "^14.0.0",
+    "npm-run-all": "^4.1.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-use": "^17.5.0",
