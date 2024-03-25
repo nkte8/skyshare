@@ -1,12 +1,12 @@
-import type { APIContext, APIRoute } from "astro";
-import type { ogpMetaData, errorResponse } from "@/lib/api/types";
-import { corsAllowOrigin } from "@/lib/vars";
+import type { APIContext, APIRoute } from "astro"
+import type { ogpMetaData, errorResponse } from "@/lib/api/types"
+import { corsAllowOrigin } from "@/lib/vars"
 import validateRequestReturnURL from "@/lib/api/validateRequest"
 
-import ogs, {ErrorResult, SuccessResult} from "open-graph-scraper-lite"
+import * as cheerio from "cheerio"
 
 // SSRを有効化
-export const prerender = false;
+export const prerender = false
 
 // Cloudflare環境 ≠ Nodejsであるため、jsdomやhappy-domが使えなかった
 // 正規表現芸人をせざるをえない...
@@ -52,8 +52,10 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
         /(?: *< *meta +charset=["']?)([^"']*)["']?/i,
         /(?: *< *meta +http-equiv=["']?content-type["']? +content=["']?[^"']*charset=)([^"']*)["']?/i,
     ]
+
     let charset: string | undefined
-    for (let filter of headerRegExp) {
+
+    for (const filter of headerRegExp) {
         if (charset === undefined) {
             const regResult = filter.exec(text)
             if (regResult !== null) {
@@ -61,7 +63,8 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
             }
         }
     }
-    charset = (typeof charset !== "undefined") ? charset.toLowerCase() : "utf-8" // default
+    charset = typeof charset !== "undefined" ? charset.toLowerCase() : "utf-8" // default
+
     return charset
 }
 
@@ -72,23 +75,23 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
  * @param {string} html 解除処理を行うHTML文字列
  */
 const unescapeHtml = (html: string): string => {
-    return html
-        .replace("&amp;", "&")
-        .replace("&#38;", "&")
-};
+    return html.replace("&amp;", "&").replace("&#38;", "&")
+}
 
-export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> => {
+export const GET: APIRoute = async ({
+    request,
+}: APIContext): Promise<Response> => {
     // 返却するするヘッダ
     const headers = {
         "Access-Control-Allow-Origin": corsAllowOrigin,
         "Access-Control-Allow-Methods": "GET,OPTIONS",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
     // OPTIONSリクエストは即OK
     if (request.method === "OPTIONS") {
         return new Response(null, {
             status: 204,
-            headers: headers
+            headers: headers,
         })
     }
     // APIの事前処理実施
@@ -98,67 +101,46 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
     if (validateResult.type === "error") {
         return new Response(JSON.stringify(validateResult), {
             status: validateResult.status,
-            headers: headers
+            headers: headers,
         })
     }
 
     // 正常な場合はURLとして扱う
     const url: string = validateResult.decodedUrl
-    const decodeAsText = async (arrayBuffer: Blob, encoding: string) => new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer())
+    const decodeAsText = async (arrayBuffer: Blob, encoding: string) =>
+        new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer())
 
     let responseHTML: string = ""
-    let responseOGPResult: ErrorResult | SuccessResult | undefined = undefined
 
     try {
         const htmlBlob: Blob = await fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": validateResult.language,
                 "Cache-Control": "no-cache",
-                "User-Agent" : "bot"
-            }
-        }
-        ).then((res) => res.blob()).catch((res: Error) => {
-            let e: Error = new Error(res.message)
-            e.name = res.name
-            throw e
+                "User-Agent": "bot",
+            },
         })
+            .then(res => res.blob())
+            .catch((res: Error) => {
+                let e: Error = new Error(res.message)
+                e.name = res.name
+                throw e
+            })
         const encoding: string = await findEncoding(htmlBlob)
         const html: string = unescapeHtml(
-            await decodeAsText(htmlBlob, encoding)
+            await decodeAsText(htmlBlob, encoding),
         )
 
         responseHTML = html
 
-        // const meta = extractHead(html)
+        const meta = extractHead({ html })
 
-        const data = await ogs({ html })
-        const result = data.result
-
-        responseOGPResult = data
-
-        let image: string = ""
-
-        if (result.ogImage && result.ogImage.length > 0) {
-            image = result.ogImage[0].url
-        } else if (result.twitterImage && result.twitterImage.length > 0) {
-            image = result.twitterImage[0].url
-        }
-
-        const meta: ogpMetaData = {
-            type: "meta",
-            title: result.ogTitle || result.twitterTitle || "",
-            description: result.ogDescription || result.twitterDescription || "",
-            image,
-        }
-
-        const response = new Response(
-            JSON.stringify(meta),
-            {
-                status: 200,
-                headers: headers
-            })
+        const response = new Response(JSON.stringify(meta), {
+            status: 200,
+            headers: headers,
+        })
         return response
     } catch (error: unknown) {
         let [name, msg]: string = "Unexpected Error"
@@ -167,17 +149,87 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
             msg = error.message
         }
         // return new Response(JSON.stringify(<errorResponse>{
-        return new Response(JSON.stringify({
-            type: "error",
-            error: name,
-            message: msg,
-            status: 500,
-            html: responseHTML,
-            ogpResult: responseOGPResult,
-        }), {
-            status: 500,
-            headers: headers
-        })
+        return new Response(
+            JSON.stringify({
+                type: "error",
+                error: name,
+                message: msg,
+                status: 500,
+                html: responseHTML,
+                // ogpResult: responseOGPResult,
+            }),
+            {
+                status: 500,
+                headers: headers,
+            },
+        )
     }
-};
+}
 
+/**
+ * HTML 文字列から OGP データを取得する
+ *
+ * @param {string} html 対象の HTML 文字列
+ */
+const extractHead = ({ html }: { html: string }): ogpMetaData => {
+    const $ = cheerio.load(html)
+
+    let title: string | undefined = undefined
+    let description: string | undefined = undefined
+    let image: string | undefined = undefined
+
+    $("meta").each((index, element) => {
+        const property = $(element).attr("property")
+        const name = $(element).attr("name")
+        const content = $(element).attr("content")
+        const value = $(element).attr("value")
+
+        if (!content) {
+            return
+        }
+
+        if (property && property.toLowerCase() === "og:title") {
+            title = content || value
+        }
+        if (!title && name && name.toLowerCase() === "twitter:title") {
+            title = content || value
+        }
+        if (!title && name && name.toLowerCase() === "title") {
+            title = content || value
+        }
+
+        if (property && property.toLowerCase() === "og:description") {
+            description = content || value
+        }
+        if (
+            !description &&
+            name &&
+            name.toLowerCase() === "twitter:description"
+        ) {
+            description = content || value
+        }
+        if (!description && name && name.toLowerCase() === "description") {
+            description = content || value
+        }
+
+        if (property && property.toLowerCase() === "og:image") {
+            image = content || value
+        }
+        if (!image && name && name.toLowerCase() === "twitter:image") {
+            image = content || value
+        }
+    })
+
+    if (!title) {
+        if ($("title").text() && $("title").text().length > 0) {
+            title = $("title").text()
+        }
+    }
+
+    return {
+        type: "meta",
+        title: title || "",
+        description: description || "",
+        image: image || "",
+    }
+}
