@@ -6,7 +6,7 @@ import twitterText from 'twitter-text';
 import { inputtext_base } from "../../common/tailwindVariants"
 import { Profile_context } from "../../common/contexts"
 import { MediaData } from "../../common/types"
-import { addImageMediaData } from "../lib/addImageMediaData"
+import { addImageMediaData, collectNewImages } from "../lib/addImageMediaData"
 
 const Component = ({
     postText,
@@ -80,23 +80,6 @@ const Component = ({
         // NOTE 画像ファイルが含まれている場合は文字列のペーストを抑制
         e.preventDefault()
         await addImageMediaData(newImageFiles, mediaData, setMediaData)
-    }
-
-    /**
-     * データ転送アイテムリストから画像ファイルのリストを作成します
-     * @param items データ転送アイテムリスト
-     * @returns 画像ファイルのリスト
-     */
-    const collectNewImages = (items: DataTransferItemList): File[] => {
-        const newImageFiles: File[] = []
-        for (const item of items) {
-            const file: File | null = item.getAsFile()
-
-            if (file != null && file.type.startsWith("image")) {
-                newImageFiles.push(file)
-            }
-        }
-        return newImageFiles
     }
 
     /**
