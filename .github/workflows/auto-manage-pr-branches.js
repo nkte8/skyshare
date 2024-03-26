@@ -69,7 +69,7 @@ function validateHeadBranchOrThrow(context) {
   const isPreviewBranch = headBranch.startsWith("preview/");
 
   if (isPreviewBranch) {
-    console.log("The head branch is valid. Continue the workflow.");
+    console.log("No changes are required to the head branch.");
     return;
   }
 
