@@ -29,7 +29,6 @@ import { label } from "@/utils/atproto_api/labels"
 import { link } from "../common/tailwindVariants"
 import { popupPreviewOptions } from "../intents/types"
 import { type msgInfo, type modes, MediaData } from "../common/types"
-import { addImageMediaData } from "./lib/addImageMediaData"
 
 const MemoMediaPreview = memo(MediaPreview)
 

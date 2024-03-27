@@ -27,7 +27,7 @@ const Component = ({
         onHide()
     }
 
-    const handleOnDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    const handleOnDrop = (e: React.DragEvent<HTMLDivElement>) => {
         onHide()
 
         e.preventDefault()
@@ -45,7 +45,7 @@ const Component = ({
             return
         }
 
-        await addImageMediaData(newImageFiles, mediaData, setMediaData)
+        addImageMediaData(newImageFiles, mediaData, setMediaData)
     }
 
     return (
