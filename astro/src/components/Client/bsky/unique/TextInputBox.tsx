@@ -1,6 +1,13 @@
 // utils
-import { Dispatch, ReactNode, SetStateAction, useContext, useEffect, useRef } from "react"
-import twitterText from 'twitter-text';
+import {
+    Dispatch,
+    ReactNode,
+    SetStateAction,
+    useContext,
+    useEffect,
+    useRef,
+} from "react"
+import twitterText from "twitter-text"
 
 // service
 import { inputtext_base } from "../../common/tailwindVariants"
@@ -14,13 +21,13 @@ const Component = ({
     mediaData,
     setMediaData,
     disabled,
-    children
+    children,
 }: {
-    postText: string,
-    setPostText: Dispatch<SetStateAction<string>>,
-    mediaData: MediaData,
-    setMediaData: Dispatch<SetStateAction<MediaData>>,
-    disabled: boolean,
+    postText: string
+    setPostText: Dispatch<SetStateAction<string>>
+    mediaData: MediaData
+    setMediaData: Dispatch<SetStateAction<MediaData>>
+    disabled: boolean
     children?: ReactNode
 }) => {
     // Postの入力上限 (Bsky)
@@ -31,27 +38,33 @@ const Component = ({
     const { profile } = useContext(Profile_context)
 
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
-    
-    const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(navigator.userAgent.toLowerCase())
+
+    const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(
+        navigator.userAgent.toLowerCase(),
+    )
 
     const isMobileDevice = () => {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // FIXME: ChatGPT の出力そのままなので精査が必要
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent,
+        ) // FIXME: ChatGPT の出力そのままなので精査が必要
     }
 
     useEffect(() => {
         if (textAreaRef.current && !isMobileDevice()) {
             textAreaRef.current.focus()
         }
-    }, []);
-        
+    }, [])
+
     // textarea のフォーカスイベントを処理します
     const handleOnFocus = () => {
         setTimeout(() => {
             if (textAreaRef.current && isMobileDevice()) {
                 const scrollToY =
-                    textAreaRef.current.getBoundingClientRect().top + window.scrollY - 50
-                        // FIXME: いまは数字が適当（50 のところ）
-                
+                    textAreaRef.current.getBoundingClientRect().top +
+                    window.scrollY -
+                    50
+                // FIXME: いまは数字が適当（50 のところ）
+
                 window.scrollTo({ top: scrollToY, behavior: "smooth" })
             }
         }, 100) // FIXME: 数字調整が必要かも？
@@ -66,9 +79,7 @@ const Component = ({
      * ペーストイベントを処理します
      * @param e クリップボードイベント
      */
-    const handleOnPaste = async (
-        e: React.ClipboardEvent<HTMLTextAreaElement>,
-    ) => {
+    const handleOnPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
         const items: DataTransferItemList = e.clipboardData.items
         if (items.length <= 0) {
             return
@@ -79,7 +90,7 @@ const Component = ({
         }
         // NOTE 画像ファイルが含まれている場合は文字列のペーストを抑制
         e.preventDefault()
-        await addImageMediaData(newImageFiles, mediaData, setMediaData)
+        addImageMediaData(newImageFiles, mediaData, setMediaData)
     }
 
     /**
@@ -88,8 +99,10 @@ const Component = ({
      */
     const textCountOnX = (): number => {
         try {
-            return Math.ceil(twitterText.parseTweet(postText).weightedLength / 2)
-        }catch {
+            return Math.ceil(
+                twitterText.parseTweet(postText).weightedLength / 2,
+            )
+        } catch {
             // 念の為例外を追加
             return postText.length
         }
@@ -101,7 +114,9 @@ const Component = ({
      */
     const textCount = (): number => {
         try {
-            const segmenterJa = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' })
+            const segmenterJa = new Intl.Segmenter("ja-JP", {
+                granularity: "grapheme",
+            })
             const segments = segmenterJa.segment(postText)
             return Array.from(segments).length
         } catch (e) {
@@ -112,15 +127,20 @@ const Component = ({
     }
 
     return (
-        <div className={inputtext_base({
-            kind: "outbound",
-            disabled: disabled,
-            class: "relative"
-        })}>
+        <div
+            className={inputtext_base({
+                kind: "outbound",
+                disabled: disabled,
+                class: "relative",
+            })}
+        >
             {/* Icon/Textboxのエリア */}
             <div className="flex m-0 mb-8">
                 <div className="flex-none ml-2 mt-2 w-fit">
-                    <img src={profile ? profile.avatar : undefined} className="w-12 h-12 inline-block rounded-full bg-sky-400" />
+                    <img
+                        src={profile ? profile.avatar : undefined}
+                        className="w-12 h-12 inline-block rounded-full bg-sky-400"
+                    />
                 </div>
                 <textarea
                     ref={textAreaRef}
@@ -129,34 +149,53 @@ const Component = ({
                     // autoFocus={true}
                     onFocus={handleOnFocus}
                     value={postText}
-                    placeholder={
-                        `最近どう？いまどうしてる？${isDesktopEnvironment ?
-                            "\n*クリップボードからの画像・画像ファイルのペーストが可能です。" : ""
-                        }`
-                    }
+                    placeholder={`最近どう？いまどうしてる？${
+                        isDesktopEnvironment
+                            ? "\n*クリップボードからの画像・画像ファイルのペーストが可能です。"
+                            : ""
+                    }`}
                     disabled={disabled}
                     className={inputtext_base({
                         kind: "inbound",
                         class: [
-                            "mt-1", "py-0", "w-full", "md:w-lg",
-                            "resize-y", "overflow-y-auto",
-                            "h-48", "mb-0", "flex-1"],
-                        disabled: disabled
+                            "mt-1",
+                            "py-0",
+                            "w-full",
+                            "md:w-lg",
+                            "resize-y",
+                            "overflow-y-auto",
+                            "h-48",
+                            "mb-0",
+                            "flex-1",
+                        ],
+                        disabled: disabled,
                     })}
                 />
             </div>
             {/* positionによる自由配置要素 */}
-            <div className={[
-                "absolute", "rounded-lg",
-                "opacity-85", "text-sm",
-                "px-2", "m-0", "bottom-1", "right-1",
-                "w-fit", "flex", "text-right"].join(" ") +
-                ` ${(textCount() > countMax) ? "bg-red-300" : ""}${(
-                    textCountOnX() > countWarn &&
-                    textCount() <= countMax) ? "bg-amber-300" : ""}`}>
-                <span className={
-                    ["w-fit",
-                    ].join(" ")}>
+            <div
+                className={
+                    [
+                        "absolute",
+                        "rounded-lg",
+                        "opacity-85",
+                        "text-sm",
+                        "px-2",
+                        "m-0",
+                        "bottom-1",
+                        "right-1",
+                        "w-fit",
+                        "flex",
+                        "text-right",
+                    ].join(" ") +
+                    ` ${textCount() > countMax ? "bg-red-300" : ""}${
+                        textCountOnX() > countWarn && textCount() <= countMax
+                            ? "bg-amber-300"
+                            : ""
+                    }`
+                }
+            >
+                <span className={["w-fit"].join(" ")}>
                     {`${textCountOnX()}/${countWarn}:X`}
                 </span>
                 {/* ガタガタさせないように固定長 */}

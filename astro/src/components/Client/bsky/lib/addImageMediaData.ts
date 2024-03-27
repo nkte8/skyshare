@@ -12,11 +12,11 @@ const imageExtensions: string[] = ["png", "jpeg", "jpg"]
  *
  * @param Blobs 追加するFile
  */
-const addImageMediaData = async (
+const addImageMediaData = (
     Blobs: Array<File>,
     MediaData: MediaData,
     setMediaData: Dispatch<SetStateAction<MediaData>>,
-): Promise<void> => {
+) => {
     if (Blobs.length <= 0) {
         return
     }
