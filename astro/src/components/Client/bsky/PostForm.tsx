@@ -20,7 +20,7 @@ import AddImageButton from "./buttons/AddImageButton"
 import MediaPreview from "./MediaPreview"
 import DraftSaveButton from "./buttons/DraftSaveButton"
 import DraftDialog from "./unique/DraftDialog"
-import DnDOverlay from "./unique/DnDOverlay"
+import DragAndDropOverlay from "./unique/DragAndDropOverlay"
 
 // atproto
 import { label } from "@/utils/atproto_api/labels"
@@ -265,7 +265,7 @@ const Component = ({
             </div>
 
             {displayOverlay == true && (
-                <DnDOverlay
+                <DragAndDropOverlay
                     onHide={() => {
                         setDisplayOverlay(false)
                     }}
