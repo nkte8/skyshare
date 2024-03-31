@@ -28,14 +28,14 @@ const Component = ({
      * @param event チェンジイベント
      * @returns なし
      */
-    const handleFilechanged = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const handleFilechanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputFiles: FileList | null = event.currentTarget.files
         // 入力されたファイルがない場合は処理を中断
         if (!inputFiles || inputFiles?.length === 0) {
             event.target.value = ""
             return
         }
-        await addImageMediaData(Array.from(inputFiles), mediaData, setMediaData)
+        addImageMediaData(Array.from(inputFiles), mediaData, setMediaData)
         event.target.value = ""
     }
 
