@@ -1,5 +1,5 @@
 // utils
-import { memo, useState, Dispatch, SetStateAction } from "react"
+import { memo, useState, Dispatch, SetStateAction, useEffect } from "react"
 
 // components
 import Tweetbox from "../common/Tweetbox"
@@ -18,21 +18,22 @@ import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
 import MediaPreview from "./MediaPreview"
-import DraftSaveButton from "./buttons/DraftSaveButton";
+import DraftSaveButton from "./buttons/DraftSaveButton"
 import DraftDialog from "./unique/DraftDialog"
+import DnDOverlay from "./unique/DnDOverlay"
 
 // atproto
-import { label } from "@/utils/atproto_api/labels";
+import { label } from "@/utils/atproto_api/labels"
 
 // service
-import { link } from "../common/tailwindVariants";
-import { popupPreviewOptions } from "../intents/types";
+import { link } from "../common/tailwindVariants"
+import { popupPreviewOptions } from "../intents/types"
 import { type msgInfo, type modes, MediaData } from "../common/types"
 
 const MemoMediaPreview = memo(MediaPreview)
 
 export type callbackPostOptions = {
-    postText: string,
+    postText: string
     previewTitle: string | null
     previewData: Blob | null
 }
@@ -46,20 +47,20 @@ const Component = ({
     setMediaData,
     setPopupPreviewOptions,
 }: {
-    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
-    isProcessing: boolean,
-    setProcessing: Dispatch<SetStateAction<boolean>>,
-    setMode: Dispatch<SetStateAction<modes>>,
-    mediaData: MediaData,
-    setMediaData: Dispatch<SetStateAction<MediaData>>,
-    setPopupPreviewOptions: Dispatch<SetStateAction<popupPreviewOptions>>,
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
+    isProcessing: boolean
+    setProcessing: Dispatch<SetStateAction<boolean>>
+    setMode: Dispatch<SetStateAction<modes>>
+    mediaData: MediaData
+    setMediaData: Dispatch<SetStateAction<MediaData>>
+    setPopupPreviewOptions: Dispatch<SetStateAction<popupPreviewOptions>>
 }) => {
     // Post内容を格納する変数とディスパッチャー
     const [postText, setPostText] = useState<string>("")
     // Postの実行状態を管理する変数とディスパッチャー
     const [language, setLanguage] = useState<string>("ja")
     // 下書きのstate情報
-    const [drafts, setDrafts] = useState<Array<string>>([]);
+    const [drafts, setDrafts] = useState<Array<string>>([])
 
     // Options
     // ポスト時に自動でXを開く
@@ -75,6 +76,20 @@ const Component = ({
     // viaを付与する
     const [appendVia, setAppendVia] = useState<boolean>(false)
 
+    const [displayOverlay, setDisplayOverlay] = useState<boolean>(false)
+
+    useEffect(() => {
+        const handleDragEnter = (e: DragEvent) => {
+            e.preventDefault()
+            setDisplayOverlay(true)
+        }
+
+        window.addEventListener("dragenter", handleDragEnter)
+
+        return () => {
+            window.removeEventListener("dragenter", handleDragEnter)
+        }
+    }, [])
 
     /**
      * 投稿リセット（下書きを削除）ボタンを押した際の動作
@@ -88,21 +103,20 @@ const Component = ({
      * PostButtonコンポーネントのcallback関数
      * @param options callback元から取得したいオプション
      */
-    const callbackPost = (options: callbackPostOptions
-    ) => {
+    const callbackPost = (options: callbackPostOptions) => {
         if (autoPop) {
             callPopup({
                 postText: options.postText,
-                kind: "xcom"
+                kind: "xcom",
             })
         }
-        const mediaObjectURL: string | null = options.previewData ? (
-            URL.createObjectURL(options.previewData)
-        ) : (null)
+        const mediaObjectURL: string | null = options.previewData
+            ? URL.createObjectURL(options.previewData)
+            : null
         const popupPreviewOptions: popupPreviewOptions = {
             postText: options.postText,
             mediaObjectURL: mediaObjectURL,
-            ogpTitle: options.previewTitle
+            ogpTitle: options.previewTitle,
         }
         setPopupPreviewOptions(popupPreviewOptions)
         setMode("xcom")
@@ -113,8 +127,9 @@ const Component = ({
      * ポスト可能かどうかを判定します
      * @returns ポスト可能な場合true
      */
-    const isValidPost = () => postText.length >= 1 || (
-        mediaData !== null && mediaData.images.length > 0)
+    const isValidPost = () =>
+        postText.length >= 1 ||
+        (mediaData !== null && mediaData.images.length > 0)
 
     return (
         <Tweetbox>
@@ -123,16 +138,18 @@ const Component = ({
                     onClick={handlerCancel}
                     className={link({
                         enabled: isValidPost(),
-                        class: ["inline-block", "mx-2", "flex-none"]
+                        class: ["inline-block", "mx-2", "flex-none"],
                     })}
-                    disabled={!isValidPost()}>
+                    disabled={!isValidPost()}
+                >
                     下書きを消す
                 </button>
                 <div className="flex-1"></div>
                 <SelfLabelsSelectList
                     disabled={isProcessing}
                     setSelfLabel={setSelfLabel}
-                    selectedLabel={selfLabel} />
+                    selectedLabel={selfLabel}
+                />
                 <div className="flex-none my-auto">
                     <PostButton
                         postText={postText}
@@ -140,14 +157,15 @@ const Component = ({
                         selfLabel={selfLabel}
                         options={{
                             noGenerateOgp: noGenerate,
-                            appendVia: appendVia
+                            appendVia: appendVia,
                         }}
                         mediaData={mediaData}
                         callback={callbackPost}
                         isProcessing={isProcessing}
                         setProcessing={setProcessing}
                         setMsgInfo={setMsgInfo}
-                        disabled={!isValidPost()} />
+                        disabled={!isValidPost()}
+                    />
                 </div>
             </div>
             <TextInputBox
@@ -167,7 +185,9 @@ const Component = ({
                         "bottom-1",
                         "left-1",
                         "text-xs",
-                        "py-0.5"]} />
+                        "py-0.5",
+                    ]}
+                />
             </TextInputBox>
             <LinkcardAttachButton
                 postText={postText}
@@ -186,10 +206,12 @@ const Component = ({
                 <DraftDialog
                     setPostText={setPostText}
                     drafts={drafts}
-                    setDrafts={setDrafts} />
+                    setDrafts={setDrafts}
+                />
                 <LanguageSelectList
                     disabled={isProcessing}
-                    setLanguage={setLanguage} />
+                    setLanguage={setLanguage}
+                />
             </div>
             <div className="mx-2 my-auto">
                 <div className="flex w-full">
@@ -197,17 +219,20 @@ const Component = ({
                     <TagInputList
                         postText={postText}
                         setPostText={setPostText}
-                        disabled={isProcessing} />
+                        disabled={isProcessing}
+                    />
                 </div>
                 <div className="flex flex-wrap mb-4">
                     <AutoXPopupToggle
                         labeltext={"Xを自動で開く"}
                         prop={autoPop}
-                        setProp={setAutoPop} />
+                        setProp={setAutoPop}
+                    />
                     <NoGenerateToggle
                         labeltext={"Xへの画像は自身で添付する"}
                         prop={noGenerate}
-                        setProp={setNoGenerate} />
+                        setProp={setNoGenerate}
+                    />
                 </div>
             </div>
             <MemoMediaPreview
@@ -217,25 +242,39 @@ const Component = ({
             <div className="mx-2 my-auto">
                 <Details
                     summaryLabel="実験的な機能"
-                    initHidden={!(showTaittsuu || noUseXApp || appendVia)}>
+                    initHidden={!(showTaittsuu || noUseXApp || appendVia)}
+                >
                     <div className="flex flex-wrap">
                         <ShowTaittsuuToggle
                             labeltext={"タイッツーの投稿ボタンも表示する"}
                             prop={showTaittsuu}
-                            setProp={setShowTaittsuu} />
+                            setProp={setShowTaittsuu}
+                        />
                         <ForceIntentToggle
                             labeltext={"Xの投稿はアプリを強制的に起動する"}
                             prop={noUseXApp}
-                            setProp={setNoUseXApp} />
+                            setProp={setNoUseXApp}
+                        />
                         <AppendVia
                             labeltext={"Viaを付与する"}
                             prop={appendVia}
-                            setProp={setAppendVia} />
+                            setProp={setAppendVia}
+                        />
                     </div>
                 </Details>
             </div>
+
+            {displayOverlay == true && (
+                <DnDOverlay
+                    onHide={() => {
+                        setDisplayOverlay(false)
+                    }}
+                    mediaData={mediaData}
+                    setMediaData={setMediaData}
+                />
+            )}
         </Tweetbox>
-    );
+    )
 }
 
 export default Component
