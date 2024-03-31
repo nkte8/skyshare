@@ -1,8 +1,5 @@
 // utils
-import {
-    Dispatch,
-    SetStateAction,
-} from "react"
+import { Dispatch, SetStateAction } from "react"
 
 // service
 import { addImageMediaData, collectNewImages } from "../lib/addImageMediaData"
@@ -34,7 +31,6 @@ const Component = ({
 
         const items: DataTransferItemList = e.dataTransfer.items
 
-        console.log(items)
         if (items.length <= 0) {
             return
         }
@@ -53,7 +49,19 @@ const Component = ({
             onDragOver={handleOnDragOver}
             onDrop={handleOnDrop}
             onDragLeave={handleOnDragLeave}
-            className="fixed absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-9999"
+            className={[
+                "fixed",
+                "top-0",
+                "left-0",
+                "bottom-0",
+                "right-0",
+                "bg-black",
+                "bg-opacity-50",
+                "flex",
+                "justify-center",
+                "items-center",
+                "z-9999",
+            ].join(" ")}
         >
             <p className="text-white text-lg">ファイルをここにドロップ</p>
         </div>
