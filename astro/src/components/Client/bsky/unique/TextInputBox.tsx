@@ -156,7 +156,6 @@ const Component = ({
 
     return (
         <div
-            draggable="true"
             onDragEnter={handleDragEnter}
             onDragOver={handleOnDragOver}
             onDrop={handleOnDrop}
