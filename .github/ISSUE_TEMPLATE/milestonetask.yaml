@@ -1,0 +1,32 @@
+name: Milestone Task
+description: "Use tasks for accomplish milestone"
+title: "[Milestone task]: "
+labels: ["enhancement"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **↑ Don't forget write about bug as short in title pls**
+        **↑ タイトルに端的に内容について記載するのをお忘れなく！**
+
+  - type: textarea
+    id: about
+    attributes:
+      label: How it help for milestone complete?
+      description: |
+        Write how the task would help for milestone complete. (Optional)
+        このタスクがマイルストーンを達成するために、どのように作用するのかを記載してください。 (任意)
+    validations:
+      required: false
+
+  - type: textarea
+    id: howto
+    attributes:
+      label: What it should do to accomplish?
+      description: |
+        Write how the task should be for accomplish.
+        このタスクの完了条件を記載してください。
+    validations:
+      required: true
