@@ -5,7 +5,7 @@
 ### Patch Changes
 
 - OGPメタデータの取得周りの改善を実施しました！
-  - これまでHTMLコードを取得した内容を正規表現を用いていましたが、これをHTML Parserライブラリ`open-graph-scraper-lite`を採用しました。
+  - これまでHTMLコードを取得した内容を正規表現を用いていましたが、これをHTML Parserライブラリ`cheerio`を採用しました。
   - X.comなど、メタデータが正しく正規表現にマッチしないサイトについても対応できるようになり、設定可能範囲がひろがりました。
   - [So Asano氏(@so-asano.com)](https://bsky.app/profile/so-asano.com)が対応してくれました！計画よりずっと楽に実装していただけて助かりました。ありがとう！
 
