@@ -1,47 +1,12 @@
-import type { APIContext, APIRoute } from "astro";
-import type { ogpMetaData, errorResponse } from "@/lib/api/types";
-import { corsAllowOrigin } from "@/lib/vars";
+import type { APIContext, APIRoute } from "astro"
+import type { ogpMetaData } from "@/lib/api/types"
+import { corsAllowOrigin } from "@/lib/vars"
 import validateRequestReturnURL from "@/lib/api/validateRequest"
+
+import * as cheerio from "cheerio"
+
 // SSRを有効化
-export const prerender = false;
-
-// Cloudflare環境 ≠ Nodejsであるため、jsdomやhappy-domが使えなかった
-// 正規表現芸人をせざるをえない...
-const extractHead = (html: string): ogpMetaData => {
-    let metas: Array<string> = []
-
-    const titleFilter: Array<RegExp> = [
-        /(?: *< *meta +name=["']?twitter:title["']? +content=)["']?([^"']*)["']?/,
-        /(?: *< *meta +property=["']?og:title["']? +content=)["']?([^"']*)["']?/,
-    ]
-    const descriptionFilter: Array<RegExp> = [
-        /(?: *< *meta +name=["']?twitter:description["']? +content=)["']?([^"']*)["']?/,
-        /(?: *< *meta +property=["']?og:description["']? +content=)["']?([^"']*)["']?/,
-    ]
-    const imageFilter: Array<RegExp> = [
-        /(?: *< *meta +name=["']?twitter:image["']? +content=)["']?([^"']*)["']?/,
-        /(?: *< *meta +property=["']?og:image["']? +content=)["']?([^"']*)["']?/
-    ]
-    // やるとしたらこの部分の効率化がしたい
-    // ただし、twitter:XXX系→og:XXX系の順序性は崩したくない
-    for (let filters of [titleFilter, descriptionFilter, imageFilter]) {
-        let result: string = ""
-        for (let filter of filters) {
-            const regResult = filter.exec(html)
-            if (regResult !== null) {
-                result = regResult[1]
-                break
-            }
-        }
-        metas.push(result)
-    }
-    return {
-        type: "meta",
-        title: metas[0],
-        description: metas[1],
-        image: metas[2]
-    }
-};
+export const prerender = false
 
 const findEncoding = async (htmlBlob: Blob): Promise<string> => {
     const text = await htmlBlob.text()
@@ -49,8 +14,10 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
         /(?: *< *meta +charset=["']?)([^"']*)["']?/i,
         /(?: *< *meta +http-equiv=["']?content-type["']? +content=["']?[^"']*charset=)([^"']*)["']?/i,
     ]
+
     let charset: string | undefined
-    for (let filter of headerRegExp) {
+
+    for (const filter of headerRegExp) {
         if (charset === undefined) {
             const regResult = filter.exec(text)
             if (regResult !== null) {
@@ -58,7 +25,8 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
             }
         }
     }
-    charset = (typeof charset !== "undefined") ? charset.toLowerCase() : "utf-8" // default
+    charset = typeof charset !== "undefined" ? charset.toLowerCase() : "utf-8" // default
+
     return charset
 }
 
@@ -69,23 +37,23 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
  * @param {string} html 解除処理を行うHTML文字列
  */
 const unescapeHtml = (html: string): string => {
-    return html
-        .replace("&amp;", "&")
-        .replace("&#38;", "&")
-};
+    return html.replace("&amp;", "&").replace("&#38;", "&")
+}
 
-export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> => {
+export const GET: APIRoute = async ({
+    request,
+}: APIContext): Promise<Response> => {
     // 返却するするヘッダ
     const headers = {
         "Access-Control-Allow-Origin": corsAllowOrigin,
         "Access-Control-Allow-Methods": "GET,OPTIONS",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
     // OPTIONSリクエストは即OK
     if (request.method === "OPTIONS") {
         return new Response(null, {
             status: 204,
-            headers: headers
+            headers: headers,
         })
     }
     // APIの事前処理実施
@@ -95,39 +63,46 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
     if (validateResult.type === "error") {
         return new Response(JSON.stringify(validateResult), {
             status: validateResult.status,
-            headers: headers
+            headers: headers,
         })
     }
 
     // 正常な場合はURLとして扱う
     const url: string = validateResult.decodedUrl
-    const decodeAsText = async (arrayBuffer: Blob, encoding: string) => new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer());
+    const decodeAsText = async (arrayBuffer: Blob, encoding: string) =>
+        new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer())
+
+    let responseHTML: string = ""
+
     try {
         const htmlBlob: Blob = await fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": validateResult.language,
                 "Cache-Control": "no-cache",
-                "User-Agent" : "bot"
-            }
-        }
-        ).then((res) => res.blob()).catch((res: Error) => {
-            let e: Error = new Error(res.message)
-            e.name = res.name
-            throw e
+                "User-Agent": "bot",
+            },
         })
+            .then(res => res.blob())
+            .catch((res: Error) => {
+                const e: Error = new Error(res.message)
+                e.name = res.name
+                throw e
+            })
         const encoding: string = await findEncoding(htmlBlob)
         const html: string = unescapeHtml(
-            await decodeAsText(htmlBlob, encoding)
+            await decodeAsText(htmlBlob, encoding),
         )
-        const meta: ogpMetaData = extractHead(html);
-        const response = new Response(
-            JSON.stringify(meta),
-            {
-                status: 200,
-                headers: headers
-            })
+
+        responseHTML = html
+
+        const meta = extractHead({ html })
+
+        const response = new Response(JSON.stringify(meta), {
+            status: 200,
+            headers: headers,
+        })
         return response
     } catch (error: unknown) {
         let [name, msg]: string = "Unexpected Error"
@@ -135,15 +110,111 @@ export const GET: APIRoute = async ({ request }: APIContext): Promise<Response> 
             name = error.name
             msg = error.message
         }
-        return new Response(JSON.stringify(<errorResponse>{
-            type: "error",
-            error: name,
-            message: msg,
-            status: 500,
-        }), {
-            status: 500,
-            headers: headers
-        })
+        // return new Response(JSON.stringify(<errorResponse>{
+        return new Response(
+            JSON.stringify({
+                type: "error",
+                error: name,
+                message: msg,
+                status: 500,
+                html: responseHTML,
+                // ogpResult: responseOGPResult,
+            }),
+            {
+                status: 500,
+                headers: headers,
+            },
+        )
     }
-};
+}
 
+/**
+ * HTML 文字列から OGP データを取得する
+ *
+ * @param {string} html 対象の HTML 文字列
+ */
+const extractHead = ({ html }: { html: string }): ogpMetaData => {
+    const $ = cheerio.load(html)
+
+    let title: string | undefined = undefined
+    let description: string | undefined = undefined
+    let image: string | undefined = undefined
+
+    $("meta").each((_, element) => {
+        const property = $(element).attr("property")
+        const name = $(element).attr("name")
+        const content = $(element).attr("content")
+        const value = $(element).attr("value")
+
+        if (typeof content === "undefined") {
+            return
+        }
+
+        // twitter用メタを優先する
+        if (
+            typeof title === "undefined" &&
+            typeof name !== "undefined" &&
+            name.toLowerCase() === "twitter:title"
+        ) {
+            title = content || value
+        }
+        if (
+            typeof description === "undefined" &&
+            typeof name !== "undefined" &&
+            name.toLowerCase() === "twitter:description"
+        ) {
+            description = content || value
+        }
+        if (
+            typeof image === "undefined" &&
+            typeof name !== "undefined" &&
+            name.toLowerCase() === "twitter:image"
+        ) {
+            image = content || value
+        }
+
+        // OGメタを調べる
+        if (
+            typeof property !== "undefined" &&
+            property.toLowerCase() === "og:title"
+        ) {
+            title = content || value
+        }
+        if (
+            typeof property !== "undefined" &&
+            property.toLowerCase() === "og:description"
+        ) {
+            description = content || value
+        }
+        if (
+            typeof property !== "undefined" &&
+            property.toLowerCase() === "og:image"
+        ) {
+            image = content || value
+        }
+
+        // メタが存在しない場合は直タグを調べるコード
+        // 現時点ではこれに対応しない
+        // if (
+        //     typeof title === "undefined" &&
+        //     typeof name !== "undefined" &&
+        //     name.toLowerCase() === "title"
+        // ) {
+        //     title = content || value
+        // }
+        // if (
+        //     typeof description === "undefined" &&
+        //     typeof name !== "undefined" &&
+        //     name.toLowerCase() === "description"
+        // ) {
+        //     description = content || value
+        // }
+    })
+
+    return {
+        type: "meta",
+        title: typeof title !== "undefined" ? title : "",
+        description: typeof description !== "undefined" ? description : "",
+        image: typeof image !== "undefined" ? image : "",
+    }
+}

@@ -1,5 +1,20 @@
 # Skyshare 更新履歴
 
+## 1.4.5
+
+### Patch Changes
+
+- OGPメタデータの取得周りの改善を実施しました！
+  - これまでHTMLコードを取得した内容を正規表現を用いていましたが、これをHTML Parserライブラリ`open-graph-scraper-lite`を採用しました。
+  - X.comなど、メタデータが正しく正規表現にマッチしないサイトについても対応できるようになり、設定可能範囲がひろがりました。
+  - [So Asano氏(@so-asano.com)](https://bsky.app/profile/so-asano.com)が対応してくれました！計画よりずっと楽に実装していただけて助かりました。ありがとう！
+
+#### 【Collaborator/Contributor向け情報】
+
+- ブランチの管理をGithub Actionsを用いてより厳格化しました。[ZEKE/じーく氏(@zeke320.bsky.social)](https://bsky.app/profile/zeke320.bsky.social)、ありがとう！
+  - PRリクエストのマージ先は`develop`に固定されます。追加機能を作成していただけた各担当者の変更がコンフリクトしていないか・デグレーションしていないかなどを、一度ステージング環境で確認したいためです。
+  - PRリクエストは`preview`系ブランチで実施する必要があります。実機環境上でビルドが可能であったという前提のもと、PRリクエストのレビューを行いたいためです。
+  
 ## 1.4.4
 
 ### Patch Changes
@@ -93,23 +108,23 @@
 - 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
 
 ```ts
-export type MediaData = LinkCard | Images | null
+export type MediaData = LinkCard | Images | null;
 type LinkCard = {
-  type: "external"
+  type: "external";
   images: Array<{
-    blob: Blob | null
-  }>
+    blob: Blob | null;
+  }>;
   meta: ogpMetaData & {
-    url: string
-  }
-}
+    url: string;
+  };
+};
 type Images = {
-  type: "images"
+  type: "images";
   images: Array<{
-    alt: string
-    blob: Blob
-  }>
-}
+    alt: string;
+    blob: Blob;
+  }>;
+};
 ```
 
 - これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。
