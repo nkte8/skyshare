@@ -140,7 +140,7 @@ const extractHead = ({ html }: { html: string }): ogpMetaData => {
     let description: string | undefined = undefined
     let image: string | undefined = undefined
 
-    $("meta").each((index, element) => {
+    $("meta").each((_, element) => {
         const property = $(element).attr("property")
         const name = $(element).attr("name")
         const content = $(element).attr("content")
