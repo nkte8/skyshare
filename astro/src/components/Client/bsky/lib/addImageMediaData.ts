@@ -12,11 +12,11 @@ const imageExtensions: string[] = ["png", "jpeg", "jpg"]
  *
  * @param Blobs 追加するFile
  */
-const addImageMediaData = async (
+const addImageMediaData = (
     Blobs: Array<File>,
     MediaData: MediaData,
     setMediaData: Dispatch<SetStateAction<MediaData>>,
-): Promise<void> => {
+) => {
     if (Blobs.length <= 0) {
         return
     }
@@ -48,4 +48,21 @@ const addImageMediaData = async (
     setMediaData(result)
 }
 
-export { imageExtensions, addImageMediaData }
+/**
+ * データ転送アイテムリストから画像ファイルのリストを作成します
+ * @param items データ転送アイテムリスト
+ * @returns 画像ファイルのリスト
+ */
+const collectNewImages = (items: DataTransferItemList): File[] => {
+    const newImageFiles: File[] = []
+    for (const item of items) {
+        const file: File | null = item.getAsFile()
+
+        if (file != null && file.type.startsWith("image")) {
+            newImageFiles.push(file)
+        }
+    }
+    return newImageFiles
+}
+
+export { imageExtensions, addImageMediaData, collectNewImages }
