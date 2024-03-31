@@ -20,7 +20,6 @@ import AddImageButton from "./buttons/AddImageButton"
 import MediaPreview from "./MediaPreview"
 import DraftSaveButton from "./buttons/DraftSaveButton"
 import DraftDialog from "./unique/DraftDialog"
-import DragAndDropOverlay from "./unique/DragAndDropOverlay"
 
 // atproto
 import { label } from "@/utils/atproto_api/labels"
@@ -76,18 +75,14 @@ const Component = ({
     // viaを付与する
     const [appendVia, setAppendVia] = useState<boolean>(false)
 
-    const [displayOverlay, setDisplayOverlay] = useState<boolean>(false)
-
     useEffect(() => {
-        const handleDragEnter = (e: DragEvent) => {
+        const handleDragOver = (e: DragEvent) => {
+            // 通常の動作を抑制する
             e.preventDefault()
-            setDisplayOverlay(true)
         }
-
-        window.addEventListener("dragenter", handleDragEnter)
-
+        window.addEventListener("dragover", handleDragOver)
         return () => {
-            window.removeEventListener("dragenter", handleDragEnter)
+            window.removeEventListener("dragover", handleDragOver)
         }
     }, [])
 
@@ -263,16 +258,6 @@ const Component = ({
                     </div>
                 </Details>
             </div>
-
-            {displayOverlay == true && (
-                <DragAndDropOverlay
-                    onHide={() => {
-                        setDisplayOverlay(false)
-                    }}
-                    mediaData={mediaData}
-                    setMediaData={setMediaData}
-                />
-            )}
         </Tweetbox>
     )
 }

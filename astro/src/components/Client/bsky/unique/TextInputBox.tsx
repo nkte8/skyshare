@@ -5,6 +5,7 @@ import {
     SetStateAction,
     useContext,
     useEffect,
+    useState,
     useRef,
 } from "react"
 import twitterText from "twitter-text"
@@ -34,14 +35,9 @@ const Component = ({
     const countMax = 300
     // PostのWarining上限 （= Xの入力上限）
     const countWarn = 140
-
     const { profile } = useContext(Profile_context)
-
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
-
-    const isDesktopEnvironment = new RegExp(/macintosh|windows/).test(
-        navigator.userAgent.toLowerCase(),
-    )
+    const [isFileDragEnter, setIsFileDragEnter] = useState<boolean>(false)
 
     const isMobileDevice = () => {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -55,6 +51,39 @@ const Component = ({
         }
     }, [])
 
+    // DragEnterイベント
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        setIsFileDragEnter(true)
+    }
+    // DragOverイベント
+    const handleOnDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        // コンポーネントへのDropを許容する
+        e.dataTransfer.dropEffect = "copy"
+        e.dataTransfer.effectAllowed = "copy"
+        setIsFileDragEnter(true)
+    }
+    // DragLeaveイベント
+    const handleOnDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        setIsFileDragEnter(false)
+    }
+
+    const handleOnDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        setIsFileDragEnter(false)
+        const items: DataTransferItemList = e.dataTransfer.items
+        if (items.length <= 0) {
+            return
+        }
+        const newImageFiles = collectNewImages(items)
+        if (newImageFiles.length <= 0) {
+            return
+        }
+        addImageMediaData(newImageFiles, mediaData, setMediaData)
+    }
+
     // textarea のフォーカスイベントを処理します
     const handleOnFocus = () => {
         setTimeout(() => {
@@ -64,7 +93,6 @@ const Component = ({
                     window.scrollY -
                     50
                 // FIXME: いまは数字が適当（50 のところ）
-
                 window.scrollTo({ top: scrollToY, behavior: "smooth" })
             }
         }, 100) // FIXME: 数字調整が必要かも？
@@ -128,10 +156,16 @@ const Component = ({
 
     return (
         <div
+            draggable="true"
+            onDragEnter={handleDragEnter}
+            onDragOver={handleOnDragOver}
+            onDrop={handleOnDrop}
+            onDragLeave={handleOnDragLeave}
             className={inputtext_base({
                 kind: "outbound",
                 disabled: disabled,
                 class: "relative",
+                onDragEnter: isFileDragEnter,
             })}
         >
             {/* Icon/Textboxのエリア */}
@@ -146,14 +180,11 @@ const Component = ({
                     ref={textAreaRef}
                     onChange={handleOnChange}
                     onPaste={handleOnPaste}
-                    // autoFocus={true}
                     onFocus={handleOnFocus}
                     value={postText}
-                    placeholder={`最近どう？いまどうしてる？${
-                        isDesktopEnvironment
-                            ? "\n*クリップボードからの画像・画像ファイルのペーストが可能です。"
-                            : ""
-                    }`}
+                    placeholder={
+                        "最近どう？いまどうしてる？\n画像ファイルのドラッグ&ドロップ、クリップボードの画像ペーストが可能です。"
+                    }
                     disabled={disabled}
                     className={inputtext_base({
                         kind: "inbound",
