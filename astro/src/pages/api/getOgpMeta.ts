@@ -1,5 +1,5 @@
 import type { APIContext, APIRoute } from "astro"
-import type { ogpMetaData, errorResponse } from "@/lib/api/types"
+import type { ogpMetaData } from "@/lib/api/types"
 import { corsAllowOrigin } from "@/lib/vars"
 import validateRequestReturnURL from "@/lib/api/validateRequest"
 
@@ -7,44 +7,6 @@ import * as cheerio from "cheerio"
 
 // SSRを有効化
 export const prerender = false
-
-// Cloudflare環境 ≠ Nodejsであるため、jsdomやhappy-domが使えなかった
-// 正規表現芸人をせざるをえない...
-// const extractHead = (html: string): ogpMetaData => {
-//     let metas: Array<string> = []
-
-//     const titleFilter: Array<RegExp> = [
-//         /(?: *< *meta +name=["']?twitter:title["']? +content=)["']?([^"']*)["']?/,
-//         /(?: *< *meta +property=["']?og:title["']? +content=)["']?([^"']*)["']?/,
-//     ]
-//     const descriptionFilter: Array<RegExp> = [
-//         /(?: *< *meta +name=["']?twitter:description["']? +content=)["']?([^"']*)["']?/,
-//         /(?: *< *meta +property=["']?og:description["']? +content=)["']?([^"']*)["']?/,
-//     ]
-//     const imageFilter: Array<RegExp> = [
-//         /(?: *< *meta +name=["']?twitter:image["']? +content=)["']?([^"']*)["']?/,
-//         /(?: *< *meta +property=["']?og:image["']? +content=)["']?([^"']*)["']?/
-//     ]
-//     // やるとしたらこの部分の効率化がしたい
-//     // ただし、twitter:XXX系→og:XXX系の順序性は崩したくない
-//     for (let filters of [titleFilter, descriptionFilter, imageFilter]) {
-//         let result: string = ""
-//         for (let filter of filters) {
-//             const regResult = filter.exec(html)
-//             if (regResult !== null) {
-//                 result = regResult[1]
-//                 break
-//             }
-//         }
-//         metas.push(result)
-//     }
-//     return {
-//         type: "meta",
-//         title: metas[0],
-//         description: metas[1],
-//         image: metas[2]
-//     }
-// };
 
 const findEncoding = async (htmlBlob: Blob): Promise<string> => {
     const text = await htmlBlob.text()
@@ -124,7 +86,7 @@ export const GET: APIRoute = async ({
         })
             .then(res => res.blob())
             .catch((res: Error) => {
-                let e: Error = new Error(res.message)
+                const e: Error = new Error(res.message)
                 e.name = res.name
                 throw e
             })
@@ -184,52 +146,75 @@ const extractHead = ({ html }: { html: string }): ogpMetaData => {
         const content = $(element).attr("content")
         const value = $(element).attr("value")
 
-        if (!content) {
+        if (typeof content === "undefined") {
             return
         }
 
-        if (property && property.toLowerCase() === "og:title") {
+        // twitter用メタを優先する
+        if (
+            typeof title === "undefined" &&
+            typeof name !== "undefined" &&
+            name.toLowerCase() === "twitter:title"
+        ) {
             title = content || value
-        }
-        if (!title && name && name.toLowerCase() === "twitter:title") {
-            title = content || value
-        }
-        if (!title && name && name.toLowerCase() === "title") {
-            title = content || value
-        }
-
-        if (property && property.toLowerCase() === "og:description") {
-            description = content || value
         }
         if (
-            !description &&
-            name &&
+            typeof description === "undefined" &&
+            typeof name !== "undefined" &&
             name.toLowerCase() === "twitter:description"
         ) {
             description = content || value
         }
-        if (!description && name && name.toLowerCase() === "description") {
+        if (
+            typeof image === "undefined" &&
+            typeof name !== "undefined" &&
+            name.toLowerCase() === "twitter:image"
+        ) {
+            image = content || value
+        }
+
+        // OGメタを調べる
+        if (
+            typeof property !== "undefined" &&
+            property.toLowerCase() === "og:title"
+        ) {
+            title = content || value
+        }
+        if (
+            typeof property !== "undefined" &&
+            property.toLowerCase() === "og:description"
+        ) {
             description = content || value
         }
+        if (
+            typeof property !== "undefined" &&
+            property.toLowerCase() === "og:image"
+        ) {
+            image = content || value
+        }
 
-        if (property && property.toLowerCase() === "og:image") {
-            image = content || value
-        }
-        if (!image && name && name.toLowerCase() === "twitter:image") {
-            image = content || value
-        }
+        // メタが存在しない場合は直タグを調べるコード
+        // 現時点ではこれに対応しない
+        // if (
+        //     typeof title === "undefined" &&
+        //     typeof name !== "undefined" &&
+        //     name.toLowerCase() === "title"
+        // ) {
+        //     title = content || value
+        // }
+        // if (
+        //     typeof description === "undefined" &&
+        //     typeof name !== "undefined" &&
+        //     name.toLowerCase() === "description"
+        // ) {
+        //     description = content || value
+        // }
     })
-
-    if (!title) {
-        if ($("title").text() && $("title").text().length > 0) {
-            title = $("title").text()
-        }
-    }
 
     return {
         type: "meta",
-        title: title || "",
-        description: description || "",
-        image: image || "",
+        title: typeof title !== "undefined" ? title : "",
+        description: typeof description !== "undefined" ? description : "",
+        image: typeof image !== "undefined" ? image : "",
     }
 }

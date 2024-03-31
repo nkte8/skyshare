@@ -19,10 +19,10 @@ export const Component = ({
     setMsgInfo,
 }: {
     postText: string
-    setMediaData: Dispatch<SetStateAction<MediaData | null>>,
-    isProcessing: boolean,
+    setMediaData: Dispatch<SetStateAction<MediaData | null>>
+    isProcessing: boolean
     setProcessing: Dispatch<SetStateAction<boolean>>
-    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
     const siteurl = location.origin
     const linkMaxLength = 50
@@ -32,48 +32,52 @@ export const Component = ({
         setProcessing(true)
         setMsgInfo({
             isError: false,
-            msg: `リンクカードを取得中...`
+            msg: "リンクカードを取得中...",
         })
         try {
             let blob: Blob | null = null
             const ogpMeta = await getOgpMeta({
                 siteurl,
                 externalUrl: linkUrl,
-                languageCode: "ja"
+                languageCode: "ja",
             })
             if (ogpMeta.type === "error") {
-                let e: Error = new Error(ogpMeta.message)
+                const e: Error = new Error(ogpMeta.message)
                 e.name = ogpMeta.error
                 throw e
+            }
+            // titleが存在しない場合は、暫定的にTitleをURLにする
+            if (ogpMeta.title === "") {
+                ogpMeta.title = linkUrl
             }
             if (ogpMeta.image !== "") {
                 blob = await getOgpBlob({
                     siteurl,
                     externalUrl: ogpMeta.image,
-                    languageCode: "ja"
+                    languageCode: "ja",
                 })
             }
-            setMediaData(
-                {
-                    type: "external",
-                    meta: {
-                        ...ogpMeta,
-                        url: linkUrl
+            setMediaData({
+                type: "external",
+                meta: {
+                    ...ogpMeta,
+                    url: linkUrl,
+                },
+                images: [
+                    {
+                        blob,
                     },
-                    images: [{
-                        blob
-                    }]
-                }
-            )
+                ],
+            })
             setMsgInfo({
                 isError: false,
-                msg: `リンクカードを取得しました！`
+                msg: "リンクカードを取得しました！",
             })
         } catch (e: unknown) {
             if (e instanceof Error) {
                 setMsgInfo({
                     isError: true,
-                    msg: `${e.name}: ${e.message}`
+                    msg: `${e.name}: ${e.message}`,
                 })
             }
             //リンクカード設定を解除
@@ -97,22 +101,21 @@ export const Component = ({
             buttonID="linkcardattach"
             handler={handleGetOGP}
             isProcessing={isProcessing}
-            context={<>
-                <span className="m-0">リンクカードを追加</span>
-                {linkUrl !== null &&
-                    <div className="text-xs m-0">
-                        {`${new URL(linkUrl).href.slice(0, linkMaxLength)
-                            }${linkUrl.length > linkMaxLength ? "..." : ""
+            context={
+                <>
+                    <span className="m-0">リンクカードを追加</span>
+                    {linkUrl !== null && (
+                        <div className="text-xs m-0">
+                            {`${new URL(linkUrl).href.slice(0, linkMaxLength)}${
+                                linkUrl.length > linkMaxLength ? "..." : ""
                             }`}
-                    </div>
-                }
-            </>}
-            className={[
-                "mx-1",
-                "w-full",
-                "mb-1"
-            ]}
-            disabled={linkUrl === null} />
+                        </div>
+                    )}
+                </>
+            }
+            className={["mx-1", "w-full", "mb-1"]}
+            disabled={linkUrl === null}
+        />
     )
 }
 export default Component
