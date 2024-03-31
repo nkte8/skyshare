@@ -1,8 +1,5 @@
 // utils
-import {
-    Dispatch,
-    SetStateAction,
-} from "react"
+import { Dispatch, SetStateAction } from "react"
 
 // service
 import { addImageMediaData, collectNewImages } from "../lib/addImageMediaData"
@@ -34,7 +31,6 @@ const Component = ({
 
         const items: DataTransferItemList = e.dataTransfer.items
 
-        console.log(items)
         if (items.length <= 0) {
             return
         }
