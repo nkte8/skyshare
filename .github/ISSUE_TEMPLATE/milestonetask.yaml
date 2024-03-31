@@ -14,12 +14,12 @@ body:
   - type: textarea
     id: about
     attributes:
-      label: How it help for milestone complete?
+      label: How it would to do to accomplish?
       description: |
-        Write how the task would help for milestone complete. (Optional)
-        このタスクがマイルストーンを達成するために、どのように作用するのかを記載してください。 (任意)
+        Write how the task would be to do.
+        このタスクの実施内容を記載してください。
     validations:
-      required: false
+      required: true
 
   - type: textarea
     id: howto
