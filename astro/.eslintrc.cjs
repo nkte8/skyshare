@@ -21,25 +21,29 @@ module.exports = {
         },
     },
     rules: {
-        indent: ["warn", 4, { SwitchCase: 1, MemberExpression: "off" }],
-        quotes: ["warn", "double"],
-        semi: ["warn", "never"],
-        "linebreak-style": ["warn", "unix"],
         "no-irregular-whitespace": "warn",
         "prefer-const": "warn",
         "@typescript-eslint/strict-boolean-expressions": "warn",
         "@typescript-eslint/no-namespace": "warn",
         "@typescript-eslint/no-unused-vars": [
             "warn",
-            { destructuredArrayIgnorePattern: "^_" },
+            {
+                args: "all",
+                argsIgnorePattern: "^_",
+                caughtErrors: "all",
+                caughtErrorsIgnorePattern: "^_",
+                destructuredArrayIgnorePattern: "^_",
+                varsIgnorePattern: "^_",
+                ignoreRestSiblings: true,
+            },
         ],
     },
     ignorePatterns: [
-        "dist", 
-        "node_modules", 
+        "dist",
+        "node_modules",
         "tailwind.config.mjs",
         "jest.config.cjs",
-        "astro.config.mjs"
+        "astro.config.mjs",
     ],
     overrides: [
         {
