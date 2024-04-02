@@ -21,10 +21,6 @@ module.exports = {
         },
     },
     rules: {
-        indent: ["warn", 4, { SwitchCase: 1, MemberExpression: "off" }],
-        quotes: ["warn", "double"],
-        semi: ["warn", "never"],
-        "linebreak-style": ["warn", "unix"],
         "no-irregular-whitespace": "warn",
         "prefer-const": "warn",
         "@typescript-eslint/strict-boolean-expressions": "warn",
