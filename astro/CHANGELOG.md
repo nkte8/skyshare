@@ -1,5 +1,28 @@
 # Skyshare 更新履歴
 
+## 1.4.7
+
+### Patch Changes
+
+- Bluesky上でのメンションのURL変換機能を実装しました。
+  - Blueskyに所属するアカウントへのメンションを本文上で実施した際、X向け投稿においてはBlueskyのURLに置き換える機能を実装しました。
+
+- `richTextParser`に致命的なバグがあったため修正しました。
+  - `matchEnd`による`text`の切り取り範囲が過剰に広かったことが原因で、正常にテキストを処理できない場合がありました。
+    - タグの入力・タグ候補の保存、および外部URL利用を三件以上設定した場合に発生していました。
+  - このコードの元になった`detectFacets.ts`は、この値はあくまでfacetsの作成にのみ用いており、処理範囲の決定に対して影響なかったため、Bluesky側に影響が起きていませんでした。
+
+#### 【Collaborator/Contributor向け情報】
+
+- `atproto_api/resolveHandle.ts`におけるエラーハンドリングを改善しました。
+  - これまでは`atproto_api`配下の関数自体もatprotoの返り値に合わせて`{error,message}`を含むリスポンスを行っていましたが、この応答を作成するため、Typescriptの型として不適切な設定（正常リスポンスと異常リスポンスの交差型）を行っていました。
+  - ESLintの指摘に対応するためこれをやめ、関数自体が`Error`をスローすることが正とするように変更しました。
+    - そのため、今後は関数の呼び出し側にエラーハンドリングを委ねる形をとります。エラーメッセージなどの取得については、これまでの直接の返り値ではなくスローされる`e: Error`型で取得可能です。
+  - この変更方針は、`atproto_api`配下のコードにも適応していきたいと考えています
+  - そもそも`atproto_api`のコード自体、公式クライアントへ置き換えたいと考えています: [Issue #15](https://github.com/nkte8/skyshare/issues/15)
+- その他、関連箇所のコードに`npm run fix`をかけました。
+  - 許容した方がいいかな、と考えている`@typescript-eslint/no-misused-promises`ルール以外のwarning/errorについては取り除きました。
+
 ## 1.4.6
 
 ### Patch Changes

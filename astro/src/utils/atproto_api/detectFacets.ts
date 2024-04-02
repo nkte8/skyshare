@@ -4,21 +4,21 @@ import facets from "./facets"
 // 本家はinputは RichText型であるが、text型でなんとかする
 
 type regexResult = {
-    encoded: string,
+    encoded: string
     index: {
-        byteStart: number,
-        byteEnd: number,
+        byteStart: number
+        byteEnd: number
     }
 }
 const regexSeacrh = ({
     array,
     regex,
     encoded,
-    cursor = 0
+    cursor = 0,
 }: {
-    array: Array<regexResult>,
+    array: Array<regexResult>
     regex: RegExp
-    encoded: string,
+    encoded: string
     cursor?: number
 }) => {
     // 文字を取得するために使用
@@ -36,8 +36,8 @@ const regexSeacrh = ({
         encoded: linkref,
         index: {
             byteStart: cursor + regexedStart,
-            byteEnd: cursor + regexedEnd
-        }
+            byteEnd: cursor + regexedEnd,
+        },
     }
     array.push(Item)
     regexSeacrh({
@@ -51,25 +51,25 @@ const regexSeacrh = ({
 const createLinkFacet = ({
     encoded,
 }: {
-    encoded: string,
+    encoded: string
 }): Array<facets.link> => {
     const Regex = /(https?:\/\/[^ \r\n]+)( |\r\n|\n|\r)?/i
-    let result: Array<facets.link> = []
-    let regexResult: Array<regexResult> = []
+    const result: Array<facets.link> = []
+    const regexResult: Array<regexResult> = []
     regexSeacrh({
         array: regexResult,
         regex: Regex,
         encoded: encoded,
     })
-    for (let link of regexResult) {
+    for (const link of regexResult) {
         result.push({
             index: link.index,
             features: [
                 {
                     $type: "app.bsky.richtext.facet#link",
-                    uri: link.encoded
-                }
-            ]
+                    uri: link.encoded,
+                },
+            ],
         })
     }
     return result
@@ -78,74 +78,74 @@ const createLinkFacet = ({
 const createMentionFacet = async ({
     encoded,
 }: {
-    encoded: string,
+    encoded: string
 }): Promise<Array<facets.mention>> => {
-    const Regex = /(@[^ ]*) ?/i
-    let result: Array<facets.mention> = []
-    let regexResult: Array<regexResult> = []
+    const Regex = /(@[^\s\r\n]+)\s?/i
+    const result: Array<facets.mention> = []
+    const regexResult: Array<regexResult> = []
     regexSeacrh({
         array: regexResult,
         regex: Regex,
         encoded: encoded,
     })
-    for (let link of regexResult) {
-        const resResolve = await resolveHandle({ handle: link.encoded.slice(1) })
-        // 存在しないハンドルの場合はfacetから除外
-        if (typeof resResolve?.error !== "undefined") {
+    for (const link of regexResult) {
+        try {
+            const resResolve = await resolveHandle({
+                handle: link.encoded.slice(1),
+            })
+            result.push({
+                index: link.index,
+                features: [
+                    {
+                        $type: "app.bsky.richtext.facet#mention",
+                        did: resResolve.did,
+                    },
+                ],
+            })
+        } catch (e: unknown) {
             continue
         }
-        result.push({
-            index: link.index,
-            features: [
-                {
-                    $type: "app.bsky.richtext.facet#mention",
-                    did: resResolve.did
-                }
-            ]
-        })
     }
     return result
 }
 
-const createHashtagFacet = async ({
+const createHashtagFacet = ({
     encoded,
 }: {
-    encoded: string,
-}): Promise<Array<facets.hashtag>> => {
+    encoded: string
+}): Array<facets.hashtag> => {
     const Regex = /((#|#️⃣)[^ \r\n]*)( |\r\n|\n|\r)?/i
-    let result: Array<facets.hashtag> = []
-    let regexResult: Array<regexResult> = []
+    const result: Array<facets.hashtag> = []
+    const regexResult: Array<regexResult> = []
     regexSeacrh({
         array: regexResult,
         regex: Regex,
         encoded: encoded,
     })
-    for (let tag of regexResult) {
+    for (const tag of regexResult) {
         result.push({
             index: tag.index,
             features: [
                 {
                     $type: "app.bsky.richtext.facet#tag",
-                    tag: tag.encoded.slice(1)
-                }
-            ]
+                    tag: tag.encoded.slice(1),
+                },
+            ],
         })
     }
     return result
 }
 
 const detectFacets = async ({
-    text
+    text,
 }: {
     text: string
 }): Promise<Array<facets.link | facets.mention | facets.hashtag>> => {
-    let facets: Array<
-        facets.link | facets.mention | facets.hashtag
-    > = []
+    let facets: Array<facets.link | facets.mention | facets.hashtag> = []
     const encoded = encodeURI(text).replace(/%(20|0A)/g, " ")
     facets = facets.concat(createLinkFacet({ encoded }))
     facets = facets.concat(await createMentionFacet({ encoded }))
-    facets = facets.concat(await createHashtagFacet({ encoded }))
+    facets = facets.concat(createHashtagFacet({ encoded }))
     return facets
 }
 
