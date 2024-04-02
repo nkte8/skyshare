@@ -1,17 +1,14 @@
 /**
  * text -> richtextに変換を行うparserコンストラクタ
- *
  */
 class richTextFacetParser {
     private regexSeacrh = ({
         regex,
         text,
-        cursor = 0,
-        result = []
+        result = [],
     }: {
         regex: RegExp
         text: string
-        cursor?: number,
         result: Array<string>
     }): void => {
         // regexした結果
@@ -22,13 +19,13 @@ class richTextFacetParser {
         }
         const matchIndex = regexResult.index
         const matchText = regexResult[1]
-        const matchEnd = cursor + matchIndex + matchText.length
+        // マッチ結果を格納
         result.push(matchText)
+        // 本文からマッチ分を取り除いて、再起検索
         this.regexSeacrh({
             regex,
-            text: text.slice(matchEnd),
-            cursor: cursor + matchEnd,
-            result
+            text: text.slice(matchIndex + matchText.length),
+            result,
         })
     }
     type: richTextFacetType
@@ -43,41 +40,47 @@ class richTextFacetParser {
             case "tag":
                 this.regex = /((#|#️⃣)[^ \r\n]*)( |\r\n|\n|\r)?/i
                 break
+            case "mention":
+                this.regex = /(@[^\s\r\n]+)\s?/i
+                break
         }
     }
     getFacet = (text: string) => {
-        let result: Array<string> = []
+        const result: Array<string> = []
         this.regexSeacrh({
             regex: this.regex,
             text,
-            result
+            result,
         })
         return result
     }
 }
-type richTextFacetType = "link" | "tag"
 
+type richTextFacetType = "link" | "tag" | "mention"
+
+// 現在どこからも参照されていないため、今後使うことなさそうであれば削除するコード
 type parsedText = {
-    type: richTextFacetType,
+    type: richTextFacetType
     content: Array<string>
 }
-const parseText = async ({
-    text
-}: {
-    text: string
-}): Promise<Array<parsedText>> => {
+const parseText = ({ text }: { text: string }): Array<parsedText> => {
     let result: Array<parsedText> = []
     // link用Parser
     const facetLink = new richTextFacetParser("link")
     const facetTag = new richTextFacetParser("tag")
+    const facetMention = new richTextFacetParser("mention")
     // Parse結果をresultに格納
     result = result.concat({
         type: facetLink.type,
-        content: facetLink.getFacet(text)
+        content: facetLink.getFacet(text),
     })
     result = result.concat({
         type: facetTag.type,
-        content: facetTag.getFacet(text)
+        content: facetTag.getFacet(text),
+    })
+    result = result.concat({
+        type: facetTag.type,
+        content: facetMention.getFacet(text),
     })
     return result
 }

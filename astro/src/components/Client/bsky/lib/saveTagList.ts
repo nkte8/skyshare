@@ -1,12 +1,8 @@
 // service
-import { setSavedTags, readSavedTags } from "@/utils/useLocalStorage";
+import { setSavedTags, readSavedTags } from "@/utils/useLocalStorage"
 import { richTextFacetParser } from "@/utils/richTextParser"
 
-const saveTagToSavedTags = ({
-    postText
-}: {
-    postText: string
-}): void => {
+const saveTagToSavedTags = ({ postText }: { postText: string }): void => {
     // 保存できるタグの上限
     const maxTagCount = 8
 
@@ -16,8 +12,8 @@ const saveTagToSavedTags = ({
 
     const savedTag = readSavedTags()
 
-    let taglist: string[] = (savedTag !== null) ? savedTag : []
-    parseResult.forEach((value) => {
+    const taglist: string[] = savedTag !== null ? savedTag : []
+    parseResult.forEach(value => {
         const tagName = value
         const tagIndex = taglist.indexOf(tagName)
         if (tagIndex < 0) {
