@@ -35,12 +35,12 @@ export const api = async ({
         body: blob,
     }).then(async (response) => {
         if (!response?.ok) {
-            let res: {
+            const res: {
                 error: string,
                 message: string,
             } = await response.json()
 
-            let e: Error = new Error(res.message)
+            const e: Error = new Error(res.message)
             e.name = apiName
             throw e
         }

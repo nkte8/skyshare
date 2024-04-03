@@ -24,8 +24,8 @@ export const api = async ({
             },
         }).then(async (response) => {
             if (!response?.ok) {
-                let res: typeof etype = await response.json()
-                let e: Error = new Error(res.message)
+                const res: typeof etype = await response.json()
+                const e: Error = new Error(res.message)
                 e.name = apiName
                 throw e
             }
