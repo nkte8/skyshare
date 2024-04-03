@@ -37,6 +37,14 @@ module.exports = {
                 ignoreRestSiblings: true,
             },
         ],
+        "@typescript-eslint/no-misused-promises": [
+            "warn",
+            {
+                checksVoidReturn: {
+                    attributes: false,
+                },
+            },
+        ],
     },
     ignorePatterns: [
         "dist",
