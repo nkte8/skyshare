@@ -7,39 +7,38 @@ const endpoint = getEndpoint(apiName)
 export const api = async ({
     repo,
     accessJwt,
-    record
+    record,
 }: {
-    repo: string,
-    accessJwt: string,
+    repo: string
+    accessJwt: string
     record: object
-}): Promise<typeof mtype & typeof etype> => fetch(endpoint,
-    {
-        method: 'POST',
+}): Promise<typeof mtype & typeof etype> =>
+    fetch(endpoint, {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessJwt}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessJwt}`,
         },
-        body: JSON.stringify(
-            {
-                collection: app_bsky.feed.post,
-                repo: repo,
-                record: record
-            })
-    }).then(async (response) => {
-        if (!response?.ok) {
-            const res: typeof etype = await response.json()
-            const e: Error = new Error(res.message)
-            e.name = apiName
-            throw e
-        }
-        return await response.json()
-    }
-    ).catch((e: Error) => {
-        return {
-            error: e.name,
-            message: e.message
-        }
+        body: JSON.stringify({
+            collection: app_bsky.feed.post,
+            repo: repo,
+            record: record,
+        }),
     })
-
+        .then(async response => {
+            if (!response?.ok) {
+                const res: typeof etype = await response.json()
+                const e: Error = new Error(res.message)
+                e.name = apiName
+                throw e
+            }
+            return await response.json()
+        })
+        .catch((e: Error) => {
+            return {
+                error: e.name,
+                message: e.message,
+            }
+        })
 
 export default api

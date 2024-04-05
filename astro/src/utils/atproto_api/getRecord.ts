@@ -8,21 +8,20 @@ export const api = async ({
     rkey,
     did,
 }: {
-    rkey: string,
+    rkey: string
     did: string
 }): Promise<typeof mtype & typeof etype> => {
     const url = new URL(endpoint)
     url.searchParams.set("repo", did)
     url.searchParams.set("rkey", rkey)
     url.searchParams.set("collection", app_bsky.feed.post)
-    return fetch(
-        url.toString(),
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(async (response) => {
+    return fetch(url.toString(), {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then(async response => {
             if (!response?.ok) {
                 const res: typeof etype = await response.json()
                 const e: Error = new Error(res.message)
@@ -30,11 +29,11 @@ export const api = async ({
                 throw e
             }
             return await response.json()
-        }
-        ).catch((e: Error) => {
+        })
+        .catch((e: Error) => {
             return {
                 error: e.name,
-                message: e.message
+                message: e.message,
             }
         })
 }
