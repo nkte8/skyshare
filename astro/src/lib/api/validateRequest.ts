@@ -24,8 +24,8 @@ const validateRequestReturnURL = ({
         })
     }
 
-    const url = new URL(request.url).searchParams.get("url");
-    const lang = new URL(request.url).searchParams.get("lang");
+    const url: string | null = new URL(request.url).searchParams.get("url");
+    const lang: string | null = new URL(request.url).searchParams.get("lang");
     if (url === null) {
         return createErrResponse({
             statusCode: 406,
@@ -36,10 +36,10 @@ const validateRequestReturnURL = ({
             statusCode: 406,
         })
     }
-    const decodedUrl = decodeURIComponent(url)
+    const decodedUrl: string = decodeURIComponent(url)
     // SSRF対策
     // Productionではない環境についてはlocalhostの実行を許可
-    const validation = !isNotProduction ? (
+    const validation: boolean = !isNotProduction ? (
         // Productionの場合は厳格なルールを指定
         protocol_validation.test(decodedUrl) ||
         loopback_validation.test(decodedUrl) ||
