@@ -22,8 +22,8 @@ export const getOgpMeta = async ({
         }
     }).then(async (response) => {
         if (!response?.ok) {
-            let res: errorResponse = await response.json()
-            let e: Error = new Error(res.message)
+            const res: errorResponse = await response.json()
+            const e: Error = new Error(res.message)
             e.name = res.error
             throw e
         }
@@ -57,8 +57,8 @@ export const getOgpBlob = async ({
         }
     }).then(async (response) => {
         if (!response?.ok) {
-            let res: errorResponse = await response.json()
-            let e: Error = new Error(res.message)
+            const res: errorResponse = await response.json()
+            const e: Error = new Error(res.message)
             e.name = `${res.error}@getOgpBlob`
             throw e
         }
