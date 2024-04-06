@@ -10,7 +10,7 @@ type regexResult = {
         byteEnd: number
     }
 }
-const regexSeacrh = ({
+const regexSearch = ({
     array,
     regex,
     encoded,
@@ -40,7 +40,7 @@ const regexSeacrh = ({
         },
     }
     array.push(Item)
-    regexSeacrh({
+    regexSearch({
         array,
         regex,
         encoded: encoded.slice(sliceEnd),
@@ -56,7 +56,7 @@ const createLinkFacet = ({
     const Regex = /(https?:\/\/[^ \r\n]+)( |\r\n|\n|\r)?/i
     const result: Array<facets.link> = []
     const regexResult: Array<regexResult> = []
-    regexSeacrh({
+    regexSearch({
         array: regexResult,
         regex: Regex,
         encoded: encoded,
@@ -83,7 +83,7 @@ const createMentionFacet = async ({
     const Regex = /(@[^\s\r\n]+)\s?/i
     const result: Array<facets.mention> = []
     const regexResult: Array<regexResult> = []
-    regexSeacrh({
+    regexSearch({
         array: regexResult,
         regex: Regex,
         encoded: encoded,
@@ -117,7 +117,7 @@ const createHashtagFacet = ({
     const Regex = /((#|#️⃣)[^ \r\n]*)( |\r\n|\n|\r)?/i
     const result: Array<facets.hashtag> = []
     const regexResult: Array<regexResult> = []
-    regexSeacrh({
+    regexSearch({
         array: regexResult,
         regex: Regex,
         encoded: encoded,
