@@ -13,8 +13,8 @@ export const browserImageCompression = async (
     try {
         const compressedFile = await imageCompression(file, options);
         return compressedFile;
-    } catch (err: any) {
-        return Promise.reject(new Error(`compress failed: ${err}`));
+    } catch (err: unknown) {
+        return Promise.reject(new Error(`compress failed: ${String(err)}`))
     }
 };
 export default browserImageCompression
