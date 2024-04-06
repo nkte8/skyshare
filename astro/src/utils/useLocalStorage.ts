@@ -1,8 +1,8 @@
-// localstorage関連  
+// localstorage関連
 import { Base64 } from "js-base64"
 type Obj = {
-    [key: string]: string;
-};
+    [key: string]: string
+}
 const LSKeyName: Obj = {
     accessJwt: "accessJwt",
     refreshJwt: "refreshJwt",
@@ -14,10 +14,10 @@ const LSKeyName: Obj = {
     loginInfo: "loginInfo",
     savedTags: "savedTags",
     drafts: "drafts",
-    appendVia: "appendVia"
+    appendVia: "appendVia",
 }
 type loginInfo = {
-    id: string,
+    id: string
     pw: string
 }
 
@@ -43,8 +43,7 @@ export const setAppendVia = (flag: boolean): void => {
 export const readSavedTags = (): Array<string> => {
     const value = get_ls_value(LSKeyName.savedTags)
     if (value !== null) {
-        const Logininfo: string[] =
-            JSON.parse(Base64.decode(value))
+        const Logininfo: string[] = JSON.parse(Base64.decode(value))
         return Logininfo
     }
     rm_ls_value(LSKeyName.savedTags)
@@ -52,17 +51,14 @@ export const readSavedTags = (): Array<string> => {
 }
 
 export const setSavedTags = (Tags: string[]): void => {
-    const savedTags: string =
-        Base64.encode(JSON.stringify(Tags)
-        )
+    const savedTags: string = Base64.encode(JSON.stringify(Tags))
     set_ls_value(LSKeyName.savedTags, savedTags)
 }
 
 export const readDrafts = (): Array<string> => {
     const value = get_ls_value(LSKeyName.drafts)
     if (value !== null) {
-        const drafts: string[] =
-            JSON.parse(Base64.decode(value))
+        const drafts: string[] = JSON.parse(Base64.decode(value))
         return drafts
     }
     rm_ls_value(LSKeyName.drafts)
@@ -70,8 +66,7 @@ export const readDrafts = (): Array<string> => {
 }
 
 export const saveDrafts = (Drafts: string[]): void => {
-    const savedDrafts: string =
-        Base64.encode(JSON.stringify(Drafts))
+    const savedDrafts: string = Base64.encode(JSON.stringify(Drafts))
     set_ls_value(LSKeyName.drafts, savedDrafts)
 }
 
@@ -82,8 +77,7 @@ export const resetLoginInfo = () => {
 export const readLogininfo = (): loginInfo | null => {
     const value = get_ls_value(LSKeyName.loginInfo)
     if (value !== null) {
-        const Logininfo: loginInfo =
-            JSON.parse(Base64.decode(value))
+        const Logininfo: loginInfo = JSON.parse(Base64.decode(value))
         return Logininfo
     }
     rm_ls_value(LSKeyName.loginInfo)
@@ -91,11 +85,12 @@ export const readLogininfo = (): loginInfo | null => {
 }
 
 export const setLogininfo = ({ id, pw }: loginInfo): void => {
-    const Logininfo: string =
-        Base64.encode(JSON.stringify({
-            id: id, pw: pw
-        })
-        )
+    const Logininfo: string = Base64.encode(
+        JSON.stringify({
+            id: id,
+            pw: pw,
+        }),
+    )
     set_ls_value(LSKeyName.loginInfo, Logininfo)
 }
 
@@ -198,7 +193,7 @@ export const resetAll = (): void => {
 const get_ls_value = (key: string): string | null => {
     let rval: string | null = null
     if (typeof localStorage !== "undefined") {
-        let value = localStorage.getItem(key);
+        const value = localStorage.getItem(key)
         rval = value !== null ? value : null
     }
     return rval
@@ -206,7 +201,7 @@ const get_ls_value = (key: string): string | null => {
 
 const set_ls_value = (key: string, value: string): boolean => {
     if (typeof localStorage !== "undefined") {
-        localStorage.setItem(key, value);
+        localStorage.setItem(key, value)
         return true
     }
     return false
@@ -214,7 +209,7 @@ const set_ls_value = (key: string, value: string): boolean => {
 
 const rm_ls_value = (key: string): boolean => {
     if (typeof localStorage !== "undefined") {
-        localStorage.removeItem(key);
+        localStorage.removeItem(key)
         return true
     }
     return false
