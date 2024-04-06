@@ -55,7 +55,7 @@ export const GET: APIRoute = async ({ request }: APIContext) => {
         });
         response.headers.append("Content-Type", blob.type)
         return response;
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         const result: errorResponse = createErrResponse({
             statusCode: 500
         })
