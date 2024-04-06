@@ -1,5 +1,7 @@
 // localstorage関連
 import { Base64 } from "js-base64"
+import { z } from "zod"
+
 type Obj = {
     [key: string]: string
 }
@@ -16,10 +18,14 @@ const LSKeyName: Obj = {
     drafts: "drafts",
     appendVia: "appendVia",
 }
-type loginInfo = {
-    id: string
-    pw: string
-}
+
+const ZodStringArray = z.array(z.string())
+
+const ZodLoginInfo = z.object({
+    id: z.string(),
+    pw: z.string(),
+})
+type LoginInfo = z.infer<typeof ZodLoginInfo>
 
 // viaはlexicon的には定義されていない?付与しての投稿自体は問題ないため、オプションに変更
 export const readAppendVia = (def: boolean): boolean => {
@@ -41,10 +47,15 @@ export const setAppendVia = (flag: boolean): void => {
 // 将来的にはローカルではなく、DB側に保存したい
 // DB構造を変えることになると思われるため,大きなアップデートの時の次タスクとして積みたい
 export const readSavedTags = (): Array<string> => {
-    const value = get_ls_value(LSKeyName.savedTags)
+    const value: string | null = get_ls_value(LSKeyName.savedTags)
     if (value !== null) {
-        const Logininfo: string[] = JSON.parse(Base64.decode(value))
-        return Logininfo
+        const zodParsedArray = ZodStringArray.safeParse(
+            JSON.parse(Base64.decode(value)),
+        )
+        if (zodParsedArray.success) {
+            const tags: string[] = zodParsedArray.data
+            return tags
+        }
     }
     rm_ls_value(LSKeyName.savedTags)
     return []
@@ -56,10 +67,16 @@ export const setSavedTags = (Tags: string[]): void => {
 }
 
 export const readDrafts = (): Array<string> => {
-    const value = get_ls_value(LSKeyName.drafts)
+    const value: string | null = get_ls_value(LSKeyName.drafts)
     if (value !== null) {
-        const drafts: string[] = JSON.parse(Base64.decode(value))
-        return drafts
+        const zodParsedArray = ZodStringArray.safeParse(
+            JSON.parse(Base64.decode(value)),
+        )
+
+        if (zodParsedArray.success) {
+            const drafts: string[] = zodParsedArray.data
+            return drafts
+        }
     }
     rm_ls_value(LSKeyName.drafts)
     return []
@@ -74,17 +91,22 @@ export const resetLoginInfo = () => {
     rm_ls_value(LSKeyName.loginInfo)
 }
 
-export const readLogininfo = (): loginInfo | null => {
-    const value = get_ls_value(LSKeyName.loginInfo)
+export const readLogininfo = (): LoginInfo | null => {
+    const value: string | null = get_ls_value(LSKeyName.loginInfo)
     if (value !== null) {
-        const Logininfo: loginInfo = JSON.parse(Base64.decode(value))
-        return Logininfo
+        const zodParsedObject = ZodLoginInfo.safeParse(
+            JSON.parse(Base64.decode(value)),
+        )
+        if (zodParsedObject.success) {
+            const loginInfo: LoginInfo = zodParsedObject.data
+            return loginInfo
+        }
     }
     rm_ls_value(LSKeyName.loginInfo)
     return null
 }
 
-export const setLogininfo = ({ id, pw }: loginInfo): void => {
+export const setLogininfo = ({ id, pw }: LoginInfo): void => {
     const Logininfo: string = Base64.encode(
         JSON.stringify({
             id: id,
