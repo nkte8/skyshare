@@ -1,14 +1,14 @@
 ---
 // thanks for https://tailblocks.cc/
-import { githuburl } from "@/env/vars";
-import { baseurl, qaurl, changeurl, featureurl } from "@/env/envs";
-import App from "@/components/Client";
-import Loadingcircle from "./loadingcircle.astro";
+import { githuburl } from "@/env/vars"
+import { baseurl, qaurl, changeurl, featureurl } from "@/env/envs"
+import App from "@/components/Client"
+import Loadingcircle from "./loadingcircle.astro"
 
 interface Props {
-    hideLoader: boolean;
+    hideLoader: boolean
 }
-const { hideLoader = false } = Astro.props;
+const { hideLoader = false } = Astro.props
 ---
 
 <header id="header" class="bg-opacity-90 text-gray-600 body-font bg-white">
