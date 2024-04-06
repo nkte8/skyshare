@@ -8,7 +8,7 @@ export const api = async ({
     refreshJwt,
 }: {
     refreshJwt: string
-}): Promise<typeof mtype & typeof etype> =>
+}): Promise<typeof mtype | typeof etype> =>
     fetch(endpoint, {
         method: "POST",
         headers: {
@@ -18,12 +18,12 @@ export const api = async ({
     })
         .then(async response => {
             if (!response?.ok) {
-                const res: typeof etype = await response.json()
+                const res: typeof etype = await response.json() as typeof etype
                 const e: Error = new Error(res.message)
                 e.name = apiName
                 throw e
             }
-            return await response.json()
+            return await response.json() as typeof mtype
         })
         .catch((e: Error) => {
             return {
