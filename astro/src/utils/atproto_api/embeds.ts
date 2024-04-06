@@ -3,7 +3,7 @@ namespace embed {
         $type: "app.bsky.embed.images"
         images: Array<{
             image: {
-                $type: "blob" | string
+                $type: "blob"
                 ref: {
                     $link: string
                 }
