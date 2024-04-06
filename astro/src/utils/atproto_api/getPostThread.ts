@@ -8,32 +8,31 @@ export const api = async ({
     accessJwt,
     uri,
 }: {
-    accessJwt: string,
+    accessJwt: string
     uri: string
 }): Promise<typeof mtype & typeof etype> => {
     const url = new URL(endpoint)
     url.searchParams.set("uri", uri)
-    return fetch(
-        url.toString(),
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessJwt}`
-            },
-        }).then(async (response) => {
+    return fetch(url.toString(), {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessJwt}`,
+        },
+    })
+        .then(async response => {
             if (!response?.ok) {
-                let res: typeof etype = await response.json()
-                let e: Error = new Error(res.message)
+                const res: typeof etype = await response.json()
+                const e: Error = new Error(res.message)
                 e.name = apiName
                 throw e
             }
             return await response.json()
-        }
-        ).catch((e: Error) => {
+        })
+        .catch((e: Error) => {
             return {
                 error: e.name,
-                message: e.message
+                message: e.message,
             }
         })
 }

@@ -4,6 +4,6 @@ export namespace label {
     }
 }
 export type labels = {
-    $type: "com.atproto.label.defs#selfLabels",
+    $type: "com.atproto.label.defs#selfLabels"
     values: Array<label.value>
 }
