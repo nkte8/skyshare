@@ -1,6 +1,6 @@
 import type { ogpMetaData, errorResponse } from "@/lib/api/types";
 
-// note: エラー規格を型定義として決めた方がいい（ error@Component: message　とするなど）
+// note: エラー規格を型定義として決めた方がいい（ error@Component: message とするなど）
 export const getOgpMeta = async ({
     siteurl,
     externalUrl,
