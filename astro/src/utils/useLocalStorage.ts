@@ -19,7 +19,8 @@ const LSKeyName: Obj = {
     appendVia: "appendVia",
 }
 
-const ZodStringArray = z.array(z.string())
+const SavedTags = z.array(z.string())
+const SavedDrafts = z.array(z.string())
 
 const ZodLoginInfo = z.object({
     id: z.string(),
@@ -49,11 +50,11 @@ export const setAppendVia = (flag: boolean): void => {
 export const readSavedTags = (): Array<string> => {
     const value: string | null = get_ls_value(LSKeyName.savedTags)
     if (value !== null) {
-        const zodParsedArray = ZodStringArray.safeParse(
+        const zodParsedTags = SavedTags.safeParse(
             JSON.parse(Base64.decode(value)),
         )
-        if (zodParsedArray.success) {
-            const tags: string[] = zodParsedArray.data
+        if (zodParsedTags.success) {
+            const tags: string[] = zodParsedTags.data
             return tags
         }
     }
@@ -69,12 +70,12 @@ export const setSavedTags = (Tags: string[]): void => {
 export const readDrafts = (): Array<string> => {
     const value: string | null = get_ls_value(LSKeyName.drafts)
     if (value !== null) {
-        const zodParsedArray = ZodStringArray.safeParse(
+        const zodParsedDrafts = SavedDrafts.safeParse(
             JSON.parse(Base64.decode(value)),
         )
 
-        if (zodParsedArray.success) {
-            const drafts: string[] = zodParsedArray.data
+        if (zodParsedDrafts.success) {
+            const drafts: string[] = zodParsedDrafts.data
             return drafts
         }
     }
