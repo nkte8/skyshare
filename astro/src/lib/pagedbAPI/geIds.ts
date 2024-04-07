@@ -1,5 +1,5 @@
-import etype from "./models/error.json";
-const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT
+import etype from "./models/error.json"
+const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT as string
 const object = "user"
 
 type output = {
@@ -7,24 +7,22 @@ type output = {
 }
 
 export const api = async ({
-    handle
+    handle,
 }: {
     handle: string
 }): Promise<output & typeof etype> => {
-    const url = new URL(
-        object + "/" + encodeURIComponent(handle),
-        endpoint_url)
-    return fetch(url,
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then((response) => response.json()
-        ).catch((e: Error) => {
+    const url = new URL(object + "/" + encodeURIComponent(handle), endpoint_url)
+    return fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then(response => response.json())
+        .catch((e: Error) => {
             return {
                 error: e.name,
-                message: e.message
+                message: e.message,
             }
         })
 }
