@@ -1,14 +1,14 @@
 ---
-import { baseurl, posturl } from "@/env/envs";
-import Metadatas from "@/components/Metadatas.astro";
-const favicon = baseurl + "favicon.svg";
+import { baseurl, posturl } from "@/env/envs"
+import Metadatas from "@/components/Metadatas.astro"
+const favicon = baseurl + "favicon.svg"
 interface Props {
-    pageTitle: string;
-    cardPath: string;
-    robots: string[];
-    hidePostButton: boolean;
+    pageTitle: string
+    cardPath: string
+    robots: string[]
+    hidePostButton: boolean
 }
-const { cardPath, pageTitle, robots, hidePostButton } = Astro.props;
+const { cardPath, pageTitle, robots, hidePostButton } = Astro.props
 ---
 
 <html lang="ja">

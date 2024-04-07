@@ -1,13 +1,13 @@
 ---
 interface Props {
-    pageTitle: string;
-    cardPath: string;
-    robots: string[];
+    pageTitle: string
+    cardPath: string
+    robots: string[]
 }
-const { cardPath, pageTitle, robots } = Astro.props;
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import Blanklayout from "@/layouts/Blanklayout.astro";
+const { cardPath, pageTitle, robots } = Astro.props
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import Blanklayout from "@/layouts/Blanklayout.astro"
 ---
 
 <Blanklayout
