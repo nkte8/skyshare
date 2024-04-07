@@ -33,7 +33,7 @@ export const Component = ({
                 const refreshResult = await refreshSession({ refreshJwt: r_jwts })
                 if (typeof refreshResult?.error !== "undefined") {
                     resetJwt()
-                    let e: Error = new Error(refreshResult.message)
+                    const e: Error = new Error(refreshResult.message)
                     e.name = refreshResult.error
                     throw e
                 }
@@ -54,7 +54,7 @@ export const Component = ({
                     setProfile: setProfile
                 })
                 if (typeof resLoadProfile?.error !== "undefined") {
-                    let e: Error = new Error(resLoadProfile.message)
+                    const e: Error = new Error(resLoadProfile.message)
                     e.name = resLoadProfile.error
                     throw e
                 }

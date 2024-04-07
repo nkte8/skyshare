@@ -10,7 +10,7 @@ export const Component = ({
     if (mediaData === null || mediaData.type !== "external") {
         return
     }
-    let mediaDataItem = mediaData.meta
+    const mediaDataItem = mediaData.meta
     return (
         <div className={[
             "rounded-2xl", "border-2",

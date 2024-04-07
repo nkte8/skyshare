@@ -30,7 +30,7 @@ const Component = ({
                 return
             }
             // Listから自身のitemIdを取り除き、これをリストに追加する
-            let result = mediaData.images.filter(
+            const result = mediaData.images.filter(
                 (_, index) => index !== itemId
             )
             // 全てのメディアが削除された場合は null とする

@@ -35,7 +35,7 @@ export const Component = ({
                 password: pw
             })
             if (typeof res.error !== "undefined") {
-                let e: Error = new Error(res.message)
+                const e: Error = new Error(res.message)
                 e.name = res.error
                 throw e
             } else {

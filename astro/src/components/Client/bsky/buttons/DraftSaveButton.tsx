@@ -32,7 +32,7 @@ export const Component = ({
 
     const handleSavePost = () => {
         const isValidPost = (): boolean => {
-            let result: boolean = postText.length >= 1
+            const result: boolean = postText.length >= 1
             return result
         }
 
