@@ -48,6 +48,7 @@ export const getOgpMeta = async ({
                 type: "error",
                 error: `${e.name}@getOgpMeta`,
                 message: e.message,
+                status: 500,
             }
         })
 }
