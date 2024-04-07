@@ -2,21 +2,23 @@ import getEndpoint, { com_atproto } from "./base"
 const apiName = com_atproto.repo.uploadBlob
 const endpoint = getEndpoint(apiName)
 
-export type uploadBlobResult =
-    | {
-          blob: {
-              $type: "blob"
-              ref: {
-                  $link: string
-              }
-              mimeType: string
-              size: number
-          }
-      }
-    | {
-          error: string
-          message: string
-      }
+type uploadBlobSuccessResult = {
+    blob: {
+        $type: "blob"
+        ref: {
+            $link: string
+        }
+        mimeType: string
+        size: number
+    }
+}
+
+type uploadBlobErrorResult = {
+    error: string
+    message: string
+}
+
+export type uploadBlobResult = uploadBlobSuccessResult | uploadBlobErrorResult
 
 export const api = async ({
     accessJwt,
@@ -37,16 +39,13 @@ export const api = async ({
     })
         .then(async response => {
             if (!response?.ok) {
-                const res: {
-                    error: string
-                    message: string
-                } = (await response.json()) as uploadBlobResult
+                const res = (await response.json()) as uploadBlobErrorResult
 
                 const e: Error = new Error(res.message)
                 e.name = apiName
                 throw e
             }
-            return (await response.json()) as uploadBlobResult
+            return (await response.json()) as uploadBlobSuccessResult
         })
         .catch((e: Error) => {
             return {
