@@ -1,13 +1,24 @@
-import mtype from "./models/db.json"
+import { z } from "zod"
 import etype from "./models/error.json"
-const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT
+const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT as string
 const object = "page"
+
+export const PageFetchOutputZod = z.object({
+    ogp: z.string(),
+    imgs: z.array(
+        z.object({
+            thumb: z.string(),
+            alt: z.string(),
+        }),
+    ),
+})
+export type output = z.infer<typeof PageFetchOutputZod>
 
 export const api = async ({
     id,
 }: {
     id: string
-}): Promise<typeof mtype & typeof etype> => {
+}): Promise<output | typeof etype> => {
     const url = new URL(object + "/" + encodeURIComponent(id), endpoint_url)
     return fetch(url, {
         method: "GET",
@@ -15,7 +26,20 @@ export const api = async ({
             "Content-Type": "application/json",
         },
     })
-        .then(response => response.json())
+        .then(response => {
+            const responseParsed = PageFetchOutputZod.safeParse(
+                response.json(),
+            )
+
+            if (!responseParsed.success) {
+                const e: Error = new Error("Unexpected Response Type@getPages::api")
+                e.name = "Unexpected Response Type@getPages::api"
+                throw e
+            }
+
+            const apiResult: output = responseParsed.data
+            return apiResult
+        })
         .catch((e: Error) => {
             return {
                 error: e.name,

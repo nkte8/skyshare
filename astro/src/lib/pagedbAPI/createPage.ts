@@ -1,9 +1,12 @@
+import { z } from "zod"
 import etype from "./models/error.json"
-const endpoint_url = import.meta.env.PUBLIC_CREATEPAGES_ENDPOINT
 
-type output = {
-    uri: string
-}
+const endpoint_url = import.meta.env.PUBLIC_CREATEPAGES_ENDPOINT as string
+
+const PageCreationOutputZod = z.object({
+    uri: z.string(),
+})
+type output = z.infer<typeof PageCreationOutputZod>
 
 /**
  * pageDBへページを追加
@@ -18,7 +21,7 @@ export const api = async ({
 }: {
     uri: string
     accessJwt: string
-}): Promise<output & typeof etype> => {
+}): Promise<output | typeof etype> => {
     return fetch(endpoint_url, {
         method: "POST",
         headers: {
@@ -29,7 +32,20 @@ export const api = async ({
             accessJwt: accessJwt,
         }),
     })
-        .then(response => response.json())
+        .then(response => {
+            const responseParsed = PageCreationOutputZod.safeParse(
+                response.json(),
+            )
+            if (!responseParsed.success) {
+                const e: Error = new Error(
+                    "Unexpected Response Type@createPage::api",
+                )
+                e.name = "Unexpected Response Type@createPage::api"
+                throw e
+            }
+            const apiResult: output = responseParsed.data
+            return apiResult
+        })
         .catch((e: Error) => {
             return {
                 error: e.name,

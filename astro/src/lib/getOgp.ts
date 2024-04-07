@@ -1,4 +1,5 @@
-import type { ogpMetaData, errorResponse } from "@/lib/api/types"
+import type { errorResponse, ogpMetaData } from "@/lib/api/types"
+import { ErrorResponseZod, OgpMetaDataZod } from "@/lib/api/types"
 
 // note: エラー規格を型定義として決めた方がいい（ error@Component: message とするなど）
 export const getOgpMeta = async ({
@@ -22,16 +23,28 @@ export const getOgpMeta = async ({
         },
     })
         .then(async response => {
-            if (!response?.ok) {
-                const res: errorResponse = await response.json()
-                const e: Error = new Error(res.message)
-                e.name = res.error
+            const jsonResponse: unknown = await response.json()
+            const responseParsedAsError =
+                ErrorResponseZod.safeParse(jsonResponse)
+            const responseParsedAsOgpMetaData =
+                OgpMetaDataZod.safeParse(jsonResponse)
+
+            if (!(response.ok && responseParsedAsOgpMetaData.success)) {
+                const e: Error = new Error(
+                    responseParsedAsError.success
+                        ? responseParsedAsError.data.message
+                        : "Unexpected Response Type@getOgpMeta",
+                )
+                e.name = responseParsedAsError.success
+                    ? responseParsedAsError.data.error
+                    : "Unexpected Response Type@getOgpMeta"
                 throw e
             }
-            return (await response.json()) as ogpMetaData
+
+            return responseParsedAsOgpMetaData.data
         })
         .catch((e: Error) => {
-            return <errorResponse>{
+            return {
                 type: "error",
                 error: `${e.name}@getOgpMeta`,
                 message: e.message,
@@ -58,10 +71,20 @@ export const getOgpBlob = async ({
             "Cache-Control": "no-cache",
         },
     }).then(async response => {
-        if (!response?.ok) {
-            const res: errorResponse = await response.json()
-            const e: Error = new Error(res.message)
-            e.name = `${res.error}@getOgpBlob`
+        if (!response.ok) {
+            const responseParsedAsError = ErrorResponseZod.safeParse(
+                response.json(),
+            )
+            const e: Error = new Error(
+                responseParsedAsError.success
+                    ? responseParsedAsError.data.message
+                    : "Unexpected Response Type@getOgpBlob",
+            )
+            e.name = `${
+                responseParsedAsError.success
+                    ? responseParsedAsError.data.error
+                    : "Unexpected Response Type"
+            }@getOgpBlob`
             throw e
         }
         return await response.blob()
