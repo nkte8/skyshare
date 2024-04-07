@@ -7,10 +7,10 @@ import { MediaData } from "../../common/types"
 const Component = ({
     itemId,
     mediaData,
-    setMediaData
+    setMediaData,
 }: {
-    itemId: number,
-    mediaData: MediaData,
+    itemId: number
+    mediaData: MediaData
     setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
     const handleClick = () => {
@@ -31,7 +31,7 @@ const Component = ({
             }
             // Listから自身のitemIdを取り除き、これをリストに追加する
             const result = mediaData.images.filter(
-                (_, index) => index !== itemId
+                (_, index) => index !== itemId,
             )
             // 全てのメディアが削除された場合は null とする
             if (result.length <= 0) {
@@ -40,7 +40,7 @@ const Component = ({
             }
             setMediaData({
                 type: mediaData.type,
-                images: result
+                images: result,
             })
         }
     }
@@ -50,14 +50,16 @@ const Component = ({
                 onClick={handleClick}
                 className={[
                     "rounded-full",
-                    "h-8", "w-8",
+                    "h-8",
+                    "w-8",
                     "border-2",
                     "bg-white",
                     "border-gray-700",
                     "absolute",
                     "left-1",
                     "top-1",
-                ].join(" ")}>
+                ].join(" ")}
+            >
                 ✖️
             </button>
         </>

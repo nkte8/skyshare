@@ -117,9 +117,9 @@ export const Component = ({
                 labels:
                     selfLabel !== null
                         ? {
-                            $type: "com.atproto.label.defs#selfLabels",
-                            values: [selfLabel],
-                        }
+                              $type: "com.atproto.label.defs#selfLabels",
+                              values: [selfLabel],
+                          }
                         : undefined,
                 via: options.appendVia !== false ? servicename : undefined,
                 facets: facets.length > 0 ? facets : undefined,
@@ -232,7 +232,8 @@ export const Component = ({
                     }
                 })
 
-                const resultUploadBlobSuccess = resultUploadBlob as uploadBlobSuccessResult[]
+                const resultUploadBlobSuccess =
+                    resultUploadBlob as uploadBlobSuccessResult[]
 
                 // Recordの作成
                 switch (mediaData.type) {
@@ -241,12 +242,14 @@ export const Component = ({
                             ...Record,
                             embed: {
                                 $type: "app.bsky.embed.images",
-                                images: resultUploadBlobSuccess.map((value, index) => {
-                                    return {
-                                        image: value.blob,
-                                        alt: mediaData.images[index].alt,
-                                    }
-                                }),
+                                images: resultUploadBlobSuccess.map(
+                                    (value, index) => {
+                                        return {
+                                            image: value.blob,
+                                            alt: mediaData.images[index].alt,
+                                        }
+                                    },
+                                ),
                             },
                         }
                         break
@@ -258,7 +261,7 @@ export const Component = ({
                                 $type: "app.bsky.embed.external",
                                 external: {
                                     thumb:
-                                    resultUploadBlobSuccess.length >= 1
+                                        resultUploadBlobSuccess.length >= 1
                                             ? resultUploadBlobSuccess[0].blob
                                             : undefined,
                                     uri: mediaData.meta.url,
@@ -287,7 +290,10 @@ export const Component = ({
                 accessJwt: session.accessJwt,
                 record: Record,
             })
-            if ("error" in createRecordResult && typeof createRecordResult.error != "undefined") {
+            if (
+                "error" in createRecordResult &&
+                typeof createRecordResult.error != "undefined"
+            ) {
                 const e: Error = new Error(createRecordResult.message)
                 e.name = createRecordResult.error
                 throw e
@@ -308,7 +314,8 @@ export const Component = ({
                 })
                 const createPageResult = await createPage({
                     accessJwt: session.accessJwt,
-                    uri: (createRecordResult as typeof dummyCreateRecordObject).uri,
+                    uri: (createRecordResult as typeof dummyCreateRecordObject)
+                        .uri,
                 })
                 if (typeof createPageResult?.error !== "undefined") {
                     const e: Error = new Error(createPageResult.message)

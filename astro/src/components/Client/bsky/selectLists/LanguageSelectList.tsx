@@ -1,32 +1,37 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react"
 import SelectList from "../../common/SelectList"
 const langList = [
     {
         label: "日本語",
-        code: "ja"
-    }, {
+        code: "ja",
+    },
+    {
         label: "English",
-        code: "en"
-    }, {
+        code: "en",
+    },
+    {
         label: "中文",
-        code: "zh"
-    }, {
+        code: "zh",
+    },
+    {
         label: "한국어",
-        code: "ko"
-    }];
+        code: "ko",
+    },
+]
 export const Component = ({
     disabled,
-    setLanguage
+    setLanguage,
 }: {
-    disabled: boolean,
-    setLanguage: Dispatch<SetStateAction<string>>,
+    disabled: boolean
+    setLanguage: Dispatch<SetStateAction<string>>
 }) => {
     return (
         <>
-            <SelectList 
+            <SelectList
                 setCode={setLanguage}
                 codeMap={langList}
-                disabled={disabled}/>
+                disabled={disabled}
+            />
         </>
     )
 }

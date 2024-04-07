@@ -1,17 +1,17 @@
 // utils
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react"
 
 // service
-import { button_base } from "../../common/tailwindVariants";
-import { readSavedTags } from "@/utils/useLocalStorage";
+import { button_base } from "../../common/tailwindVariants"
+import { readSavedTags } from "@/utils/useLocalStorage"
 
 export const Component = ({
     disabled,
     postText,
-    setPostText
+    setPostText,
 }: {
-    disabled: boolean,
-    postText: string,
+    disabled: boolean
+    postText: string
     setPostText: Dispatch<SetStateAction<string>>
 }) => {
     const handleClick = (tag: string) => {
@@ -22,17 +22,20 @@ export const Component = ({
         } else {
             // 末尾が改行文字か、半角文字の場合は区切り記号を挿入しない
             console.log(`last : "${postText.slice(-1)}"`)
-            outputText = [postText,
-                new RegExp(/[ \n\r]/).test(
-                    postText.slice(-1)) ? "" : " ",
-                tag].join("")
+            outputText = [
+                postText,
+                new RegExp(/[ \n\r]/).test(postText.slice(-1)) ? "" : " ",
+                tag,
+            ].join("")
         }
         setPostText(outputText)
     }
     const TagButton = ({ tag }: { tag: string }) => {
         return (
             <button
-                onClick={() => { handleClick(tag) }}
+                onClick={() => {
+                    handleClick(tag)
+                }}
                 className={button_base({
                     disabled: disabled,
                     class: [
@@ -43,23 +46,21 @@ export const Component = ({
                         "px-3",
                         "w-fit",
                         "inline-block",
-                        "whitespace-nowrap"
+                        "whitespace-nowrap",
                     ],
-                    noshadow: true
-                })}>
+                    noshadow: true,
+                })}
+            >
                 {tag}
             </button>
         )
     }
     return (
         <div className="my-auto overflow-x-scroll flex w-fit minimum-scrollbars">
-            {
-                readSavedTags().map((value, index) => {
-                    return <TagButton key={`${index}-${value}`} tag={value} />
-                })
-            }
+            {readSavedTags().map((value, index) => {
+                return <TagButton key={`${index}-${value}`} tag={value} />
+            })}
         </div>
     )
-
 }
 export default Component
