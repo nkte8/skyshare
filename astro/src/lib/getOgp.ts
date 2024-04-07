@@ -37,7 +37,7 @@ export const getOgpMeta = async ({
                 )
                 e.name = responseParsedAsError.success
                     ? responseParsedAsError.data.error
-                    : "Unexpected Response Type@getOgpMeta"
+                    : "Unexpected Response Type"
                 throw e
             }
 
