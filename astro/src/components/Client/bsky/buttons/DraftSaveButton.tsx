@@ -46,7 +46,7 @@ export const Component = ({
 
         saveTagToSavedTags({ postText })
 
-        const newDrafts = [postText, ...readDrafts() || []]
+        const newDrafts = [postText, ...readDrafts()]
 
         saveDrafts(newDrafts)
         setDrafts(newDrafts)
