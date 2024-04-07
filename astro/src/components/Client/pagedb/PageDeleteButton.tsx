@@ -3,6 +3,7 @@ import deletePage from "@/lib/pagedbAPI/deletePage"
 import ProcButton from "../common/ProcButton"
 import { type Session_info } from "../common/contexts"
 import { type msgInfo } from "../common/types"
+import etype from "@/lib/pagedbAPI/models/error.json"
 
 const Component = ({
     id,
@@ -28,7 +29,7 @@ const Component = ({
                 did: session.did,
                 accessJwt: session.accessJwt
             })
-            if (typeof resDeletePage?.error === "undefined" &&
+            if (!("error" in resDeletePage) &&
                 resDeletePage.result === "ok") {
                 setMsgInfo({
                     isError: false,
@@ -36,7 +37,7 @@ const Component = ({
                 })
                 window.location.reload()
             } else {
-                let e: Error = new Error(resDeletePage.message)
+                const e: Error = new Error((resDeletePage as typeof etype).message)
                 e.name = "pagedelete.tsx"
                 throw e
             }

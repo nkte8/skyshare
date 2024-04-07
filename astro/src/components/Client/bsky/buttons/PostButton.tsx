@@ -20,7 +20,7 @@ import resolveHandle, {
 } from "@/utils/atproto_api/resolveHandle"
 
 // backend api
-import createPage from "@/lib/pagedbAPI/createPage"
+import createPage, { pageCreationOutput } from "@/lib/pagedbAPI/createPage"
 import browserImageCompression from "@/utils/browserImageCompression"
 import { getOgpBlob, getOgpMeta } from "@/lib/getOgp"
 
@@ -303,7 +303,7 @@ export const Component = ({
                     accessJwt: session.accessJwt,
                     uri: createRecordResult.uri,
                 })
-                if (typeof createPageResult?.error !== "undefined") {
+                if ("error" in createPageResult && typeof createPageResult.error != "undefined") {
                     const e: Error = new Error(createPageResult.message)
                     e.name = createPageResult.error
                     throw e
@@ -312,7 +312,7 @@ export const Component = ({
                     msg: "Twitter用リンクを生成しました!",
                     isError: false,
                 })
-                const [id, rkey] = createPageResult.uri.split("/")
+                const [id, rkey] = (createPageResult as pageCreationOutput).uri.split("/")
                 const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
                 // 本文に生成URLを付与
                 callbackPostOptions.postText += `${
