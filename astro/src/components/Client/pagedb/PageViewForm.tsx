@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 import { pagesPrefix } from "@/env/envs"
-import getIds from "@/lib/pagedbAPI/geIds"
+import getIds from "@/lib/pagedbAPI/getIds"
 import { Session_context } from "../common/contexts"
 import { load_circle, link } from "../common/tailwindVariants"
 import ProfileCard from "./ProfileCard"
