@@ -2,14 +2,14 @@ import { useState, useEffect, useContext, Dispatch, SetStateAction } from "react
 import { inputtext_base, link } from "../common/tailwindVariants"
 import { Session_context, Profile_context } from "../common/contexts"
 import { type msgInfo } from "../common/types"
-import createSession from "@/utils/atproto_api/createSession";
-import loadProfile from "./lib/loadProfile";
+import createSession from "@/utils/atproto_api/createSession"
+import dummyCreateSessionObject from "@/utils/atproto_api/models/createSession.json"
+import loadProfile from "./lib/loadProfile"
 
-import { writeJwt } from "@/utils/useLocalStorage"
 import ProcButton from "../common/ProcButton"
 import Tooltip from "../common/Tooltip"
 import SavePasswordToggle from "./optionToggles/SavePasswordToggle"
-import { readLogininfo, setLogininfo } from "@/utils/useLocalStorage"
+import {writeJwt, readLogininfo, setLogininfo } from "@/utils/useLocalStorage"
 
 export const Component = ({
     setMsgInfo,
@@ -34,14 +34,15 @@ export const Component = ({
                 identifier: id,
                 password: pw
             })
-            if (typeof res.error !== "undefined") {
+            if ("error" in res && typeof res.error != "undefined") {
                 const e: Error = new Error(res.message)
                 e.name = res.error
                 throw e
             } else {
-                setSession(res)
+                const successResponse = res as typeof dummyCreateSessionObject
+                setSession(successResponse)
                 // セッションをlocalstorageへ保存
-                writeJwt(res.refreshJwt)
+                writeJwt(successResponse.refreshJwt)
                 setMsgInfo({
                     msg: "セッションを開始しました!",
                     isError: false,
@@ -55,7 +56,7 @@ export const Component = ({
                 }
                 // プロフィールを読み込み
                 await loadProfile({
-                    session: res,
+                    session: successResponse,
                     setProfile: setProfile
                 })
             }
