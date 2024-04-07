@@ -1,14 +1,14 @@
 ---
 interface Props {
-    pageTitle: string;
-    cardPath: string;
-    robots: string[];
+    pageTitle: string
+    cardPath: string
+    robots: string[]
 }
-const { cardPath, pageTitle, robots } = Astro.props;
-import { servicename, servicedesc } from "@/env/vars";
+const { cardPath, pageTitle, robots } = Astro.props
+import { servicename, servicedesc } from "@/env/vars"
 
-const url = Astro.url;
-const cardUrl = new URL(cardPath, Astro.url);
+const url = Astro.url
+const cardUrl = new URL(cardPath, Astro.url)
 
 const description = servicedesc
 ---
@@ -37,10 +37,10 @@ const description = servicedesc
     type="text/partytown"
     src="https://www.googletagmanager.com/gtag/js?id=G-JDS7QWVYQB"></script>
 <script is:inline type="text/partytown">
-    window.dataLayer = window.dataLayer || [];
+    window.dataLayer = window.dataLayer || []
     function gtag() {
-        dataLayer.push(arguments);
+        dataLayer.push(arguments)
     }
-    gtag("js", new Date());
-    gtag("config", "G-JDS7QWVYQB");
+    gtag("js", new Date())
+    gtag("config", "G-JDS7QWVYQB")
 </script>

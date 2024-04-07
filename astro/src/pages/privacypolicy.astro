@@ -1,9 +1,9 @@
 ---
-import { servicename, authorlink, authorname, authormail } from "@/env/vars";
-import Pagelayout from "@/layouts/Pagelayout.astro";
-const title = `Privacy Policy - ${servicename}`;
-const robots = ["index", "nofollow", "noarchive", "noimageindex"];
-import version from "@/env/version";
+import { servicename, authorlink, authorname, authormail } from "@/env/vars"
+import Pagelayout from "@/layouts/Pagelayout.astro"
+const title = `Privacy Policy - ${servicename}`
+const robots = ["index", "nofollow", "noarchive", "noimageindex"]
+import version from "@/env/version"
 ---
 
 <Pagelayout
@@ -16,7 +16,9 @@ import version from "@/env/version";
     <div class="mb-8">
         <h3>個人情報の収集・利用</h3>
         <div class="mb-4">
-            {servicename}（以下、当サイト）は、サービスの提供のために以下の情報を収集・利用します。
+            {
+                servicename
+            }（以下、当サイト）は、サービスの提供のために以下の情報を収集・利用します。
         </div>
         <ul class="mb-4 list-disc pl-8">
             <li>Blueskyへの一時的アクセスのためのトークン情報</li>
