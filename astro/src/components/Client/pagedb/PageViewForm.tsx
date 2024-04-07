@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 import { pagesPrefix } from "@/env/envs"
-import getIds from "@/lib/pagedbAPI/geIds"
+import getIds, { idsFetchOutput } from "@/lib/pagedbAPI/getIds"
 import { Session_context } from "../common/contexts"
 import { load_circle, link } from "../common/tailwindVariants"
 import ProfileCard from "./ProfileCard"
@@ -31,23 +31,26 @@ const Component = ({
 
     const pageIds = async () => {
         try {
-            const ids = await getIds({
+            const getIdsResult = await getIds({
                 handle: session.handle!
             })
-            if (typeof ids?.error !== "undefined") {
-                let e: Error = new Error(ids.message)
-                e.name = ids.error
+            if ("error" in getIdsResult && typeof getIdsResult?.error !== "undefined") {
+                const e: Error = new Error(getIdsResult.message)
+                e.name = getIdsResult.error
                 throw e
             }
             setMsgInfo({
                 isError: false,
                 msg: "投稿一覧を読み込みました!"
             })
+
+            const ids = getIdsResult as idsFetchOutput
+
             setList(
                 <div className="mx-auto">
                     <div>OGP生成したページ一覧</div>
                     <div className="grid sm:grid-cols-3 grid-cols-1">
-                        {ids?.ids.map((value) => {
+                        {ids.ids.map((value) => {
                             return (
                                 <div className=" bg-white rounded-lg px-2 py-1 m-1 border-2">
                                     <a className={link()} target="_blank"
