@@ -1,10 +1,10 @@
 ---
 interface Props {
-    pageTitle: string;
-    cardPath: string;
-    robots: string[];
-    hideLoader?: boolean;
-    hidePostButton: boolean;
+    pageTitle: string
+    cardPath: string
+    robots: string[]
+    hideLoader?: boolean
+    hidePostButton: boolean
 }
 const {
     cardPath,
@@ -12,10 +12,10 @@ const {
     robots,
     hideLoader = false,
     hidePostButton,
-} = Astro.props;
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import Blanklayout from "@/layouts/Blanklayout.astro";
+} = Astro.props
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import Blanklayout from "@/layouts/Blanklayout.astro"
 ---
 
 <Blanklayout
