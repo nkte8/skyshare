@@ -85,7 +85,7 @@ export const Component = ({
         }
     }
     useEffect(() => {
-        handleOnLoad()
+        void handleOnLoad()
     }, [])
 
     return (

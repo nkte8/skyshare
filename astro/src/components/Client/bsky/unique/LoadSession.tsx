@@ -79,7 +79,7 @@ export const Component = ({
         setIsLoad(true)
     }
     useEffect(() => {
-        handleLoad()
+        void handleLoad()
     }, [])
 
     return (
