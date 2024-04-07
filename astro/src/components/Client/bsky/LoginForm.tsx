@@ -18,7 +18,7 @@ export const Component = ({
 }) => {
     const [loading, setLoad] = useState<boolean>(false)
     const [savePassword, setSavePassword] = useState<boolean>(false)
-    const [identifier, setIdentifer] = useState<string>("")
+    const [identifier, setIdentifier] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const { setSession } = useContext(Session_context)
     const { setProfile } = useContext(Profile_context)
@@ -95,7 +95,7 @@ export const Component = ({
                     <label className="w-32 inline-block my-auto">
                         Email or ID:
                     </label>
-                    <input onChange={(event) => setIdentifer(event.target.value)}
+                    <input onChange={(event) => setIdentifier(event.target.value)}
                         placeholder="example.bsky.social"
                         disabled={loading}
                         className={inputtext_base({
