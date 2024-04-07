@@ -1,30 +1,30 @@
 ---
-export const prerender = false;
-import Pagelayout from "@/layouts/Postlayout.astro";
-import getPage from "@/lib/pagedbAPI/getPage";
-import { servicename } from "@/env/vars";
-import { baseurl } from "@/env/envs";
+export const prerender = false
+import Pagelayout from "@/layouts/Postlayout.astro"
+import getPage from "@/lib/pagedbAPI/getPage"
+import { servicename } from "@/env/vars"
+import { baseurl } from "@/env/envs"
 
-const { slug } = Astro.params;
+const { slug } = Astro.params
 if (typeof slug === "undefined") {
     return new Response(null, {
         status: 503,
         statusText: "Server Error",
-    });
+    })
 }
-const [author, _, rkey] = slug.split(/(_|@)/);
-const getpage_res = await getPage({ id: slug });
+const [author, _, rkey] = slug.split(/(_|@)/)
+const getpage_res = await getPage({ id: slug })
 
 if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
     return new Response(null, {
         status: 404,
         statusText: "Not found",
-    });
+    })
 }
-const title = `${author} Post - ${servicename}`;
-const imgs = getpage_res.imgs;
-const robots = ["noindex", "nofollow", "noarchive", "noimageindex"];
-import Loadingcircle from "@/components/loadingcircle.astro";
+const title = `${author} Post - ${servicename}`
+const imgs = getpage_res.imgs
+const robots = ["noindex", "nofollow", "noarchive", "noimageindex"]
+import Loadingcircle from "@/components/loadingcircle.astro"
 ---
 
 <Pagelayout
@@ -48,10 +48,14 @@ import Loadingcircle from "@/components/loadingcircle.astro";
             </a>
         </h3>
         {
-            imgs.map((value) => {
+            imgs.map(value => {
                 return (
-                    <img src={value.thumb} alt={value.alt} class="mx-auto mb-2" />
-                );
+                    <img
+                        src={value.thumb}
+                        alt={value.alt}
+                        class="mx-auto mb-2"
+                    />
+                )
             })
         }
     </div>
