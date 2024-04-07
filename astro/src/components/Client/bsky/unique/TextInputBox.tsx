@@ -147,7 +147,7 @@ const Component = ({
             })
             const segments = segmenterJa.segment(postText)
             return Array.from(segments).length
-        } catch (e) {
+        } catch (_e) {
             // Intl.Segmenterがfirefoxでは未対応であるため、やむをえずレガシーな方法で対処
             // 絵文字のカウント数が想定より多く設定されてしまうため、firefox_v125までは非推奨ブラウザとする
             return postText.length
