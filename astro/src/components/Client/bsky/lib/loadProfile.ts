@@ -22,9 +22,8 @@ export const loadProfile = async ({
             accessJwt: session.accessJwt,
             handle: session.handle
         })
-        if (res !== null && typeof res?.error === "undefined") {
-            const res_prof: typeof model_getProfile = res as typeof model_getProfile
-            setProfile(res_prof)
+        if (res != null && !("error" in res)) {
+            setProfile(res)
         }
     } catch (e: unknown) {
         if (e instanceof Error){
