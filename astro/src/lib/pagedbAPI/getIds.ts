@@ -6,7 +6,7 @@ const object = "user"
 const IdsFetchOutputZod = z.object({
     ids: z.array(z.string()),
 })
-type output = {
+export type idsFetchOutput = {
     ids: Array<string>
 }
 
@@ -14,7 +14,7 @@ export const api = async ({
     handle,
 }: {
     handle: string
-}): Promise<output | typeof etype> => {
+}): Promise<idsFetchOutput | typeof etype> => {
     const url = new URL(object + "/" + encodeURIComponent(handle), endpoint_url)
     return fetch(url, {
         method: "GET",
@@ -26,12 +26,14 @@ export const api = async ({
             const responseParsed = IdsFetchOutputZod.safeParse(response.json())
 
             if (!responseParsed.success) {
-                const e: Error = new Error("Unexpected Response Type@getIds::api")
+                const e: Error = new Error(
+                    "Unexpected Response Type@getIds::api",
+                )
                 e.name = "Unexpected Response Type@getIds::api"
                 throw e
             }
 
-            const apiResult: output = responseParsed.data
+            const apiResult: idsFetchOutput = responseParsed.data
             return apiResult
         })
         .catch((e: Error) => {

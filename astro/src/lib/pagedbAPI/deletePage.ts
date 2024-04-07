@@ -6,7 +6,7 @@ const endpoint_url = import.meta.env.PUBLIC_DELETEPAGE_ENDPOINT as string
 const PageDeletionOutputZod = z.object({
     result: z.string(),
 })
-type output = z.infer<typeof PageDeletionOutputZod>
+export type pageDeletionOutput = z.infer<typeof PageDeletionOutputZod>
 
 /**
  * pageDBからデータを削除
@@ -24,7 +24,7 @@ export const api = async ({
     id: string
     did: string
     accessJwt: string
-}): Promise<output | typeof etype> => {
+}): Promise<pageDeletionOutput | typeof etype> => {
     return fetch(endpoint_url, {
         method: "POST",
         headers: {
@@ -48,7 +48,7 @@ export const api = async ({
                 e.name = "Unexpected Response Type@deletePage::api"
                 throw e
             }
-            const apiResult: output = responseParsed.data
+            const apiResult: pageDeletionOutput = responseParsed.data
             return apiResult
         })
         .catch((e: Error) => {

@@ -12,13 +12,13 @@ export const PageFetchOutputZod = z.object({
         }),
     ),
 })
-export type output = z.infer<typeof PageFetchOutputZod>
+export type pageFetchOutput = z.infer<typeof PageFetchOutputZod>
 
 export const api = async ({
     id,
 }: {
     id: string
-}): Promise<output | typeof etype> => {
+}): Promise<pageFetchOutput | typeof etype> => {
     const url = new URL(object + "/" + encodeURIComponent(id), endpoint_url)
     return fetch(url, {
         method: "GET",
@@ -27,17 +27,17 @@ export const api = async ({
         },
     })
         .then(response => {
-            const responseParsed = PageFetchOutputZod.safeParse(
-                response.json(),
-            )
+            const responseParsed = PageFetchOutputZod.safeParse(response.json())
 
             if (!responseParsed.success) {
-                const e: Error = new Error("Unexpected Response Type@getPages::api")
+                const e: Error = new Error(
+                    "Unexpected Response Type@getPages::api",
+                )
                 e.name = "Unexpected Response Type@getPages::api"
                 throw e
             }
 
-            const apiResult: output = responseParsed.data
+            const apiResult: pageFetchOutput = responseParsed.data
             return apiResult
         })
         .catch((e: Error) => {

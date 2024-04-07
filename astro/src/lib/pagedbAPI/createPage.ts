@@ -6,7 +6,7 @@ const endpoint_url = import.meta.env.PUBLIC_CREATEPAGES_ENDPOINT as string
 const PageCreationOutputZod = z.object({
     uri: z.string(),
 })
-type output = z.infer<typeof PageCreationOutputZod>
+export type pageCreationOutput = z.infer<typeof PageCreationOutputZod>
 
 /**
  * pageDBへページを追加
@@ -21,7 +21,7 @@ export const api = async ({
 }: {
     uri: string
     accessJwt: string
-}): Promise<output | typeof etype> => {
+}): Promise<pageCreationOutput | typeof etype> => {
     return fetch(endpoint_url, {
         method: "POST",
         headers: {
@@ -43,7 +43,7 @@ export const api = async ({
                 e.name = "Unexpected Response Type@createPage::api"
                 throw e
             }
-            const apiResult: output = responseParsed.data
+            const apiResult: pageCreationOutput = responseParsed.data
             return apiResult
         })
         .catch((e: Error) => {
