@@ -136,7 +136,7 @@ export const Component = ({
                             （BskyLinXに限らず）非公式のアプリを使う際はAppPasswordの利用が推奨されています。
                             <a className={link()}
                                 target="_blank"
-                                href="https://bsky.app/settings/app-passwords">
+                                href="https://bsky.app/settings/app-passwords" rel="noopener noreferrer">
                                 <b>bsky.appの⚙設定</b>→<b>🔒高度な設定(新規タブが開きます)</b>
                             </a>から生成してください。
                         </div>
