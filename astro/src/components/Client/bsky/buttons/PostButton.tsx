@@ -12,12 +12,16 @@ import { label } from "@/utils/atproto_api/labels"
 import detectFacets from "@/utils/atproto_api/detectFacets"
 import createRecord from "@/utils/atproto_api/createRecord"
 import type record from "@/utils/atproto_api/record"
-import uploadBlob, {
-    type uploadBlobResult,
+import uploadBlob from "@/utils/atproto_api/uploadBlob"
+import type {
+    uploadBlobSuccessResult,
+    uploadBlobResult,
 } from "@/utils/atproto_api/uploadBlob"
 import resolveHandle, {
     type resolveHandleResult,
 } from "@/utils/atproto_api/resolveHandle"
+
+import dummyCreateRecordObject from "@/utils/atproto_api/models/createRecord.json"
 
 // backend api
 import createPage from "@/lib/pagedbAPI/createPage"
@@ -113,9 +117,9 @@ export const Component = ({
                 labels:
                     selfLabel !== null
                         ? {
-                            $type: "com.atproto.label.defs#selfLabels",
-                            values: [selfLabel],
-                        }
+                              $type: "com.atproto.label.defs#selfLabels",
+                              values: [selfLabel],
+                          }
                         : undefined,
                 via: options.appendVia !== false ? servicename : undefined,
                 facets: facets.length > 0 ? facets : undefined,
@@ -221,12 +225,16 @@ export const Component = ({
                 )
                 // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
                 resultUploadBlob.forEach(value => {
-                    if (typeof value?.error !== "undefined") {
+                    if ("error" in value && typeof value.error != "undefined") {
                         const e: Error = new Error(value.message)
                         e.name = value.error
                         throw e
                     }
                 })
+
+                const resultUploadBlobSuccess =
+                    resultUploadBlob as uploadBlobSuccessResult[]
+
                 // Recordの作成
                 switch (mediaData.type) {
                     case "images":
@@ -234,12 +242,14 @@ export const Component = ({
                             ...Record,
                             embed: {
                                 $type: "app.bsky.embed.images",
-                                images: resultUploadBlob.map((value, index) => {
-                                    return {
-                                        image: value.blob,
-                                        alt: mediaData.images[index].alt,
-                                    }
-                                }),
+                                images: resultUploadBlobSuccess.map(
+                                    (value, index) => {
+                                        return {
+                                            image: value.blob,
+                                            alt: mediaData.images[index].alt,
+                                        }
+                                    },
+                                ),
                             },
                         }
                         break
@@ -251,8 +261,8 @@ export const Component = ({
                                 $type: "app.bsky.embed.external",
                                 external: {
                                     thumb:
-                                        resultUploadBlob.length >= 1
-                                            ? resultUploadBlob[0].blob
+                                        resultUploadBlobSuccess.length >= 1
+                                            ? resultUploadBlobSuccess[0].blob
                                             : undefined,
                                     uri: mediaData.meta.url,
                                     title: mediaData.meta.title,
@@ -280,7 +290,10 @@ export const Component = ({
                 accessJwt: session.accessJwt,
                 record: Record,
             })
-            if (typeof createRecordResult?.error !== "undefined") {
+            if (
+                "error" in createRecordResult &&
+                typeof createRecordResult.error != "undefined"
+            ) {
                 const e: Error = new Error(createRecordResult.message)
                 e.name = createRecordResult.error
                 throw e
@@ -301,7 +314,8 @@ export const Component = ({
                 })
                 const createPageResult = await createPage({
                     accessJwt: session.accessJwt,
-                    uri: createRecordResult.uri,
+                    uri: (createRecordResult as typeof dummyCreateRecordObject)
+                        .uri,
                 })
                 if (typeof createPageResult?.error !== "undefined") {
                     const e: Error = new Error(createPageResult.message)

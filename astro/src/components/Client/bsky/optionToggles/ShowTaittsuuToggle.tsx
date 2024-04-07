@@ -10,10 +10,10 @@ import { readShowTaittsuu, setShowTaittsuu } from "@/utils/useLocalStorage"
 const Component = ({
     labeltext,
     prop,
-    setProp
+    setProp,
 }: {
-    labeltext: ReactNode,
-    prop: boolean,
+    labeltext: ReactNode
+    prop: boolean
     setProp: Dispatch<SetStateAction<boolean>>
 }) => {
     return (
@@ -22,7 +22,8 @@ const Component = ({
             setProp={setProp}
             initialValue={readShowTaittsuu(false)}
             setPropConfig={setShowTaittsuu}
-            labeltext={labeltext} />
+            labeltext={labeltext}
+        />
     )
 }
 export default Component

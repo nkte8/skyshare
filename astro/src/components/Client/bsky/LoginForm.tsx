@@ -1,24 +1,30 @@
-import { useState, useEffect, useContext, Dispatch, SetStateAction } from "react"
+import {
+    useState,
+    useEffect,
+    useContext,
+    Dispatch,
+    SetStateAction,
+} from "react"
 import { inputtext_base, link } from "../common/tailwindVariants"
 import { Session_context, Profile_context } from "../common/contexts"
 import { type msgInfo } from "../common/types"
-import createSession from "@/utils/atproto_api/createSession";
-import loadProfile from "./lib/loadProfile";
+import createSession from "@/utils/atproto_api/createSession"
+import dummyCreateSessionObject from "@/utils/atproto_api/models/createSession.json"
+import loadProfile from "./lib/loadProfile"
 
-import { writeJwt } from "@/utils/useLocalStorage"
 import ProcButton from "../common/ProcButton"
 import Tooltip from "../common/Tooltip"
 import SavePasswordToggle from "./optionToggles/SavePasswordToggle"
-import { readLogininfo, setLogininfo } from "@/utils/useLocalStorage"
+import { writeJwt, readLogininfo, setLogininfo } from "@/utils/useLocalStorage"
 
 export const Component = ({
     setMsgInfo,
 }: {
-    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
     const [loading, setLoad] = useState<boolean>(false)
     const [savePassword, setSavePassword] = useState<boolean>(false)
-    const [identifier, setIdentifer] = useState<string>("")
+    const [identifier, setIdentifier] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const { setSession } = useContext(Session_context)
     const { setProfile } = useContext(Profile_context)
@@ -32,16 +38,17 @@ export const Component = ({
             }
             const res = await createSession({
                 identifier: id,
-                password: pw
+                password: pw,
             })
-            if (typeof res.error !== "undefined") {
-                let e: Error = new Error(res.message)
+            if ("error" in res && typeof res.error != "undefined") {
+                const e: Error = new Error(res.message)
                 e.name = res.error
                 throw e
             } else {
-                setSession(res)
+                const successResponse = res as typeof dummyCreateSessionObject
+                setSession(successResponse)
                 // セッションをlocalstorageへ保存
-                writeJwt(res.refreshJwt)
+                writeJwt(successResponse.refreshJwt)
                 setMsgInfo({
                     msg: "セッションを開始しました!",
                     isError: false,
@@ -50,13 +57,13 @@ export const Component = ({
                 if (savePassword === true) {
                     setLogininfo({
                         id: identifier,
-                        pw: password
+                        pw: password,
                     })
                 }
                 // プロフィールを読み込み
                 await loadProfile({
-                    session: res,
-                    setProfile: setProfile
+                    session: successResponse,
+                    setProfile: setProfile,
                 })
             }
         } catch (error: unknown) {
@@ -66,7 +73,7 @@ export const Component = ({
             }
             setMsgInfo({
                 msg: msg,
-                isError: true
+                isError: true,
             })
         }
         setLoad(false)
@@ -78,76 +85,91 @@ export const Component = ({
                 msg: "ブラウザに保存されたID/APWでログイン中...",
                 isError: false,
             })
-            await handleLogin(
-                loginInfo.id,
-                loginInfo.pw)
+            await handleLogin(loginInfo.id, loginInfo.pw)
         }
     }
     useEffect(() => {
-        handleOnLoad()
+        void handleOnLoad()
     }, [])
 
     return (
-        <>
+        <div>
             <div className="mt-16">
                 <div className="align-middle mb-0">
                     <label className="w-32 inline-block my-auto">
                         Email or ID:
                     </label>
-                    <input onChange={(event) => setIdentifer(event.target.value)}
+                    <input
+                        onChange={event => setIdentifier(event.target.value)}
                         placeholder="example.bsky.social"
                         disabled={loading}
                         className={inputtext_base({
                             class: "max-w-52 w-full px-2",
                             kind: "outbound",
-                            disabled: loading
-                        })} type="text" />
+                            disabled: loading,
+                        })}
+                        type="text"
+                    />
                 </div>
                 <div className="align-middle">
                     <label className="w-32 inline-block my-auto">
                         AppPassword※:
                     </label>
-                    <input onChange={(event) => setPassword(event.target.value)}
+                    <input
+                        onChange={event => setPassword(event.target.value)}
                         placeholder="this-isex-ampl-epwd"
                         disabled={loading}
                         className={inputtext_base({
                             class: "max-w-52 w-full px-2",
                             kind: "outbound",
-                            disabled: loading
-                        })} type="password" />
+                            disabled: loading,
+                        })}
+                        type="password"
+                    />
                 </div>
                 <div className="my-2">
                     <ProcButton
                         handler={handleLogin}
                         isProcessing={loading}
                         context="Blueskyアカウントへログイン"
-                        disabled={!(identifier.length > 0 && password.length > 0)}
-                        showAnimation={true} />
+                        disabled={
+                            !(identifier.length > 0 && password.length > 0)
+                        }
+                        showAnimation={true}
+                    />
                 </div>
                 <div className="mx-auto w-fit">
                     <SavePasswordToggle
                         labeltext={"ID/AppPasswordをブラウザへ保存する"}
                         prop={savePassword}
-                        setProp={setSavePassword} />
+                        setProp={setSavePassword}
+                    />
                 </div>
-                <Tooltip tooltip={
-                    <div className="flex flex-col sm:flex-row">
-                        <div className="inline-block px-4 py-2 text-left">
-                            （BskyLinXに限らず）非公式のアプリを使う際はAppPasswordの利用が推奨されています。
-                            <a className={link()}
-                                target="_blank"
-                                href="https://bsky.app/settings/app-passwords">
-                                <b>bsky.appの⚙設定</b>→<b>🔒高度な設定(新規タブが開きます)</b>
-                            </a>から生成してください。
+                <Tooltip
+                    tooltip={
+                        <div className="flex flex-col sm:flex-row">
+                            <div className="inline-block px-4 py-2 text-left">
+                                （BskyLinXに限らず）非公式のアプリを使う際はAppPasswordの利用が推奨されています。
+                                <a
+                                    className={link()}
+                                    target="_blank"
+                                    href="https://bsky.app/settings/app-passwords"
+                                    rel="noopener noreferrer"
+                                >
+                                    <b>bsky.appの⚙設定</b>→
+                                    <b>🔒高度な設定(新規タブが開きます)</b>
+                                </a>
+                                から生成してください。
+                            </div>
                         </div>
-                    </div>
-                }>
+                    }
+                >
                     <span className="text-sky-400">
                         ※AppPasswordとは？(タップで説明を表示)
                     </span>
                 </Tooltip>
             </div>
-        </>
+        </div>
     )
 }
 
