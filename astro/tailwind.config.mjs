@@ -62,6 +62,8 @@ export default {
                     fontSize: theme("fontSize.sm"),
                     fontFamily: theme("font-mono"),
                     color: "black",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-all",
                 },
                 s: {
                     color: "rgb(156 163 175)", // text-gray-400
