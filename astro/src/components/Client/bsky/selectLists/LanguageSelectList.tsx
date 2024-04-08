@@ -13,6 +13,12 @@ const langList = [
     }, {
         label: "한국어",
         code: "ko"
+    }, {
+        label: "polski",
+        code: "pl"
+    }, {
+        label: "Deutsch",
+        code: "de"
     }];
 export const Component = ({
     disabled,
