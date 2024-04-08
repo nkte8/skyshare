@@ -1,10 +1,18 @@
 # Skyshare 更新履歴
 
+## 1.4.8
+
+### Patch Changes
+
+- ポルトガル語・ドイツ語の言語コードを追加しました。
+  - Now you can use *polski* or *Deutsch* language code for post.
+
 ## 1.4.7
 
 ### Patch Changes
 
 - Bluesky上でのメンションのURL変換機能を実装しました。
+
   - Blueskyに所属するアカウントへのメンションを本文上で実施した際、X向け投稿においてはBlueskyのURLに置き換える機能を実装しました。
 
 - `richTextParser`に致命的なバグがあったため修正しました。
