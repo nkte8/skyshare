@@ -4,8 +4,8 @@
 
 ### Patch Changes
 
-- ポルトガル語・ドイツ語の言語コードを追加しました。
-  - Now you can use *polski* or *Deutsch* language code for post.
+- ポルトガル語・ポーランド語・ドイツ語の言語コードを追加しました。
+  - Now you can use *portuguese*, *polski* or *Deutsch* language code for post.
 
 ## 1.4.7
 

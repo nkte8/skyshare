@@ -14,8 +14,11 @@ const langList = [
         label: "한국어",
         code: "ko"
     }, {
-        label: "polski",
+        label: "Polski",
         code: "pl"
+    }, {
+        label: "Portuguese",
+        code: "pt"
     }, {
         label: "Deutsch",
         code: "de"
