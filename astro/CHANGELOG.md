@@ -1,11 +1,19 @@
 # Skyshare 更新履歴
 
+## 1.4.9
+
+### Patch Changes
+
+- フランス語・ヒンディー語の言語コードを追加しました。
+  - Now you can use _Français_ or _हिन्दी_ language code for post.
+- 水面下でコードの改善を粛々と進めています。
+
 ## 1.4.8
 
 ### Patch Changes
 
 - ポルトガル語・ポーランド語・ドイツ語の言語コードを追加しました。
-  - Now you can use *portuguese*, *polski* or *Deutsch* language code for post.
+  - Now you can use _Portuguese_, _Polski_ or _Deutsch_ language code for post.
 
 ## 1.4.7
 
