@@ -3,7 +3,7 @@ import etype from "./models/error.json"
 const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT as string
 const object = "user"
 
-const IdsFetchOutputZod = z.object({
+const ZodIdsFetchOutput = z.object({
     ids: z.array(z.string()),
 })
 export type idsFetchOutput = {
@@ -23,7 +23,7 @@ export const api = async ({
         },
     })
         .then(response => {
-            const responseParsed = IdsFetchOutputZod.safeParse(response.json())
+            const responseParsed = ZodIdsFetchOutput.safeParse(response.json())
 
             if (!responseParsed.success) {
                 const e: Error = new Error(

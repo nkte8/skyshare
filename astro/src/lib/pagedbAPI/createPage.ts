@@ -3,10 +3,10 @@ import etype from "./models/error.json"
 
 const endpoint_url = import.meta.env.PUBLIC_CREATEPAGES_ENDPOINT as string
 
-const PageCreationOutputZod = z.object({
+const ZodPageCreationOutput = z.object({
     uri: z.string(),
 })
-export type pageCreationOutput = z.infer<typeof PageCreationOutputZod>
+export type pageCreationOutput = z.infer<typeof ZodPageCreationOutput>
 
 /**
  * pageDBへページを追加
@@ -33,7 +33,7 @@ export const api = async ({
         }),
     })
         .then(response => {
-            const responseParsed = PageCreationOutputZod.safeParse(
+            const responseParsed = ZodPageCreationOutput.safeParse(
                 response.json(),
             )
             if (!responseParsed.success) {

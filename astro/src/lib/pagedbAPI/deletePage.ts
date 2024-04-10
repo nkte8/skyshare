@@ -3,10 +3,10 @@ import etype from "./models/error.json"
 
 const endpoint_url = import.meta.env.PUBLIC_DELETEPAGE_ENDPOINT as string
 
-const PageDeletionOutputZod = z.object({
+const ZodPageDeletionOutput = z.object({
     result: z.string(),
 })
-export type pageDeletionOutput = z.infer<typeof PageDeletionOutputZod>
+export type pageDeletionOutput = z.infer<typeof ZodPageDeletionOutput>
 
 /**
  * pageDBからデータを削除
@@ -37,7 +37,7 @@ export const api = async ({
         }),
     })
         .then(response => {
-            const responseParsed = PageDeletionOutputZod.safeParse(
+            const responseParsed = ZodPageDeletionOutput.safeParse(
                 response.json(),
             )
 

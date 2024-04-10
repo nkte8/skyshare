@@ -3,7 +3,7 @@ import etype from "./models/error.json"
 const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT as string
 const object = "page"
 
-export const PageFetchOutputZod = z.object({
+export const ZodPageFetchOutput = z.object({
     ogp: z.string(),
     imgs: z.array(
         z.object({
@@ -12,7 +12,7 @@ export const PageFetchOutputZod = z.object({
         }),
     ),
 })
-export type pageFetchOutput = z.infer<typeof PageFetchOutputZod>
+export type pageFetchOutput = z.infer<typeof ZodPageFetchOutput>
 
 export const api = async ({
     id,
@@ -27,7 +27,7 @@ export const api = async ({
         },
     })
         .then(response => {
-            const responseParsed = PageFetchOutputZod.safeParse(response.json())
+            const responseParsed = ZodPageFetchOutput.safeParse(response.json())
 
             if (!responseParsed.success) {
                 const e: Error = new Error(
