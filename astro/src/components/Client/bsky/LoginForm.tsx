@@ -16,6 +16,7 @@ import ProcButton from "../common/ProcButton"
 import Tooltip from "../common/Tooltip"
 import SavePasswordToggle from "./optionToggles/SavePasswordToggle"
 import { writeJwt, readLogininfo, setLogininfo } from "@/utils/useLocalStorage"
+import { servicename } from "@/env/vars"
 
 export const Component = ({
     setMsgInfo,
@@ -149,7 +150,7 @@ export const Component = ({
                     tooltip={
                         <div className="flex flex-col sm:flex-row">
                             <div className="inline-block px-4 py-2 text-left">
-                                （BskyLinXに限らず）非公式のアプリを使う際はAppPasswordの利用が推奨されています。
+                                {`（${servicename}に限らず）非公式のアプリを使う際はAppPasswordの利用が推奨されています。`}
                                 <a
                                     className={link()}
                                     target="_blank"
