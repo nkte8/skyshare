@@ -113,13 +113,11 @@ export const GET: APIRoute = async ({
             msg = error.message
         }
 
-        const errorObject: errorResponse & { html: string } = {
+        const errorObject: errorResponse = {
             type: "error",
             error: name,
             message: msg,
             status: 500,
-            html: responseHTML,
-            // ogpResult: responseOGPResult,
         }
 
         // return new Response(JSON.stringify(<errorResponse>{
