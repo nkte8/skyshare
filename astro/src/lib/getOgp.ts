@@ -1,5 +1,5 @@
 import type { errorResponse, ogpMetaData } from "@/lib/api/types"
-import { ErrorResponseZod, OgpMetaDataZod } from "@/lib/api/types"
+import { ZodErrorResponse, ZodOgpMetaData } from "@/lib/api/types"
 
 // note: エラー規格を型定義として決めた方がいい（ error@Component: message とするなど）
 export const getOgpMeta = async ({
@@ -25,9 +25,9 @@ export const getOgpMeta = async ({
         .then(async response => {
             const jsonResponse: unknown = await response.json()
             const responseParsedAsError =
-                ErrorResponseZod.safeParse(jsonResponse)
+                ZodErrorResponse.safeParse(jsonResponse)
             const responseParsedAsOgpMetaData =
-                OgpMetaDataZod.safeParse(jsonResponse)
+                ZodOgpMetaData.safeParse(jsonResponse)
 
             if (!(response.ok && responseParsedAsOgpMetaData.success)) {
                 const e: Error = new Error(
@@ -73,7 +73,7 @@ export const getOgpBlob = async ({
         },
     }).then(async response => {
         if (!response.ok) {
-            const responseParsedAsError = ErrorResponseZod.safeParse(
+            const responseParsedAsError = ZodErrorResponse.safeParse(
                 response.json(),
             )
             const e: Error = new Error(
