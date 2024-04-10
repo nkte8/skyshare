@@ -2,7 +2,6 @@
 export const prerender = false
 import Pagelayout from "@/layouts/Postlayout.astro"
 import getPage from "@/lib/pagedbAPI/getPage"
-import type { pageFetchOutput } from "@/lib/pagedbAPI/getPage"
 import { servicename } from "@/env/vars"
 import { baseurl } from "@/env/envs"
 
@@ -16,14 +15,14 @@ if (typeof slug === "undefined") {
 const [author, _, rkey] = slug.split(/(_|@)/)
 const getPageResult = await getPage({ id: slug })
 
-if ("error" in getPageResult && typeof getPageResult?.error !== "undefined" && getPageResult.error !== "") {
+if ("error" in getPageResult) {
     return new Response(null, {
         status: 404,
         statusText: "Not found",
     })
 }
 const title = `${author} Post - ${servicename}`
-const getPageResponse = getPageResult as pageFetchOutput
+const getPageResponse = getPageResult
 const imgs = getPageResponse.imgs
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"]
 import Loadingcircle from "@/components/loadingcircle.astro"
