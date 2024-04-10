@@ -232,6 +232,7 @@ export const Component = ({
                     }
                 })
 
+                // Blobのアップロード結果にエラーが含まれていない場合、すべて成功レスポンスとみなす
                 const resultUploadBlobSuccess =
                     resultUploadBlob as uploadBlobSuccessResult[]
 
