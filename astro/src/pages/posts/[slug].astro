@@ -22,14 +22,13 @@ if ("error" in getPageResult) {
     })
 }
 const title = `${author} Post - ${servicename}`
-const getPageResponse = getPageResult
-const imgs = getPageResponse.imgs
+const imgs = getPageResult.imgs
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"]
 import Loadingcircle from "@/components/loadingcircle.astro"
 ---
 
 <Pagelayout
-    cardPath={getPageResponse.ogp}
+    cardPath={getPageResult.ogp}
     pageTitle={title}
     robots={robots}
     hideLoader={true}
