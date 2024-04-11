@@ -3,7 +3,6 @@ import deletePage from "@/lib/pagedbAPI/deletePage"
 import ProcButton from "../common/ProcButton"
 import { type Session_info } from "../common/contexts"
 import { type msgInfo } from "../common/types"
-import etype from "@/lib/pagedbAPI/models/error.json"
 
 const Component = ({
     id,
