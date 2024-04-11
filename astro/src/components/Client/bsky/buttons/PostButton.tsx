@@ -180,8 +180,6 @@ export const Component = ({
                 mediaData !== null &&
                 mediaData.images.length > 0 &&
                 mediaData.images[0].blob !== null
-            // uploadBlobを行なった場合は結果が格納される
-            let resultUploadBlob: Array<uploadBlobResult> = []
 
             // メディアデータが存在する場合はRecordに対して特定の処理を行う
             if (ImageAttached) {
@@ -217,8 +215,8 @@ export const Component = ({
                         }),
                     )
                 })
-                // uploadBlobを並列処理
-                resultUploadBlob = await Promise.all(uploadBlobTasks).then(
+                // uploadBlobを並列処理し、その結果を格納する
+                const resultUploadBlob: uploadBlobResult[] = await Promise.all(uploadBlobTasks).then(
                     values => {
                     return values
                     },
