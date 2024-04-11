@@ -1,5 +1,13 @@
 # Skyshare 更新履歴
 
+## 1.4.10
+
+### Patch Changes
+
+- Firefoxにてリンク埋め込みが正しく投稿できない問題を解消しました。
+  - Firefoxでは、ChromeやSafariと異なりRespose headerに含まれる`Content-type`からBlobへMimeTypeは設定されない仕様となっていました。
+  - APIの実行後、Respose headerから`Content-type`を取得し、明示的にMimeTypeをセットしたBlobを返却するよう修正しました。
+
 ## 1.4.9
 
 ### Patch Changes
