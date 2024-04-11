@@ -41,15 +41,14 @@ export const Component = ({
                 identifier: id,
                 password: pw,
             })
-            if ("error" in res && typeof res.error != "undefined") {
+            if ("error" in res) {
                 const e: Error = new Error(res.message)
                 e.name = res.error
                 throw e
             } else {
-                const successResponse = res as typeof dummyCreateSessionObject
-                setSession(successResponse)
+                setSession(res)
                 // セッションをlocalstorageへ保存
-                writeJwt(successResponse.refreshJwt)
+                writeJwt(res.refreshJwt)
                 setMsgInfo({
                     msg: "セッションを開始しました!",
                     isError: false,
@@ -63,7 +62,7 @@ export const Component = ({
                 }
                 // プロフィールを読み込み
                 await loadProfile({
-                    session: successResponse,
+                    session: res,
                     setProfile: setProfile,
                 })
             }

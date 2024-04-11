@@ -22,7 +22,7 @@ export const loadProfile = async ({
             accessJwt: session.accessJwt,
             handle: session.handle,
         })
-        if (res != null && !("error" in res)) {
+        if (!("error" in res)) {
             setProfile(res)
         }
     } catch (e: unknown) {

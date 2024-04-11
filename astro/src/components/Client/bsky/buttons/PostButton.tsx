@@ -220,7 +220,7 @@ export const Component = ({
                 // uploadBlobを並列処理
                 resultUploadBlob = await Promise.all(uploadBlobTasks).then(
                     values => {
-                        return values
+                    return values
                     },
                 )
                 // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
@@ -292,8 +292,7 @@ export const Component = ({
                 record: Record,
             })
             if (
-                "error" in createRecordResult &&
-                typeof createRecordResult.error != "undefined"
+                "error" in createRecordResult
             ) {
                 const e: Error = new Error(createRecordResult.message)
                 e.name = createRecordResult.error
@@ -315,7 +314,7 @@ export const Component = ({
                 })
                 const createPageResult = await createPage({
                     accessJwt: session.accessJwt,
-                    uri: (createRecordResult as typeof dummyCreateRecordObject)
+                    uri: createRecordResult
                         .uri,
                 })
                 if (typeof createPageResult?.error !== "undefined") {
