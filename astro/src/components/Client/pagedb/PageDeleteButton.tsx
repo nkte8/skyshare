@@ -3,7 +3,6 @@ import deletePage from "@/lib/pagedbAPI/deletePage"
 import ProcButton from "../common/ProcButton"
 import { type Session_info } from "../common/contexts"
 import { type msgInfo } from "../common/types"
-import etype from "@/lib/pagedbAPI/models/error.json"
 
 const Component = ({
     id,
@@ -29,15 +28,14 @@ const Component = ({
                 did: session.did,
                 accessJwt: session.accessJwt
             })
-            if (!("error" in resDeletePage) &&
-                resDeletePage.result === "ok") {
+            if (!("error" in resDeletePage)) {
                 setMsgInfo({
                     isError: false,
                     msg: "ページを削除しました!"
                 })
                 window.location.reload()
             } else {
-                const e: Error = new Error((resDeletePage as typeof etype).message)
+                const e: Error = new Error(resDeletePage.message)
                 e.name = "pagedelete.tsx"
                 throw e
             }
