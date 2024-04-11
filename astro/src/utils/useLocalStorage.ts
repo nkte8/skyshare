@@ -19,8 +19,11 @@ const LSKeyName: Obj = {
     appendVia: "appendVia",
 }
 
-const SavedTags = z.array(z.string())
-const SavedDrafts = z.array(z.string())
+const ZodTags = z.array(z.string())
+type Tags = z.infer<typeof ZodTags>
+
+const ZodDrafts = z.array(z.string())
+type Drafts = z.infer<typeof ZodDrafts>
 
 const ZodLoginInfo = z.object({
     id: z.string(),
@@ -47,14 +50,14 @@ export const setAppendVia = (flag: boolean): void => {
 
 // 将来的にはローカルではなく、DB側に保存したい
 // DB構造を変えることになると思われるため,大きなアップデートの時の次タスクとして積みたい
-export const readSavedTags = (): Array<string> => {
+export const readSavedTags = (): Tags => {
     const value: string | null = get_ls_value(LSKeyName.savedTags)
     if (value !== null) {
-        const zodParsedTags = SavedTags.safeParse(
+        const zodParsedTags = ZodTags.safeParse(
             JSON.parse(Base64.decode(value)),
         )
         if (zodParsedTags.success) {
-            const tags: string[] = zodParsedTags.data
+            const tags: Tags = zodParsedTags.data
             return tags
         }
     }
@@ -62,20 +65,20 @@ export const readSavedTags = (): Array<string> => {
     return []
 }
 
-export const setSavedTags = (Tags: string[]): void => {
-    const savedTags: string = Base64.encode(JSON.stringify(Tags))
+export const setSavedTags = (tags: Tags): void => {
+    const savedTags: string = Base64.encode(JSON.stringify(tags))
     set_ls_value(LSKeyName.savedTags, savedTags)
 }
 
-export const readDrafts = (): Array<string> => {
+export const readDrafts = (): Drafts => {
     const value: string | null = get_ls_value(LSKeyName.drafts)
     if (value !== null) {
-        const zodParsedDrafts = SavedDrafts.safeParse(
+        const zodParsedDrafts = ZodDrafts.safeParse(
             JSON.parse(Base64.decode(value)),
         )
 
         if (zodParsedDrafts.success) {
-            const drafts: string[] = zodParsedDrafts.data
+            const drafts: Drafts = zodParsedDrafts.data
             return drafts
         }
     }
@@ -83,8 +86,8 @@ export const readDrafts = (): Array<string> => {
     return []
 }
 
-export const saveDrafts = (Drafts: string[]): void => {
-    const savedDrafts: string = Base64.encode(JSON.stringify(Drafts))
+export const saveDrafts = (drafts: Drafts): void => {
+    const savedDrafts: string = Base64.encode(JSON.stringify(drafts))
     set_ls_value(LSKeyName.drafts, savedDrafts)
 }
 
