@@ -9,7 +9,6 @@ import { inputtext_base, link } from "../common/tailwindVariants"
 import { Session_context, Profile_context } from "../common/contexts"
 import { type msgInfo } from "../common/types"
 import createSession from "@/utils/atproto_api/createSession"
-import dummyCreateSessionObject from "@/utils/atproto_api/models/createSession.json"
 import loadProfile from "./lib/loadProfile"
 
 import ProcButton from "../common/ProcButton"

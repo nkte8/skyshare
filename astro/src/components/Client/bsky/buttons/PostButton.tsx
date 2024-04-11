@@ -21,8 +21,6 @@ import resolveHandle, {
     type resolveHandleResult,
 } from "@/utils/atproto_api/resolveHandle"
 
-import dummyCreateRecordObject from "@/utils/atproto_api/models/createRecord.json"
-
 // backend api
 import createPage from "@/lib/pagedbAPI/createPage"
 import browserImageCompression from "@/utils/browserImageCompression"
