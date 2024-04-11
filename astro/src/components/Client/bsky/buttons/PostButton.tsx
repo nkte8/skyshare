@@ -214,20 +214,21 @@ export const Component = ({
                     )
                 })
                 // uploadBlobを並列処理し、その結果を格納する
-                const resultUploadBlob: uploadBlobResult[] = await Promise.all(uploadBlobTasks).then(
-                    values => {
+                const resultUploadBlob: uploadBlobResult[] = await Promise.all(
+                    uploadBlobTasks,
+                ).then(values => {
                     return values
-                    },
-                )
-                // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
-                const resultUploadBlobSuccess: uploadBlobSuccessResult[] = resultUploadBlob.map(value => {
-                    if ("error" in value) {
-                        const e: Error = new Error(value.message)
-                        e.name = value.error
-                        throw e
-                    }
-                    return value
                 })
+                // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
+                const resultUploadBlobSuccess: uploadBlobSuccessResult[] =
+                    resultUploadBlob.map(value => {
+                        if ("error" in value) {
+                            const e: Error = new Error(value.message)
+                            e.name = value.error
+                            throw e
+                        }
+                        return value
+                    })
 
                 // Recordの作成
                 switch (mediaData.type) {
@@ -284,9 +285,7 @@ export const Component = ({
                 accessJwt: session.accessJwt,
                 record: Record,
             })
-            if (
-                "error" in createRecordResult
-            ) {
+            if ("error" in createRecordResult) {
                 const e: Error = new Error(createRecordResult.message)
                 e.name = createRecordResult.error
                 throw e
@@ -307,8 +306,7 @@ export const Component = ({
                 })
                 const createPageResult = await createPage({
                     accessJwt: session.accessJwt,
-                    uri: createRecordResult
-                        .uri,
+                    uri: createRecordResult.uri,
                 })
                 if (typeof createPageResult?.error !== "undefined") {
                     const e: Error = new Error(createPageResult.message)

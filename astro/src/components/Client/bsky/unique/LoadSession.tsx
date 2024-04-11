@@ -31,9 +31,7 @@ export const Component = ({
                 const refreshResult = await refreshSession({
                     refreshJwt: r_jwts,
                 })
-                if (
-                    "error" in refreshResult
-                ) {
+                if ("error" in refreshResult) {
                     resetJwt()
                     const e: Error = new Error(refreshResult.message)
                     e.name = refreshResult.error
