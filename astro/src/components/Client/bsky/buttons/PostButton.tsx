@@ -223,7 +223,7 @@ export const Component = ({
                 )
                 // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
                 resultUploadBlob.forEach(value => {
-                    if ("error" in value && typeof value.error != "undefined") {
+                    if ("error" in value) {
                         const e: Error = new Error(value.message)
                         e.name = value.error
                         throw e
