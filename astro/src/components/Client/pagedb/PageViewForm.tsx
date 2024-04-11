@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 import { pagesPrefix } from "@/env/envs"
-import getIds, { idsFetchOutput } from "@/lib/pagedbAPI/getIds"
+import getIds from "@/lib/pagedbAPI/getIds"
 import { Session_context } from "../common/contexts"
 import { load_circle, link } from "../common/tailwindVariants"
 import ProfileCard from "./ProfileCard"
@@ -31,20 +31,18 @@ const Component = ({
 
     const pageIds = async () => {
         try {
-            const getIdsResult = await getIds({
+            const ids = await getIds({
                 handle: session.handle!
             })
-            if ("error" in getIdsResult && typeof getIdsResult?.error !== "undefined") {
-                const e: Error = new Error(getIdsResult.message)
-                e.name = getIdsResult.error
+            if ("error" in ids) {
+                const e: Error = new Error(ids.message)
+                e.name = ids.error
                 throw e
             }
             setMsgInfo({
                 isError: false,
                 msg: "投稿一覧を読み込みました!"
             })
-
-            const ids = getIdsResult as idsFetchOutput
 
             setList(
                 <div className="mx-auto">
