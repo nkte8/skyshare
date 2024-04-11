@@ -74,8 +74,6 @@ export const GET: APIRoute = async ({
     const decodeAsText = async (arrayBuffer: Blob, encoding: string) =>
         new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer())
 
-    let responseHTML: string = ""
-
     try {
         const htmlBlob: Blob = await fetch(url, {
             method: "GET",
@@ -96,8 +94,6 @@ export const GET: APIRoute = async ({
         const html: string = unescapeHtml(
             await decodeAsText(htmlBlob, encoding),
         )
-
-        responseHTML = html
 
         const meta: ogpMetaData = extractHead({ html })
 
