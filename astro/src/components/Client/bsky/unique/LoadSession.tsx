@@ -10,8 +10,6 @@ import { readJwt, resetJwt, writeJwt } from "@/utils/useLocalStorage"
 import loadProfile from "../lib/loadProfile"
 import { Session_context, Profile_context } from "../../common/contexts"
 
-import dummyRefreshSessionObject from "@/utils/atproto_api/models/refreshSession.json"
-
 export const Component = ({
     setIsLoad,
     setMsgInfo,
@@ -33,32 +31,27 @@ export const Component = ({
                 const refreshResult = await refreshSession({
                     refreshJwt: r_jwts,
                 })
-                if (
-                    "error" in refreshResult &&
-                    typeof refreshResult.error != "undefined"
-                ) {
+                if ("error" in refreshResult) {
                     resetJwt()
                     const e: Error = new Error(refreshResult.message)
                     e.name = refreshResult.error
                     throw e
                 }
-                const refreshSuccessResult =
-                    refreshResult as typeof dummyRefreshSessionObject
                 setSession({
-                    did: refreshSuccessResult.did,
-                    accessJwt: refreshSuccessResult.accessJwt,
-                    refreshJwt: refreshSuccessResult.refreshJwt,
-                    handle: refreshSuccessResult.handle,
+                    did: refreshResult.did,
+                    accessJwt: refreshResult.accessJwt,
+                    refreshJwt: refreshResult.refreshJwt,
+                    handle: refreshResult.handle,
                 })
                 // リフレッシュしたトークンを上書き
-                writeJwt(refreshSuccessResult.refreshJwt)
+                writeJwt(refreshResult.refreshJwt)
 
                 setMsgInfo({
                     msg: "セッションを再開しました!",
                     isError: false,
                 })
                 const resLoadProfile = await loadProfile({
-                    session: refreshSuccessResult,
+                    session: refreshResult,
                     setProfile: setProfile,
                 })
                 if (typeof resLoadProfile?.error !== "undefined") {

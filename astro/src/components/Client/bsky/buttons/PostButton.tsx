@@ -21,8 +21,6 @@ import resolveHandle, {
     type resolveHandleResult,
 } from "@/utils/atproto_api/resolveHandle"
 
-import dummyCreateRecordObject from "@/utils/atproto_api/models/createRecord.json"
-
 // backend api
 import createPage from "@/lib/pagedbAPI/createPage"
 import browserImageCompression from "@/utils/browserImageCompression"
@@ -180,8 +178,6 @@ export const Component = ({
                 mediaData !== null &&
                 mediaData.images.length > 0 &&
                 mediaData.images[0].blob !== null
-            // uploadBlobを行なった場合は結果が格納される
-            let resultUploadBlob: Array<uploadBlobResult> = []
 
             // メディアデータが存在する場合はRecordに対して特定の処理を行う
             if (ImageAttached) {
@@ -217,24 +213,22 @@ export const Component = ({
                         }),
                     )
                 })
-                // uploadBlobを並列処理
-                resultUploadBlob = await Promise.all(uploadBlobTasks).then(
-                    values => {
-                        return values
-                    },
-                )
-                // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
-                resultUploadBlob.forEach(value => {
-                    if ("error" in value && typeof value.error != "undefined") {
-                        const e: Error = new Error(value.message)
-                        e.name = value.error
-                        throw e
-                    }
+                // uploadBlobを並列処理し、その結果を格納する
+                const resultUploadBlob: uploadBlobResult[] = await Promise.all(
+                    uploadBlobTasks,
+                ).then(values => {
+                    return values
                 })
-
-                // Blobのアップロード結果にエラーが含まれていない場合、すべて成功レスポンスとみなす
-                const resultUploadBlobSuccess =
-                    resultUploadBlob as uploadBlobSuccessResult[]
+                // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
+                const resultUploadBlobSuccess: uploadBlobSuccessResult[] =
+                    resultUploadBlob.map(value => {
+                        if ("error" in value) {
+                            const e: Error = new Error(value.message)
+                            e.name = value.error
+                            throw e
+                        }
+                        return value
+                    })
 
                 // Recordの作成
                 switch (mediaData.type) {
@@ -291,10 +285,7 @@ export const Component = ({
                 accessJwt: session.accessJwt,
                 record: Record,
             })
-            if (
-                "error" in createRecordResult &&
-                typeof createRecordResult.error != "undefined"
-            ) {
+            if ("error" in createRecordResult) {
                 const e: Error = new Error(createRecordResult.message)
                 e.name = createRecordResult.error
                 throw e
@@ -315,8 +306,7 @@ export const Component = ({
                 })
                 const createPageResult = await createPage({
                     accessJwt: session.accessJwt,
-                    uri: (createRecordResult as typeof dummyCreateRecordObject)
-                        .uri,
+                    uri: createRecordResult.uri,
                 })
                 if (typeof createPageResult?.error !== "undefined") {
                     const e: Error = new Error(createPageResult.message)
