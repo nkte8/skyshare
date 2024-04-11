@@ -2,7 +2,7 @@ import getEndpoint, { com_atproto } from "./base"
 const apiName = com_atproto.repo.uploadBlob
 const endpoint = getEndpoint(apiName)
 
-type uploadBlobSuccessResult = {
+export type uploadBlobSuccessResult = {
     blob: {
         $type: "blob"
         ref: {
@@ -13,7 +13,7 @@ type uploadBlobSuccessResult = {
     }
 }
 
-type uploadBlobErrorResult = {
+export type uploadBlobErrorResult = {
     error: string
     message: string
 }

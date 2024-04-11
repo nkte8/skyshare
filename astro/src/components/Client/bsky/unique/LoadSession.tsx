@@ -1,24 +1,21 @@
 // utils
-import {
-    Dispatch, SetStateAction,
-    useContext, useEffect
-} from "react"
+import { Dispatch, SetStateAction, useContext, useEffect } from "react"
 
 // atproto
-import refreshSession from "@/utils/atproto_api/refreshSession";
+import refreshSession from "@/utils/atproto_api/refreshSession"
 
 // service
 import { type msgInfo } from "../../common/types"
 import { readJwt, resetJwt, writeJwt } from "@/utils/useLocalStorage"
-import loadProfile from "../lib/loadProfile";
+import loadProfile from "../lib/loadProfile"
 import { Session_context, Profile_context } from "../../common/contexts"
 
 export const Component = ({
     setIsLoad,
-    setMsgInfo
+    setMsgInfo,
 }: {
-    setIsLoad: Dispatch<SetStateAction<boolean>>,
-    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+    setIsLoad: Dispatch<SetStateAction<boolean>>
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
     const { setSession } = useContext(Session_context)
     const { setProfile } = useContext(Profile_context)
@@ -28,12 +25,15 @@ export const Component = ({
             try {
                 // localstorageにsessionが存在していた場合はtokenをrefresh
                 setMsgInfo({
-                    msg: "セッションの再開中...", isError: false
+                    msg: "セッションの再開中...",
+                    isError: false,
                 })
-                const refreshResult = await refreshSession({ refreshJwt: r_jwts })
-                if (typeof refreshResult?.error !== "undefined") {
+                const refreshResult = await refreshSession({
+                    refreshJwt: r_jwts,
+                })
+                if ("error" in refreshResult) {
                     resetJwt()
-                    let e: Error = new Error(refreshResult.message)
+                    const e: Error = new Error(refreshResult.message)
                     e.name = refreshResult.error
                     throw e
                 }
@@ -45,20 +45,20 @@ export const Component = ({
                 })
                 // リフレッシュしたトークンを上書き
                 writeJwt(refreshResult.refreshJwt)
-                
+
                 setMsgInfo({
-                    msg: "セッションを再開しました!", isError: false
+                    msg: "セッションを再開しました!",
+                    isError: false,
                 })
                 const resLoadProfile = await loadProfile({
                     session: refreshResult,
-                    setProfile: setProfile
+                    setProfile: setProfile,
                 })
                 if (typeof resLoadProfile?.error !== "undefined") {
-                    let e: Error = new Error(resLoadProfile.message)
+                    const e: Error = new Error(resLoadProfile.message)
                     e.name = resLoadProfile.error
                     throw e
                 }
-
             } catch (error: unknown) {
                 let msg: string = "Unexpected Unknown Error"
                 if (error instanceof Error) {
@@ -67,7 +67,7 @@ export const Component = ({
                 if (setMsgInfo !== undefined) {
                     setMsgInfo({
                         msg: msg,
-                        isError: true
+                        isError: true,
                     })
                 }
                 resetJwt()
@@ -76,12 +76,10 @@ export const Component = ({
         setIsLoad(true)
     }
     useEffect(() => {
-        handleLoad()
+        void handleLoad()
     }, [])
 
-    return (
-        <></>
-    )
+    return <></>
 }
 
 export default Component

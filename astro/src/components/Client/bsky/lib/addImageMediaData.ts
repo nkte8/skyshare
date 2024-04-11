@@ -23,27 +23,29 @@ const addImageMediaData = (
     // MediaData型は毎回typeにimagesを指定して定義しなおす
     const newMediaData: MediaData = {
         type: "images",
-        images: MediaData !== null && MediaData.type === "images" ? MediaData.images : []
+        images:
+            MediaData !== null && MediaData.type === "images"
+                ? MediaData.images
+                : [],
     }
     // MediaDataImagesを定義
-    const newMediaDataImages: Array<{ alt: string, blob: Blob }> = [
+    const newMediaDataImages: Array<{ alt: string; blob: Blob }> = [
         ...newMediaData.images,
-        ...(
-            Blobs.filter(
-                value => allowedMimeTypes.includes(value.type)
-            ).map((value) => {
+        ...Blobs.filter(value => allowedMimeTypes.includes(value.type)).map(
+            value => {
                 return {
                     alt: "",
                     blob: new Blob([value], {
-                        type: value.type
-                    })
+                        type: value.type,
+                    }),
                 }
-            }))
+            },
+        ),
     ]
     // 結合
     const result: MediaData = {
         type: "images",
-        images: newMediaDataImages.slice(0, maxAttachableImages)
+        images: newMediaDataImages.slice(0, maxAttachableImages),
     }
     setMediaData(result)
 }
