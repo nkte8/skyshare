@@ -222,17 +222,14 @@ export const Component = ({
                     },
                 )
                 // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
-                resultUploadBlob.forEach(value => {
+                const resultUploadBlobSuccess: uploadBlobSuccessResult[] = resultUploadBlob.map(value => {
                     if ("error" in value) {
                         const e: Error = new Error(value.message)
                         e.name = value.error
                         throw e
                     }
+                    return value
                 })
-
-                // Blobのアップロード結果にエラーが含まれていない場合、すべて成功レスポンスとみなす
-                const resultUploadBlobSuccess =
-                    resultUploadBlob as uploadBlobSuccessResult[]
 
                 // Recordの作成
                 switch (mediaData.type) {
