@@ -14,14 +14,16 @@ import pic from "@/images/image.svg"
 const Component = ({
     disabled,
     mediaData,
-    setMediaData
+    setMediaData,
 }: {
     disabled: boolean
-    mediaData: MediaData,
+    mediaData: MediaData
     setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
-    const inputRef = useRef<HTMLInputElement>(null!);
-    const handleClick = () => { inputRef.current.click() }
+    const inputRef = useRef<HTMLInputElement>(null!)
+    const handleClick = () => {
+        inputRef.current.click()
+    }
 
     /**
      * ファイル選択時の処理を行います
@@ -42,23 +44,32 @@ const Component = ({
     const acceptlist = imageExtensions.join(",")
     return (
         <>
-            <input type="file" accept={acceptlist}
+            <input
+                type="file"
+                accept={acceptlist}
                 ref={inputRef}
                 style={{ display: "none" }}
                 onChange={handleFilechanged}
-                multiple />
+                multiple
+            />
             <ProcButton
                 handler={handleClick}
                 isProcessing={disabled}
                 className={["py-0"]}
                 context={
-                    <img src={pic.src}
+                    <img
+                        src={pic.src}
                         className={[
-                            "w-7", "h-7", "p-0.5",
-                            "inline-block", "align-middle"
+                            "w-7",
+                            "h-7",
+                            "p-0.5",
+                            "inline-block",
+                            "align-middle",
                         ].join(" ")}
-                    />}
-                showAnimation={false} />
+                    />
+                }
+                showAnimation={false}
+            />
         </>
     )
 }

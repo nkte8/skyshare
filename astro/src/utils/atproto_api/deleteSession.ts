@@ -7,28 +7,30 @@ const endpoint = getEndpoint(apiName)
 export const api = async ({
     refreshJwt,
 }: {
-    refreshJwt: string,
-}): Promise<void & typeof etype> => fetch(endpoint,
-    {
-        method: 'POST',
+    refreshJwt: string
+}): Promise<void | typeof etype> =>
+    fetch(endpoint, {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${refreshJwt}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${refreshJwt}`,
         },
-    }).then(async (response) => {
-        if (!response?.ok) {
-            let res: typeof etype = await response.json()
-            let e: Error = new Error(res.message)
-            e.name = apiName
-            throw e
-        }
-        return await response.json()
-    }
-    ).catch((e: Error) => {
-        return {
-            error: e.name,
-            message: e.message
-        }
     })
+        .then(async response => {
+            if (!response?.ok) {
+                const res: typeof etype =
+                    (await response.json()) as typeof etype
+                const e: Error = new Error(res.message)
+                e.name = apiName
+                throw e
+            }
+            return (await response.json()) as void
+        })
+        .catch((e: Error) => {
+            return {
+                error: e.name,
+                message: e.message,
+            }
+        })
 
 export default api

@@ -5,48 +5,46 @@ import { Dispatch, SetStateAction } from "react"
 import ProcButton from "../../common/ProcButton"
 
 // service
-import { saveDrafts, readDrafts } from "@/utils/useLocalStorage";
+import { saveDrafts, readDrafts } from "@/utils/useLocalStorage"
 import { msgInfo } from "../../common/types"
-import saveTagToSavedTags from "../lib/saveTagList";
+import saveTagToSavedTags from "../lib/saveTagList"
 
 export const Component = ({
     postText,
     setPostText,
     setDrafts,
     setMsgInfo,
-    className = []
+    className = [],
 }: {
-    postText: string,
-    setPostText: Dispatch<SetStateAction<string>>,
-    setDrafts: Dispatch<SetStateAction<Array<string>>>,
-    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+    postText: string
+    setPostText: Dispatch<SetStateAction<string>>
+    setDrafts: Dispatch<SetStateAction<Array<string>>>
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
     className?: Array<string>
 }) => {
-
     /**
      * 下書きとして保存可能かどうかを判定します
      * @returns ポスト可能な場合true
      */
     const isValidDraft = () => postText.length >= 1
 
-
     const handleSavePost = () => {
         const isValidPost = (): boolean => {
-            let result: boolean = postText.length >= 1
+            const result: boolean = postText.length >= 1
             return result
         }
 
         if (!isValidPost()) {
             setMsgInfo({
                 msg: "ポスト本文が存在しません。",
-                isError: true
+                isError: true,
             })
             return
         }
 
         saveTagToSavedTags({ postText })
 
-        const newDrafts = [postText, ...readDrafts() || []]
+        const newDrafts = [postText, ...readDrafts()]
 
         saveDrafts(newDrafts)
         setDrafts(newDrafts)
@@ -54,7 +52,7 @@ export const Component = ({
 
         setMsgInfo({
             msg: "下書きを保存しました。",
-            isError: false
+            isError: false,
         })
     }
 
@@ -63,13 +61,12 @@ export const Component = ({
             buttonID="post"
             handler={handleSavePost}
             isProcessing={false}
-            context={<span className={[
-                "my-auto"
-            ].join(" ")}>
-                下書きを保存
-            </span>}
+            context={
+                <span className={["my-auto"].join(" ")}>下書きを保存</span>
+            }
             className={["my-0", "py-0.5", "align-middle"].concat(className)}
-            disabled={!isValidDraft()} />
+            disabled={!isValidDraft()}
+        />
     )
 }
 export default Component

@@ -12,8 +12,10 @@ import { label } from "@/utils/atproto_api/labels"
 import detectFacets from "@/utils/atproto_api/detectFacets"
 import createRecord from "@/utils/atproto_api/createRecord"
 import type record from "@/utils/atproto_api/record"
-import uploadBlob, {
-    type uploadBlobResult,
+import uploadBlob from "@/utils/atproto_api/uploadBlob"
+import type {
+    uploadBlobSuccessResult,
+    uploadBlobResult,
 } from "@/utils/atproto_api/uploadBlob"
 import resolveHandle, {
     type resolveHandleResult,
@@ -113,9 +115,9 @@ export const Component = ({
                 labels:
                     selfLabel !== null
                         ? {
-                            $type: "com.atproto.label.defs#selfLabels",
-                            values: [selfLabel],
-                        }
+                              $type: "com.atproto.label.defs#selfLabels",
+                              values: [selfLabel],
+                          }
                         : undefined,
                 via: options.appendVia !== false ? servicename : undefined,
                 facets: facets.length > 0 ? facets : undefined,
@@ -176,8 +178,6 @@ export const Component = ({
                 mediaData !== null &&
                 mediaData.images.length > 0 &&
                 mediaData.images[0].blob !== null
-            // uploadBlobを行なった場合は結果が格納される
-            let resultUploadBlob: Array<uploadBlobResult> = []
 
             // メディアデータが存在する場合はRecordに対して特定の処理を行う
             if (ImageAttached) {
@@ -213,20 +213,23 @@ export const Component = ({
                         }),
                     )
                 })
-                // uploadBlobを並列処理
-                resultUploadBlob = await Promise.all(uploadBlobTasks).then(
-                    values => {
-                        return values
-                    },
-                )
-                // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
-                resultUploadBlob.forEach(value => {
-                    if (typeof value?.error !== "undefined") {
-                        const e: Error = new Error(value.message)
-                        e.name = value.error
-                        throw e
-                    }
+                // uploadBlobを並列処理し、その結果を格納する
+                const resultUploadBlob: uploadBlobResult[] = await Promise.all(
+                    uploadBlobTasks,
+                ).then(values => {
+                    return values
                 })
+                // Blobのアップロードに失敗したファイルが一つでも存在した場合停止する
+                const resultUploadBlobSuccess: uploadBlobSuccessResult[] =
+                    resultUploadBlob.map(value => {
+                        if ("error" in value) {
+                            const e: Error = new Error(value.message)
+                            e.name = value.error
+                            throw e
+                        }
+                        return value
+                    })
+
                 // Recordの作成
                 switch (mediaData.type) {
                     case "images":
@@ -234,12 +237,14 @@ export const Component = ({
                             ...Record,
                             embed: {
                                 $type: "app.bsky.embed.images",
-                                images: resultUploadBlob.map((value, index) => {
-                                    return {
-                                        image: value.blob,
-                                        alt: mediaData.images[index].alt,
-                                    }
-                                }),
+                                images: resultUploadBlobSuccess.map(
+                                    (value, index) => {
+                                        return {
+                                            image: value.blob,
+                                            alt: mediaData.images[index].alt,
+                                        }
+                                    },
+                                ),
                             },
                         }
                         break
@@ -251,8 +256,8 @@ export const Component = ({
                                 $type: "app.bsky.embed.external",
                                 external: {
                                     thumb:
-                                        resultUploadBlob.length >= 1
-                                            ? resultUploadBlob[0].blob
+                                        resultUploadBlobSuccess.length >= 1
+                                            ? resultUploadBlobSuccess[0].blob
                                             : undefined,
                                     uri: mediaData.meta.url,
                                     title: mediaData.meta.title,
@@ -280,7 +285,7 @@ export const Component = ({
                 accessJwt: session.accessJwt,
                 record: Record,
             })
-            if (typeof createRecordResult?.error !== "undefined") {
+            if ("error" in createRecordResult) {
                 const e: Error = new Error(createRecordResult.message)
                 e.name = createRecordResult.error
                 throw e

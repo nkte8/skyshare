@@ -8,31 +8,32 @@ export const api = async ({
     identifier,
     password,
 }: {
-    identifier: string,
-    password: string,
-}): Promise<typeof mtype & typeof etype> => fetch(endpoint,
-    {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(
-            {
-                identifier: identifier,
-                password: password,
-            })
-    }).then(async (response) => {
-        if (!response?.ok) {
-            let res: typeof etype = await response.json()
-            let e: Error = new Error(res.message)
-            e.name = apiName
-            throw e
-        }
-        return await response.json()
-    }
-    ).catch((e: Error) => {
-        return {
-            error: e.name,
-            message: e.message
-        }
+    identifier: string
+    password: string
+}): Promise<typeof mtype | typeof etype> =>
+    fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            identifier: identifier,
+            password: password,
+        }),
     })
+        .then(async response => {
+            if (!response?.ok) {
+                const res: typeof etype =
+                    (await response.json()) as typeof etype
+                const e: Error = new Error(res.message)
+                e.name = apiName
+                throw e
+            }
+            return (await response.json()) as typeof mtype
+        })
+        .catch((e: Error) => {
+            return {
+                error: e.name,
+                message: e.message,
+            }
+        })
 
 export default api

@@ -1,4 +1,4 @@
-const xrpcurl = "https://bsky.social/xrpc";
+const xrpcurl = "https://bsky.social/xrpc"
 export const getEndpoint = (path: string): string => {
     return `${xrpcurl}/${path}`
 }
