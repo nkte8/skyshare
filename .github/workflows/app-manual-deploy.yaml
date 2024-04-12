@@ -14,9 +14,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build
-        run: npm install && npm run build
+        run: node --version; npm install && npm run build
         working-directory: ./astro
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
