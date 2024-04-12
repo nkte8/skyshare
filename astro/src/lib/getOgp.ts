@@ -62,8 +62,14 @@ export const getOgpBlob = async ({
             e.name = `${res.error}@getOgpBlob`
             throw e
         }
+        const result: Blob = await response.blob()
         const ContentType = response.headers.get("Content-Type")
-        const MimeType = ContentType !== null ? ContentType : "image/png"
-        return new Blob([await response.blob()], { type: MimeType })
+        const MimeType =
+            result.type !== ""
+                ? result.type
+                : ContentType !== null
+                  ? ContentType
+                  : "image/png"
+        return new Blob([result], { type: MimeType })
     })
 }
