@@ -308,7 +308,7 @@ export const Component = ({
                     accessJwt: session.accessJwt,
                     uri: createRecordResult.uri,
                 })
-                if (typeof createPageResult?.error !== "undefined") {
+                if ("error" in createPageResult) {
                     const e: Error = new Error(createPageResult.message)
                     e.name = createPageResult.error
                     throw e

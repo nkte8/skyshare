@@ -13,22 +13,22 @@ if (typeof slug === "undefined") {
     })
 }
 const [author, _, rkey] = slug.split(/(_|@)/)
-const getpage_res = await getPage({ id: slug })
+const getPageResult = await getPage({ id: slug })
 
-if (typeof getpage_res?.error !== "undefined" && getpage_res.error !== "") {
+if ("error" in getPageResult) {
     return new Response(null, {
         status: 404,
         statusText: "Not found",
     })
 }
 const title = `${author} Post - ${servicename}`
-const imgs = getpage_res.imgs
+const imgs = getPageResult.imgs
 const robots = ["noindex", "nofollow", "noarchive", "noimageindex"]
 import Loadingcircle from "@/components/loadingcircle.astro"
 ---
 
 <Pagelayout
-    cardPath={getpage_res.ogp}
+    cardPath={getPageResult.ogp}
     pageTitle={title}
     robots={robots}
     hideLoader={true}

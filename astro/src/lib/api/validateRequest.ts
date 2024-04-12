@@ -1,8 +1,9 @@
-import createErrResponse from "./createErrResponse";
+import createErrResponse from "./createErrResponse"
 import { isNotProduction } from "@/lib/vars"
-import { apiRequest, errorResponse } from "./types";
+import { apiRequest, errorResponse } from "./types"
 
-const protocol_validation: RegExp = /(dict|file|ftp|gopher|ldap|smtp|telnet|tftp):\/\//
+const protocol_validation: RegExp =
+    /(dict|file|ftp|gopher|ldap|smtp|telnet|tftp):\/\//
 const loopback_validation: RegExp = /localhost/
 const ipv4_validation: RegExp = /(?:\d{0,3}\.){3}\d{0,3}/
 const ipv6_validation: RegExp = /\[[0-9a-fA-F:]+\]/
@@ -13,7 +14,7 @@ const ipv6_validation: RegExp = /\[[0-9a-fA-F:]+\]/
  * @returns apiResponse または エラーレスポンス
  */
 const validateRequestReturnURL = ({
-    request
+    request,
 }: {
     request: Request
 }): apiRequest | errorResponse => {
@@ -24,8 +25,8 @@ const validateRequestReturnURL = ({
         })
     }
 
-    const url = new URL(request.url).searchParams.get("url");
-    const lang = new URL(request.url).searchParams.get("lang");
+    const url: string | null = new URL(request.url).searchParams.get("url")
+    const lang: string | null = new URL(request.url).searchParams.get("lang")
     if (url === null) {
         return createErrResponse({
             statusCode: 406,
@@ -36,20 +37,18 @@ const validateRequestReturnURL = ({
             statusCode: 406,
         })
     }
-    const decodedUrl = decodeURIComponent(url)
+    const decodedUrl: string = decodeURIComponent(url)
     // SSRF対策
     // Productionではない環境についてはlocalhostの実行を許可
-    const validation = !isNotProduction ? (
-        // Productionの場合は厳格なルールを指定
-        protocol_validation.test(decodedUrl) ||
-        loopback_validation.test(decodedUrl) ||
-        ipv4_validation.test(decodedUrl) ||
-        ipv6_validation.test(decodedUrl)
-    ) : (
-        // Not Productionの場合は(Cloudflare Zero Trustといった)
-        // 低レイヤー対策前提でlocalhostを許可
-        protocol_validation.test(decodedUrl)
-    )
+    const validation: boolean = !isNotProduction
+        ? // Productionの場合は厳格なルールを指定
+          protocol_validation.test(decodedUrl) ||
+          loopback_validation.test(decodedUrl) ||
+          ipv4_validation.test(decodedUrl) ||
+          ipv6_validation.test(decodedUrl)
+        : // Not Productionの場合は(Cloudflare Zero Trustといった)
+          // 低レイヤー対策前提でlocalhostを許可
+          protocol_validation.test(decodedUrl)
     if (validation) {
         return createErrResponse({
             statusCode: 502,
@@ -59,7 +58,7 @@ const validateRequestReturnURL = ({
     return <apiRequest>{
         type: "api",
         decodedUrl: decodedUrl,
-        language: lang
+        language: lang,
     }
 }
 export default validateRequestReturnURL

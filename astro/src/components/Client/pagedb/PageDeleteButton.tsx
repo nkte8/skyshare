@@ -28,15 +28,14 @@ const Component = ({
                 did: session.did,
                 accessJwt: session.accessJwt
             })
-            if (typeof resDeletePage?.error === "undefined" &&
-                resDeletePage.result === "ok") {
+            if (!("error" in resDeletePage)) {
                 setMsgInfo({
                     isError: false,
                     msg: "ページを削除しました!"
                 })
                 window.location.reload()
             } else {
-                let e: Error = new Error(resDeletePage.message)
+                const e: Error = new Error(resDeletePage.message)
                 e.name = "pagedelete.tsx"
                 throw e
             }
