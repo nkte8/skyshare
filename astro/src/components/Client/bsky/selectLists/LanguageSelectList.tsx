@@ -17,6 +17,26 @@ const langList = [
         label: "한국어",
         code: "ko",
     },
+    {
+        label: "Polski",
+        code: "pl",
+    },
+    {
+        label: "Portuguese",
+        code: "pt",
+    },
+    {
+        label: "Deutsch",
+        code: "de",
+    },
+    {
+        label: "Français",
+        code: "fr",
+    },
+    {
+        label: "हिन्दी",
+        code: "hi",
+    },
 ]
 export const Component = ({
     disabled,

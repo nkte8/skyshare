@@ -1,10 +1,42 @@
 # Skyshare 更新履歴
 
+## 1.4.11
+
+### Patch Changes
+
+- iOSからリンクカードの添付が出来なくなってしまっていた不具合を修正しました。
+  - v1.4.10においてfirefox対応した部分がiOSと相性が悪かったため、MimeTypeの設定方法について条件分岐を追加することで対応しました。
+  - `Blob`に`MimeType`が設定されているブラウザではこの値を、設定されていない場合は`Content-type`ヘッダを利用するという動作になりました。
+
+## 1.4.10
+
+### Patch Changes
+
+- Firefoxにてリンク埋め込みが正しく投稿できない問題を解消しました。
+  - Firefoxでは、ChromeやSafariと異なりRespose headerに含まれる`Content-type`からBlobへMimeTypeは設定されない仕様となっていました。
+  - APIの実行後、Respose headerから`Content-type`を取得し、明示的にMimeTypeをセットしたBlobを返却するよう修正しました。
+
+## 1.4.9
+
+### Patch Changes
+
+- フランス語・ヒンディー語の言語コードを追加しました。
+  - Now you can use _Français_ or _हिन्दी_ language code for post.
+- 水面下でコードの改善を粛々と進めています。
+
+## 1.4.8
+
+### Patch Changes
+
+- ポルトガル語・ポーランド語・ドイツ語の言語コードを追加しました。
+  - Now you can use _Portuguese_, _Polski_ or _Deutsch_ language code for post.
+
 ## 1.4.7
 
 ### Patch Changes
 
 - Bluesky上でのメンションのURL変換機能を実装しました。
+
   - Blueskyに所属するアカウントへのメンションを本文上で実施した際、X向け投稿においてはBlueskyのURLに置き換える機能を実装しました。
 
 - `richTextParser`に致命的なバグがあったため修正しました。
