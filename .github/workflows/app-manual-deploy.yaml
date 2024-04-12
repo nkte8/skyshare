@@ -1,4 +1,5 @@
 name: App Manual Deploy
+run-name: "[Manual Deploy] ${{ github.ref_name }}"
 
 on:
   workflow_dispatch: {}
@@ -9,7 +10,8 @@ on:
 
 jobs:
   get_env_name:
-    uses: ./.github/workflows/get-environment-from-branch.yml
+    name: Pre task
+    uses: ./.github/workflows/get-environment-from-branch.yaml
 
   deploy:
     needs: ["get_env_name"]
