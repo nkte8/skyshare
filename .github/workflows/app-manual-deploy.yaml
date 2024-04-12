@@ -1,9 +1,6 @@
 name: App Manual Deploy
 
 on:
-  push:
-    branches:
-      - feature/issue_54
   workflow_dispatch: {}
 
 jobs:
