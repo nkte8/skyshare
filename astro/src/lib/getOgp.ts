@@ -74,7 +74,7 @@ export const getOgpBlob = async ({
     }).then(async response => {
         if (!response.ok) {
             const responseParsedAsError = ZodErrorResponse.safeParse(
-                response.json(),
+                await response.json(),
             )
             const e: Error = new Error(
                 responseParsedAsError.success
