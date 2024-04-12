@@ -1,4 +1,5 @@
 name: App Manual Deploy
+run-name: "[Manual Deploy] ${{ github.ref_name }}"
 
 on:
   workflow_dispatch: {}
@@ -8,7 +9,14 @@ on:
       - develop
 
 jobs:
-  Deploy:
+  get_env_name:
+    name: Pre task
+    uses: ./.github/workflows/get-environment-from-branch.yaml
+
+  deploy:
+    needs: ["get_env_name"]
+    environment:
+      name: ${{ needs.get_env_name.outputs.env_name }}
     runs-on: ubuntu-latest
     name: Build & Deploy
     permissions:
@@ -19,9 +27,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
       - name: Build
         run: node --version; npm install && npm run build
         working-directory: ./astro
+        env:
+          PUBLIC_CREATEPAGES_ENDPOINT: ${{ secrets.PUBLIC_CREATEPAGES_ENDPOINT }}
+          PUBLIC_DELETEPAGE_ENDPOINT: ${{ secrets.PUBLIC_DELETEPAGE_ENDPOINT }}
+          PUBLIC_GETPAGES_ENDPOINT: ${{ secrets.PUBLIC_GETPAGES_ENDPOINT }}
+          PUBLIC_IS_NOT_PRODUCTION: ${{ vars.PUBLIC_IS_NOT_PRODUCTION }}
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
