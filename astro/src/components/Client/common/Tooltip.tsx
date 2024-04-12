@@ -1,25 +1,25 @@
-import { memo, useRef, useEffect, ReactNode } from "react";
+import { memo, useRef, useEffect, ReactNode } from "react"
 
 export const Component = ({
     tooltip,
     children,
 }: {
-    tooltip: ReactNode;
+    tooltip: ReactNode
     children: ReactNode
 }) => {
-    const ref = useRef<HTMLDivElement>(null);
+    const ref = useRef<HTMLDivElement>(null)
 
     const handleMouseEnter = () => {
-        if (!ref.current) return;
-        ref.current.style.opacity = "1";
-        ref.current.style.visibility = "visible";
-    };
+        if (!ref.current) return
+        ref.current.style.opacity = "1"
+        ref.current.style.visibility = "visible"
+    }
 
     const handleMouseLeave = () => {
-        if (!ref.current) return;
-        ref.current.style.opacity = "0";
-        ref.current.style.visibility = "hidden";
-    };
+        if (!ref.current) return
+        ref.current.style.opacity = "0"
+        ref.current.style.visibility = "hidden"
+    }
     useEffect(() => {
         handleMouseLeave()
     }, [])
@@ -33,12 +33,16 @@ export const Component = ({
             >
                 {tooltip}
             </div>
-            <div className="w-fit h-fit m-auto" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <div
+                className="w-fit h-fit m-auto"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
                 {children}
             </div>
         </div>
-    );
-};
+    )
+}
 
 const memoTooltip = memo(Component)
 export default memoTooltip

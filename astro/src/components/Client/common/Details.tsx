@@ -1,5 +1,5 @@
-import { useState, ReactNode, useEffect } from 'react'
-import { link } from "./tailwindVariants";
+import { useState, ReactNode, useEffect } from "react"
+import { link } from "./tailwindVariants"
 
 const Component = ({
     summaryLabel,
@@ -19,9 +19,16 @@ const Component = ({
     }, [initHidden])
     return (
         <>
-            <button className={link({ class: "block text-sm" })}
-                onClick={onClick}>{summaryLabel}{hidden ? ("▼") : ("△")}</button>
-            <div className={`transition-all pt-1 ${hidden ? ("hidden h-0") : ("h-full")}`}>
+            <button
+                className={link({ class: "block text-sm" })}
+                onClick={onClick}
+            >
+                {summaryLabel}
+                {hidden ? "▼" : "△"}
+            </button>
+            <div
+                className={`transition-all pt-1 ${hidden ? "hidden h-0" : "h-full"}`}
+            >
                 {children}
             </div>
         </>

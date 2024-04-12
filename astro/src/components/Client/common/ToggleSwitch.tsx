@@ -8,13 +8,15 @@ const Component = ({
     setPropConfig,
 }: {
     labeltext: ReactNode
-    prop: boolean,
+    prop: boolean
     setProp: Dispatch<SetStateAction<boolean>>
     initialValue: boolean
     setPropConfig: (flag: boolean) => void
 }) => {
-    const inputRef = useRef<HTMLInputElement>(null!);
-    const handleClick = () => { inputRef.current.click() }
+    const inputRef = useRef<HTMLInputElement>(null!)
+    const handleClick = () => {
+        inputRef.current.click()
+    }
 
     const setPropAll = (checked: boolean) => {
         setProp(checked)
@@ -39,16 +41,17 @@ const Component = ({
                     checked={prop}
                     onChange={handleCheck}
                     type="checkbox"
-                    className="peer sr-only" />
+                    className="peer sr-only"
+                />
                 <label className="text-sm">{labeltext}:&nbsp;</label>
-                <span onClick={handleClick}
+                <span
+                    onClick={handleClick}
                     className="my-auto block w-8 bg-gray-500 rounded-full p-[1px] 
                         after:block after:h-4 after:w-4 after:rounded-full 
                         after:bg-white after:transition 
                         peer-checked:bg-blue-500 
                         peer-checked:after:translate-x-[calc(100%-2px)]"
-                >
-                </span>
+                ></span>
             </div>
         </>
     )
