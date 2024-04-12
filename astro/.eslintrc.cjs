@@ -52,6 +52,7 @@ module.exports = {
         "tailwind.config.mjs",
         "jest.config.cjs",
         "astro.config.mjs",
+        "astro-i18next.config.ts",
     ],
     overrides: [
         {

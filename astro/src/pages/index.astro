@@ -9,6 +9,11 @@ import Xicon from "@/components/Xicon.astro"
 import Bskyicon from "@/components/Bskyicon.astro"
 
 const robots = ["index", "follow", "noarchive", "noimageindex"]
+
+import { getLocale } from "astro-i18n-aut"
+
+const locale = getLocale(Astro.url)
+
 ---
 
 <Pagelayout
@@ -46,7 +51,9 @@ const robots = ["index", "follow", "noarchive", "noimageindex"]
                     bg-opacity-80 border-0 py-4 px-10
                     focus:outline-none hover:bg-sky-200
                     inline-flex rounded-full transition-colors shadow-md"
-            >Blueskyへログイン
+            >Blueskyにサインイン
+            {locale === "ja" ? "（日本語やで）" :
+                locale === "en" ? "（英語やで）" : "（言語不明やで）"}
         </a>
         <div class="text-center mx-auto md:max-w-3xl my-5">
             <div

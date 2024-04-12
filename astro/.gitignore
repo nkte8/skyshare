@@ -21,3 +21,6 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# i18n
+astro_tmp_pages_*
