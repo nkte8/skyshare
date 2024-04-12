@@ -2,7 +2,7 @@
  * text -> richtextに変換を行うparserコンストラクタ
  */
 class richTextFacetParser {
-    private regexSeacrh = ({
+    private regexSearch = ({
         regex,
         text,
         result = [],
@@ -22,7 +22,7 @@ class richTextFacetParser {
         // マッチ結果を格納
         result.push(matchText)
         // 本文からマッチ分を取り除いて、再起検索
-        this.regexSeacrh({
+        this.regexSearch({
             regex,
             text: text.slice(matchIndex + matchText.length),
             result,
@@ -47,7 +47,7 @@ class richTextFacetParser {
     }
     getFacet = (text: string) => {
         const result: Array<string> = []
-        this.regexSeacrh({
+        this.regexSearch({
             regex: this.regex,
             text,
             result,

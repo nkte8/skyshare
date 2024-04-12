@@ -1,8 +1,10 @@
-// localstorage関連  
+// localstorage関連
 import { Base64 } from "js-base64"
+import { z } from "zod"
+
 type Obj = {
-    [key: string]: string;
-};
+    [key: string]: string
+}
 const LSKeyName: Obj = {
     accessJwt: "accessJwt",
     refreshJwt: "refreshJwt",
@@ -14,12 +16,20 @@ const LSKeyName: Obj = {
     loginInfo: "loginInfo",
     savedTags: "savedTags",
     drafts: "drafts",
-    appendVia: "appendVia"
+    appendVia: "appendVia",
 }
-type loginInfo = {
-    id: string,
-    pw: string
-}
+
+const ZodTags = z.array(z.string())
+type Tags = z.infer<typeof ZodTags>
+
+const ZodDrafts = z.array(z.string())
+type Drafts = z.infer<typeof ZodDrafts>
+
+const ZodLoginInfo = z.object({
+    id: z.string(),
+    pw: z.string(),
+})
+type LoginInfo = z.infer<typeof ZodLoginInfo>
 
 // viaはlexicon的には定義されていない?付与しての投稿自体は問題ないため、オプションに変更
 export const readAppendVia = (def: boolean): boolean => {
@@ -40,38 +50,44 @@ export const setAppendVia = (flag: boolean): void => {
 
 // 将来的にはローカルではなく、DB側に保存したい
 // DB構造を変えることになると思われるため,大きなアップデートの時の次タスクとして積みたい
-export const readSavedTags = (): Array<string> => {
-    const value = get_ls_value(LSKeyName.savedTags)
+export const readSavedTags = (): Tags => {
+    const value: string | null = get_ls_value(LSKeyName.savedTags)
     if (value !== null) {
-        const Logininfo: string[] =
-            JSON.parse(Base64.decode(value))
-        return Logininfo
+        const zodParsedTags = ZodTags.safeParse(
+            JSON.parse(Base64.decode(value)),
+        )
+        if (zodParsedTags.success) {
+            const tags: Tags = zodParsedTags.data
+            return tags
+        }
     }
     rm_ls_value(LSKeyName.savedTags)
     return []
 }
 
-export const setSavedTags = (Tags: string[]): void => {
-    const savedTags: string =
-        Base64.encode(JSON.stringify(Tags)
-        )
+export const setSavedTags = (tags: Tags): void => {
+    const savedTags: string = Base64.encode(JSON.stringify(tags))
     set_ls_value(LSKeyName.savedTags, savedTags)
 }
 
-export const readDrafts = (): Array<string> => {
-    const value = get_ls_value(LSKeyName.drafts)
+export const readDrafts = (): Drafts => {
+    const value: string | null = get_ls_value(LSKeyName.drafts)
     if (value !== null) {
-        const drafts: string[] =
-            JSON.parse(Base64.decode(value))
-        return drafts
+        const zodParsedDrafts = ZodDrafts.safeParse(
+            JSON.parse(Base64.decode(value)),
+        )
+
+        if (zodParsedDrafts.success) {
+            const drafts: Drafts = zodParsedDrafts.data
+            return drafts
+        }
     }
     rm_ls_value(LSKeyName.drafts)
     return []
 }
 
-export const saveDrafts = (Drafts: string[]): void => {
-    const savedDrafts: string =
-        Base64.encode(JSON.stringify(Drafts))
+export const saveDrafts = (drafts: Drafts): void => {
+    const savedDrafts: string = Base64.encode(JSON.stringify(drafts))
     set_ls_value(LSKeyName.drafts, savedDrafts)
 }
 
@@ -79,23 +95,28 @@ export const resetLoginInfo = () => {
     rm_ls_value(LSKeyName.loginInfo)
 }
 
-export const readLogininfo = (): loginInfo | null => {
-    const value = get_ls_value(LSKeyName.loginInfo)
+export const readLogininfo = (): LoginInfo | null => {
+    const value: string | null = get_ls_value(LSKeyName.loginInfo)
     if (value !== null) {
-        const Logininfo: loginInfo =
-            JSON.parse(Base64.decode(value))
-        return Logininfo
+        const zodParsedObject = ZodLoginInfo.safeParse(
+            JSON.parse(Base64.decode(value)),
+        )
+        if (zodParsedObject.success) {
+            const loginInfo: LoginInfo = zodParsedObject.data
+            return loginInfo
+        }
     }
     rm_ls_value(LSKeyName.loginInfo)
     return null
 }
 
-export const setLogininfo = ({ id, pw }: loginInfo): void => {
-    const Logininfo: string =
-        Base64.encode(JSON.stringify({
-            id: id, pw: pw
-        })
-        )
+export const setLogininfo = ({ id, pw }: LoginInfo): void => {
+    const Logininfo: string = Base64.encode(
+        JSON.stringify({
+            id: id,
+            pw: pw,
+        }),
+    )
     set_ls_value(LSKeyName.loginInfo, Logininfo)
 }
 
@@ -198,7 +219,7 @@ export const resetAll = (): void => {
 const get_ls_value = (key: string): string | null => {
     let rval: string | null = null
     if (typeof localStorage !== "undefined") {
-        let value = localStorage.getItem(key);
+        const value = localStorage.getItem(key)
         rval = value !== null ? value : null
     }
     return rval
@@ -206,7 +227,7 @@ const get_ls_value = (key: string): string | null => {
 
 const set_ls_value = (key: string, value: string): boolean => {
     if (typeof localStorage !== "undefined") {
-        localStorage.setItem(key, value);
+        localStorage.setItem(key, value)
         return true
     }
     return false
@@ -214,7 +235,7 @@ const set_ls_value = (key: string, value: string): boolean => {
 
 const rm_ls_value = (key: string): boolean => {
     if (typeof localStorage !== "undefined") {
-        localStorage.removeItem(key);
+        localStorage.removeItem(key)
         return true
     }
     return false
