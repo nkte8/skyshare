@@ -2,6 +2,10 @@ name: App Manual Deploy
 
 on:
   workflow_dispatch: {}
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   Deploy:
