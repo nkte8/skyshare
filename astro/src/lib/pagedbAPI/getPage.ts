@@ -26,8 +26,8 @@ export const api = async ({
             "Content-Type": "application/json",
         },
     })
-        .then(response => {
-            const responseParsed = ZodPageFetchOutput.safeParse(response.json())
+        .then(async response => {
+            const responseParsed = ZodPageFetchOutput.safeParse(await response.json())
 
             if (!responseParsed.success) {
                 const e: Error = new Error(
