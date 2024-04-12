@@ -102,7 +102,7 @@ const createMentionFacet = async ({
                     },
                 ],
             })
-        } catch (e: unknown) {
+        } catch (_: unknown) {
             continue
         }
     }
