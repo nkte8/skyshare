@@ -33,7 +33,7 @@ const validateAndFixBaseBranch = async (context, github) => {
   const isSafeBaseBranch = !dangerousBaseBranches.includes(baseBranch);
   const isTrustedHeadBranch = trustedHeadBranches.includes(headBranch);
 
-  // ベースブランチが安全、ヘッドブランチが信頼できる場合は何もしない
+  // ベースブランチが安全、またはヘッドブランチが信頼できる場合は何もしない
   if (isSafeBaseBranch || isTrustedHeadBranch) {
     console.log("No changes are required to the base branch.");
     return;
