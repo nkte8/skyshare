@@ -19,13 +19,13 @@ module.exports = async ({ context, github }) => {
 const validateAndFixBaseBranch = async (context, github) => {
   const pullRequest = context.payload.pull_request;
   const pull_number = pullRequest?.number;
-  const headBranch = pullRequest?.head.ref;
   const baseBranch = pullRequest?.base.ref;
+  const headBranch = pullRequest?.head.ref;
 
   if (
     pull_number == undefined ||
-    headBranch == undefined ||
-    baseBranch == undefined
+    baseBranch == undefined ||
+    headBranch == undefined
   ) {
     throw new Error("The PR is not valid.");
   }
