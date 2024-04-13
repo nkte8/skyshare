@@ -36,9 +36,9 @@ export const api = async ({
             accessJwt: accessJwt,
         }),
     })
-        .then(response => {
+        .then(async response => {
             const responseParsed = ZodPageDeletionOutput.safeParse(
-                response.json(),
+                await response.json(),
             )
 
             if (!responseParsed.success) {

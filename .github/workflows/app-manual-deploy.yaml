@@ -1,0 +1,80 @@
+name: App Manual Deploy
+run-name: "[Manual Deploy] ${{ github.ref_name }}"
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  get_env_name:
+    name: Pre task
+    uses: ./.github/workflows/get-environment-from-branch.yaml
+
+  deploy:
+    needs: ["get_env_name"]
+    environment:
+      name: ${{ needs.get_env_name.outputs.env_name }}
+      url: ${{ steps.published.outputs.pageurl }}
+    runs-on: ubuntu-latest
+    name: Build & Deploy
+    permissions:
+      contents: read
+      deployments: write
+      statuses: write
+    env:
+      PROJECT_NAME: skyshare
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Build
+        shell: bash
+        run: node --version; npm install && npm run build
+        working-directory: ./astro
+        env:
+          PUBLIC_CREATEPAGES_ENDPOINT: ${{ secrets.PUBLIC_CREATEPAGES_ENDPOINT }}
+          PUBLIC_DELETEPAGE_ENDPOINT: ${{ secrets.PUBLIC_DELETEPAGE_ENDPOINT }}
+          PUBLIC_GETPAGES_ENDPOINT: ${{ secrets.PUBLIC_GETPAGES_ENDPOINT }}
+          PUBLIC_IS_NOT_PRODUCTION: ${{ vars.PUBLIC_IS_NOT_PRODUCTION }}
+
+      - name: Publish to Cloudflare Pages
+        id: publish
+        uses: cloudflare/wrangler-action@v3
+
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ./astro/dist --commit-dirty=true --project-name=${{ env.PROJECT_NAME }}
+
+      - name: Post publish
+        id: published
+        shell: bash
+        run: |
+          REF_NAME_ESCAPED=`echo '${{ github.ref_name }}' | sed -E 's/[//_/.]/-/g'`;
+          if [[ "${REF_NAME_ESCAPED}" == "${{ github.event.repository.default_branch }}" ]];then
+            REF_NAME_ESCAPED=""
+          else
+            REF_NAME_ESCAPED="${REF_NAME_ESCAPED}."
+          fi
+          echo "pageurl=https://${REF_NAME_ESCAPED}${{ env.PROJECT_NAME }}.pages.dev/" >> $GITHUB_OUTPUT
+
+      - name: Add publish URL as commit status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.payload.pull_request?.head.sha ?? context.sha;
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              context: 'Cloudflare Pages',
+              description: 'Cloudflare Pages deployment',
+              state: 'success',
+              sha,
+              target_url: "${{ steps.published.outputs.pageurl }}",
+            });
