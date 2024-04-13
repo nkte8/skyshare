@@ -1,6 +1,6 @@
 // @ts-check
 
-const dangerousBaseBranches = ["main", "hotfix"];
+const dangerousBaseBranches = ["main"];
 const trustedHeadBranches = ["main", "hotfix", "develop"];
 
 /**
