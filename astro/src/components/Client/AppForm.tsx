@@ -9,6 +9,8 @@ import LogoutButton from "./bsky/buttons/LogoutButton"
 import PopupPreviewForm from "./intents/PopupPreviewForm"
 import { MediaData } from "./common/types"
 import { popupPreviewOptions } from "./intents/types"
+import { getLocale } from "astro-i18n-aut"
+import { useLocation } from "react-use"
 
 const Component = ({
     session,
@@ -25,6 +27,10 @@ const Component = ({
     const [mediaData, setMediaData] = useState<MediaData>(null)
     const [popupPreviewOptions, setPopupPreviewOptions] =
         useState<popupPreviewOptions>(null!)
+
+    const location = useLocation()
+    const locale = getLocale(location.pathname != null ? location.pathname : "")
+
     const Forms = ({ mode }: { mode: modes }) => {
         switch (mode) {
             case "bsky":
@@ -55,6 +61,9 @@ const Component = ({
         <>
             {session.accessJwt !== "" ? (
                 <>
+                    {/* 実験 */}
+                    <div className="text-lg">{locale}</div>
+
                     {Forms({ mode })}
                     <div
                         className={["flex", "justify-center", "my-1"].join("")}
