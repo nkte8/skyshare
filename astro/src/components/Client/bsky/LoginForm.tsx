@@ -17,6 +17,8 @@ import SavePasswordToggle from "./optionToggles/SavePasswordToggle"
 import { writeJwt, readLogininfo, setLogininfo } from "@/utils/useLocalStorage"
 import { servicename } from "@/env/vars"
 
+import { t } from "astro-i18n"
+
 export const Component = ({
     setMsgInfo,
 }: {
@@ -130,7 +132,8 @@ export const Component = ({
                     <ProcButton
                         handler={handleLogin}
                         isProcessing={loading}
-                        context="Blueskyアカウントへログイン"
+                        context={t("button.title") || ""}
+                        // context="Blueskyアカウントへログイン"
                         disabled={
                             !(identifier.length > 0 && password.length > 0)
                         }
