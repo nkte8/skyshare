@@ -2,12 +2,15 @@ import { Dispatch, SetStateAction, useState, useEffect } from "react"
 import { type modes } from "./types"
 import ProcButton from "./ProcButton"
 
-const Component = ({ mode, setMode, isProcessing }: {
+const Component = ({
+    mode,
+    setMode,
+    isProcessing,
+}: {
     isProcessing: boolean
     mode: modes
     setMode: Dispatch<SetStateAction<modes>>
-}
-) => {
+}) => {
     const [label, setLabel] = useState<string>("")
     const swichLabel = () => {
         switch (mode) {
@@ -46,7 +49,8 @@ const Component = ({ mode, setMode, isProcessing }: {
             isProcessing={false}
             context={label}
             showAnimation={false}
-            disabled={isProcessing} />
+            disabled={isProcessing}
+        />
     )
 }
 export default Component

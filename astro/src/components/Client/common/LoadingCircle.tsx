@@ -1,10 +1,5 @@
-
-import { load_circle } from "./tailwindVariants";
-const Component = ({
-    size
-}: {
-    size: "s" | "l"
-}) => {
+import { load_circle } from "./tailwindVariants"
+const Component = ({ size }: { size: "s" | "l" }) => {
     return (
         <svg
             className={load_circle({ size: size })}
@@ -17,7 +12,8 @@ const Component = ({
                 stroke="#7dd3fc"
                 fill="none"
                 strokeWidth={20}
-                strokeLinecap="round"></path>
+                strokeLinecap="round"
+            ></path>
         </svg>
     )
 }
