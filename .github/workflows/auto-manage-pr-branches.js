@@ -1,6 +1,6 @@
 // @ts-check
 
-const dangerousBaseBranches = ["main", "hotfix"];
+const dangerousBaseBranches = ["main"];
 const trustedHeadBranches = ["main", "hotfix", "develop"];
 
 /**
@@ -9,7 +9,6 @@ const trustedHeadBranches = ["main", "hotfix", "develop"];
  */
 module.exports = async ({ context, github }) => {
   await validateAndFixBaseBranch(context, github);
-  validateHeadBranchOrThrow(context);
 };
 
 /**
@@ -20,13 +19,13 @@ module.exports = async ({ context, github }) => {
 const validateAndFixBaseBranch = async (context, github) => {
   const pullRequest = context.payload.pull_request;
   const pull_number = pullRequest?.number;
-  const headBranch = pullRequest?.head.ref;
   const baseBranch = pullRequest?.base.ref;
+  const headBranch = pullRequest?.head.ref;
 
   if (
     pull_number == undefined ||
-    headBranch == undefined ||
-    baseBranch == undefined
+    baseBranch == undefined ||
+    headBranch == undefined
   ) {
     throw new Error("The PR is not valid.");
   }
@@ -34,7 +33,7 @@ const validateAndFixBaseBranch = async (context, github) => {
   const isSafeBaseBranch = !dangerousBaseBranches.includes(baseBranch);
   const isTrustedHeadBranch = trustedHeadBranches.includes(headBranch);
 
-  // ベースブランチが安全、ヘッドブランチが信頼できる場合は何もしない
+  // ベースブランチが安全、またはヘッドブランチが信頼できる場合は何もしない
   if (isSafeBaseBranch || isTrustedHeadBranch) {
     console.log("No changes are required to the base branch.");
     return;
@@ -49,32 +48,3 @@ const validateAndFixBaseBranch = async (context, github) => {
 
   console.log("The base branch has been updated to 'develop'");
 };
-
-/**
- * PRのヘッドブランチを検証します。
- * @param {import("@actions/github/lib/context").Context} context
- */
-function validateHeadBranchOrThrow(context) {
-  const pullRequest = context.payload.pull_request;
-
-  /**
-   * @type {string | undefined}
-   */
-  const headBranch = pullRequest?.head.ref;
-
-  if (headBranch == undefined) {
-    throw new Error("The PR is not valid.");
-  }
-
-  const isPreviewBranch = headBranch.startsWith("preview/");
-
-  if (isPreviewBranch) {
-    console.log("No changes are required to the head branch.");
-    return;
-  }
-
-  throw new Error(
-    `The head branch '${headBranch}' is not an allowed.` +
-      ` Please create a new PR with a head branch that starts with the 'preview/' prefix.`
-  );
-}
