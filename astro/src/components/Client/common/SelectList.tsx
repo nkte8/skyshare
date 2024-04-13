@@ -14,6 +14,10 @@ export const Component = <CodeType,>({
     codeMap: CodeMap<CodeType>[]
 }) => {
     const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        if (codeMap.length === 0) {
+            return
+        }
+
         const item: CodeMap<CodeType> | undefined = codeMap.find(
             opt => opt.label === event.target.value,
         )
