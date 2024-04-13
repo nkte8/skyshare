@@ -1,25 +1,27 @@
 import { Dispatch, SetStateAction } from "react"
 
-type codeMap = {
+type CodeMap<CodeType> = {
     label: string
-    code: any
+    code: CodeType
 }
-export const Component = ({
+export const Component = <CodeType,>({
     disabled,
     setCode,
     codeMap,
 }: {
     disabled: boolean
-    setCode: Dispatch<SetStateAction<any>>
-    codeMap: Array<codeMap>
+    setCode: Dispatch<SetStateAction<CodeType>>
+    codeMap: CodeMap<CodeType>[]
 }) => {
     const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        let value: any = null
-        const item = codeMap.find(opt => opt.label === event.target.value)
-        if (typeof item !== "undefined") {
-            value = item.code
+        const item: CodeMap<CodeType> | undefined = codeMap.find(
+            opt => opt.label === event.target.value,
+        )
+        const code: CodeType | undefined = item?.code ?? codeMap[0]?.code
+
+        if (typeof code !== "undefined") {
+            setCode(code)
         }
-        setCode(value)
     }
     return (
         <div
