@@ -32,9 +32,9 @@ export const api = async ({
             accessJwt: accessJwt,
         }),
     })
-        .then(response => {
+        .then(async response => {
             const responseParsed = ZodPageCreationOutput.safeParse(
-                response.json(),
+                await response.json(),
             )
             if (!responseParsed.success) {
                 const e: Error = new Error(
