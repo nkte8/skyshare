@@ -97,7 +97,7 @@ const Component = ({
     }
 
     useEffect(() => {
-        pageIds()
+        void pageIds()
     }, [])
 
     return (
