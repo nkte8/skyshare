@@ -19,7 +19,7 @@ const Component = ({
         setProcessing(true)
         try {
             if (session.did === "" || session.accessJwt === "") {
-                let e: Error = new Error(
+                const e: Error = new Error(
                     "フロントエンドが想定していない操作が行われました。",
                 )
                 e.name = "Unexpected Error@pagedelete.tsx"

@@ -22,7 +22,7 @@ const callPopup = (popupOptions: popupOptions): void => {
             "",
         )
     } else {
-        let e: Error = new Error(
+        const e: Error = new Error(
             "intentInfoへ対応していないサービスが指定されました。",
         )
         e.name = "popup.ts"
