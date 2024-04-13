@@ -65,7 +65,10 @@ const Component = ({
                     <div className="grid sm:grid-cols-3 grid-cols-1">
                         {ids.ids.map(value => {
                             return (
-                                <div className=" bg-white rounded-lg px-2 py-1 m-1 border-2">
+                                <div
+                                    key={value}
+                                    className=" bg-white rounded-lg px-2 py-1 m-1 border-2"
+                                >
                                     <a
                                         className={link()}
                                         target="_blank"
