@@ -17,6 +17,7 @@ const LSKeyName: Obj = {
     savedTags: "savedTags",
     drafts: "drafts",
     appendVia: "appendVia",
+    useWebShareAPI: "useWebShareAPI"
 }
 
 const ZodTags = z.array(z.string())
@@ -30,6 +31,22 @@ const ZodLoginInfo = z.object({
     pw: z.string(),
 })
 type LoginInfo = z.infer<typeof ZodLoginInfo>
+
+export const readUseWebShareAPI = (def: boolean): boolean => {
+    const value = get_ls_value(LSKeyName.useWebShareAPI)
+    if (value !== null) {
+        return value === "true"
+    }
+    rm_ls_value(LSKeyName.useWebShareAPI)
+    return def
+}
+
+export const setUseWebShareAPI = (flag: boolean): void => {
+    set_ls_value(LSKeyName.useWebShareAPI, flag.toString())
+    if (flag === false) {
+        rm_ls_value(LSKeyName.useWebShareAPI)
+    }
+}
 
 // viaはlexicon的には定義されていない?付与しての投稿自体は問題ないため、オプションに変更
 export const readAppendVia = (def: boolean): boolean => {
@@ -131,6 +148,7 @@ export const readSavePassword = (def: boolean): boolean => {
 
 export const setSavePassword = (flag: boolean): void => {
     set_ls_value(LSKeyName.savePassword, flag.toString())
+    // SavePasswordオプションがオフの場合は、ブラウザに保存したパスワードを削除する
     if (flag === false) {
         rm_ls_value(LSKeyName.loginInfo)
     }

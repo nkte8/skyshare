@@ -3,7 +3,7 @@ import { MediaData } from "../../common/types"
 
 export const Component = ({ mediaData }: { mediaData: MediaData }) => {
     // mediaDataがimageではない場合はコンポーネントを無効に
-    if (mediaData === null || mediaData.type !== "external") {
+    if (typeof mediaData === "undefined" || mediaData.type !== "external") {
         return
     }
     const mediaDataItem = mediaData.meta

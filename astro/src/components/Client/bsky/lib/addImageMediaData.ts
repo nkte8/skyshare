@@ -9,29 +9,33 @@ const allowedMimeTypes: string[] = ["image/png", "image/jpeg"]
 const imageExtensions: string[] = ["png", "jpeg", "jpg"]
 
 /**
- *
- * @param Blobs 追加するFile
+ * setMediaDataへ新規ファイルを差し込む処理
+ * @param Files 追加するFile
  */
 const addImageMediaData = (
-    Blobs: Array<File>,
-    MediaData: MediaData,
+    Files: Array<File>,
+    mediaData: MediaData,
     setMediaData: Dispatch<SetStateAction<MediaData>>,
 ) => {
-    if (Blobs.length <= 0) {
+    if (Files.length <= 0) {
         return
     }
     // MediaData型は毎回typeにimagesを指定して定義しなおす
     const newMediaData: MediaData = {
         type: "images",
         images:
-            MediaData !== null && MediaData.type === "images"
-                ? MediaData.images
+            typeof mediaData !== "undefined" && mediaData.type === "images"
+                ? mediaData.images
+                : [],
+        files:
+            typeof mediaData !== "undefined" && mediaData.type === "images"
+                ? mediaData.files
                 : [],
     }
     // MediaDataImagesを定義
-    const newMediaDataImages: Array<{ alt: string; blob: Blob }> = [
+    const newMediaDataImages: { alt: string; blob: Blob }[] = [
         ...newMediaData.images,
-        ...Blobs.filter(value => allowedMimeTypes.includes(value.type)).map(
+        ...Files.filter(value => allowedMimeTypes.includes(value.type)).map(
             value => {
                 return {
                     alt: "",
@@ -42,10 +46,12 @@ const addImageMediaData = (
             },
         ),
     ]
+    const newMediaDataFiles: File[] = newMediaData.files.concat(Files)
     // 結合
     const result: MediaData = {
         type: "images",
         images: newMediaDataImages.slice(0, maxAttachableImages),
+        files: newMediaDataFiles.slice(0, maxAttachableImages)
     }
     setMediaData(result)
 }

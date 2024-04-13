@@ -23,6 +23,7 @@ const Component = ({
             initialValue={readSavePassword(false)}
             setPropConfig={setSavePassword}
             labeltext={labeltext}
+            isLocked={false}
         />
     )
 }
