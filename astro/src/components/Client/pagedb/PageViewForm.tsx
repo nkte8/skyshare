@@ -73,6 +73,7 @@ const Component = ({
                                             pagesPrefix + "/" + value + "/",
                                             siteurl,
                                         ).toString()}
+                                        rel="noreferrer"
                                     >
                                         ID:{value.split(/(_|@)/).at(-1)}
                                     </a>
