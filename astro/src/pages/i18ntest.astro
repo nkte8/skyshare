@@ -1,0 +1,27 @@
+---
+import { getEntry } from 'astro:content'
+import { astroI18n } from 'astro-i18n'
+import version from "@/env/version"
+import Pagelayout from '@/layouts/Pagelayout.astro'
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const page = await getEntry("document", astroI18n.locale)
+
+if (page == undefined) {
+    throw new Error(`Document not found`);
+}
+
+const { Content } = await page.render();
+
+const title = "i18ntest"
+const robots = ["index", "follow", "noarchive", "noimageindex"]
+
+---
+<Pagelayout
+    cardPath=`/materials/ogp_main.png?updated=${version}`
+    pageTitle={title}
+    robots={robots}
+    hidePostButton={true}
+>
+  <Content />
+</Pagelayout>
