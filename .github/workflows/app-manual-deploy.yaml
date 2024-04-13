@@ -57,7 +57,12 @@ jobs:
         shell: bash
         run: |
           REF_NAME_ESCAPED=`echo '${{ github.ref_name }}' | sed -E 's/[//_/.]/-/g'`;
-          echo "pageurl=https://${REF_NAME_ESCAPED}.${{ env.PROJECT_NAME }}.pages.dev/" >> $GITHUB_OUTPUT
+          if [[ "${REF_NAME_ESCAPED}" == "${{ github.event.repository.default_branch }}" ]];then
+            REF_NAME_ESCAPED=""
+          else
+            REF_NAME_ESCAPED="${REF_NAME_ESCAPED}."
+          fi
+          echo "pageurl=https://${REF_NAME_ESCAPED}${{ env.PROJECT_NAME }}.pages.dev/" >> $GITHUB_OUTPUT
 
       - name: Add publish URL as commit status
         uses: actions/github-script@v7
