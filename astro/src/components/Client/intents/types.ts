@@ -9,7 +9,7 @@ export type intentKinds = "xcom" | "taittsuu"
  * @param intent.hardware intent呼び出しURLが有効なハードウェア
  */
 export type intentPreset = {
-    hardware: string,
+    hardware: string
     url: string
 }
 
@@ -21,7 +21,7 @@ export type intentPreset = {
 export type popupPreviewOptions = {
     mediaObjectURL: string | null
     ogpTitle: string | null
-    postText: string,
+    postText: string
 }
 
 /**
@@ -31,5 +31,5 @@ export type popupPreviewOptions = {
  */
 export type popupOptions = {
     kind: intentKinds
-    postText: string,
+    postText: string
 }

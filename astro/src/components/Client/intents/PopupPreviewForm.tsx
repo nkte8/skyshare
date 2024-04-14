@@ -6,7 +6,7 @@ import { readShowTaittsuu } from "@/utils/useLocalStorage"
 import { popupPreviewOptions } from "./types"
 
 export const Component = ({
-    popupPreviewOptions
+    popupPreviewOptions,
 }: {
     popupPreviewOptions: popupPreviewOptions
 }) => {
@@ -19,56 +19,61 @@ export const Component = ({
                 {/* 本文 */}
                 <div className="flex m-2">
                     <div className="flex-none w-fit">
-                        <img src={profile?.avatar} className="w-12 h-12 inline-block rounded-full" />
+                        <img
+                            src={profile?.avatar}
+                            className="w-12 h-12 inline-block rounded-full"
+                        />
                     </div>
                     <div className="text-left ml-3 break-all">
-                        {
-                            popupPreviewOptions.postText.split(/(\n)/).map((value, index) => {
-                                return <Fragment key={index}>
-                                    {value.match(/\n/) ? <br /> : value}
-                                </Fragment>
-                            })
-                        }
+                        {popupPreviewOptions.postText
+                            .split(/(\n)/)
+                            .map((value, index) => {
+                                return (
+                                    <Fragment key={index}>
+                                        {value.match(/\n/) ? <br /> : value}
+                                    </Fragment>
+                                )
+                            })}
                     </div>
                 </div>
                 {/* プレビュー画像 */}
                 <div className="block relative h-auto max-w-full">
-                    {popupPreviewOptions.mediaObjectURL !== null &&
+                    {popupPreviewOptions.mediaObjectURL !== null && (
                         <>
                             {/* 画像 */}
-                            {
-                                popupPreviewOptions.mediaObjectURL !== "" ? (
-                                    <img
-                                        src={popupPreviewOptions.mediaObjectURL}
-                                        className={[
-                                            "w-full",
-                                            "rounded-3xl",
-                                            "aspect-[1.91/1]",
-                                            "object-cover",
-                                            "border-2"
-                                        ].join(" ")} />
-                                ) : (
-                                    <div className={[
+                            {popupPreviewOptions.mediaObjectURL !== "" ? (
+                                <img
+                                    src={popupPreviewOptions.mediaObjectURL}
+                                    className={[
+                                        "w-full",
+                                        "rounded-3xl",
+                                        "aspect-[1.91/1]",
+                                        "object-cover",
+                                        "border-2",
+                                    ].join(" ")}
+                                />
+                            ) : (
+                                <div
+                                    className={[
                                         "w-full",
                                         "rounded-3xl",
                                         "py-10",
                                         "object-cover",
                                         "border-2",
-                                        "text-gray-300"
-                                    ].join(" ")}>
-                                        No image
-                                    </div>
-                                )
-                            }
+                                        "text-gray-300",
+                                    ].join(" ")}
+                                >
+                                    No image
+                                </div>
+                            )}
                             {/* 画像の左端に表示されるタイトル文字 */}
-                            {
-                                popupPreviewOptions.ogpTitle !== null && (
-                                    <div className="absolute bottom-2 left-4 bg-opacity-70 rounded-md px-2 text-white bg-black">
-                                        {popupPreviewOptions.ogpTitle}
-                                    </div>
-                                )
-                            }
-                        </>}
+                            {popupPreviewOptions.ogpTitle !== null && (
+                                <div className="absolute bottom-2 left-4 bg-opacity-70 rounded-md px-2 text-white bg-black">
+                                    {popupPreviewOptions.ogpTitle}
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             </Tweetbox>
             <div className="max-w-xl mx-auto text-left">
@@ -79,33 +84,36 @@ export const Component = ({
             <div className="mx-auto w-fit">
                 <ShareButton
                     className="block mx-auto"
-                    labeltext={
-                        <div className="mb-0">Xでポストする</div>
-                    }
+                    labeltext={<div className="mb-0">Xでポストする</div>}
                     clikedtext={
-                        <div className="mb-0 text-xs">ポップアップを実行しました</div>
+                        <div className="mb-0 text-xs">
+                            ポップアップを実行しました
+                        </div>
                     }
                     options={{
                         kind: "xcom",
-                        postText: popupPreviewOptions.postText
+                        postText: popupPreviewOptions.postText,
                     }}
-                    disabled={false} />
-                {
-                    readShowTaittsuu(false) &&
+                    disabled={false}
+                />
+                {readShowTaittsuu(false) && (
                     <ShareButton
                         className="block mx-auto mt-2"
                         labeltext={
                             <div className="mb-0">タイッツーでポストする</div>
                         }
                         clikedtext={
-                            <div className="mb-0 text-xs">ポップアップを実行しました</div>
+                            <div className="mb-0 text-xs">
+                                ポップアップを実行しました
+                            </div>
                         }
                         options={{
                             kind: "taittsuu",
-                            postText: popupPreviewOptions.postText
+                            postText: popupPreviewOptions.postText,
                         }}
-                        disabled={false} />
-                }
+                        disabled={false}
+                    />
+                )}
             </div>
         </>
     )

@@ -10,11 +10,11 @@ export const Component = ({
     clikedtext,
     className,
 }: {
-    options: popupOptions,
-    disabled: boolean,
-    labeltext: ReactNode,
-    clikedtext: ReactNode,
-    className?: string,
+    options: popupOptions
+    disabled: boolean
+    labeltext: ReactNode
+    clikedtext: ReactNode
+    className?: string
 }) => {
     const [clicked, setCliked] = useState<ReactNode>(<></>)
     const [color, setColor] = useState<"sky" | "blue" | "gray">("sky")
@@ -25,13 +25,16 @@ export const Component = ({
     }
     return (
         <>
-            <button className={button_base({
-                disabled: disabled,
-                regectinput: disabled,
-                color: color,
-                class: className
-            })}
-                onClick={handleClick} disabled={disabled}>
+            <button
+                className={button_base({
+                    disabled: disabled,
+                    regectinput: disabled,
+                    color: color,
+                    class: className,
+                })}
+                onClick={handleClick}
+                disabled={disabled}
+            >
                 {labeltext}
                 {clicked}
             </button>

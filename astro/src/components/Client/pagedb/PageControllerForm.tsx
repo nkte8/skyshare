@@ -8,29 +8,33 @@ import ProcButton from "../common/ProcButton"
 const Component = ({
     id,
     session,
-    setMsgInfo
+    setMsgInfo,
 }: {
-    id: string,
-    session: Session_info,
-    setMsgInfo: Dispatch<SetStateAction<msgInfo>>,
+    id: string
+    session: Session_info
+    setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
     const handleClick = () => {
         location.href = posturl
     }
     return (
         <div className="justify-center">
-            {
-                session.accessJwt !== "" ? (
-                    <>
-                        <PageDeleteButton id={id} session={session} setMsgInfo={setMsgInfo} />
-                    </>
-                ) : (
-                    <ProcButton handler={handleClick}
-                        isProcessing={false}
-                        showAnimation={false}
-                        context="ログイン" />
-                )
-            }
+            {session.accessJwt !== "" ? (
+                <>
+                    <PageDeleteButton
+                        id={id}
+                        session={session}
+                        setMsgInfo={setMsgInfo}
+                    />
+                </>
+            ) : (
+                <ProcButton
+                    handler={handleClick}
+                    isProcessing={false}
+                    showAnimation={false}
+                    context="ログイン"
+                />
+            )}
         </div>
     )
 }
