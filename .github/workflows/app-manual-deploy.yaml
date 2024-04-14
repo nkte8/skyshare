@@ -1,5 +1,5 @@
-name: App Manual Deploy
-run-name: "[Manual Deploy] ${{ github.ref_name }}"
+name: App Build & Deploy
+run-name: "[Deploy] ${{ github.ref_name }}"
 
 on:
   workflow_dispatch: {}
@@ -73,7 +73,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               context: 'Cloudflare Pages',
-              description: 'Cloudflare Pages deployment',
+              description: 'Deploy to Cloudflare Pages: Click Details to see build result',
               state: 'success',
               sha,
               target_url: "${{ steps.published.outputs.pageurl }}",
