@@ -1,0 +1,11 @@
+---
+export const prerender = false
+import { baseurl } from "@/env/envs"
+
+let lang = Astro.request.headers.get("Accept-Language")
+if (lang !== null || lang === "") {
+    lang = "en"
+}
+const newUrl = `${baseurl}${lang}${Astro.url.pathname}`
+return Astro.redirect(newUrl)
+---

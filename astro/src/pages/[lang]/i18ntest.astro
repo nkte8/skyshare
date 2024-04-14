@@ -1,0 +1,34 @@
+---
+import { getEntry, getCollection } from "astro:content"
+import version from "@/env/version"
+import Pagelayout from "@/layouts/Pagelayout.astro"
+
+const { lang } = Astro.params
+
+export const getStaticPaths = async () => {
+    const allBlogPosts = await getCollection("document")
+    return allBlogPosts.map(entry => {
+        return { params: { lang: entry.slug } }
+    })
+}
+
+const page = await getEntry("document", lang)
+
+if (page == undefined) {
+    throw new Error(`Document not found`)
+}
+
+const { Content } = await page.render()
+
+const title = "i18ntest"
+const robots = ["index", "follow", "noarchive", "noimageindex"]
+---
+
+<Pagelayout
+    cardPath=`/materials/ogp_main.png?updated=${version}`
+    pageTitle={title}
+    robots={robots}
+    hidePostButton={true}
+>
+    <Content />
+</Pagelayout>
