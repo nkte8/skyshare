@@ -28,10 +28,6 @@ jobs:
       url: ${{ steps.published.outputs.pageurl }}
     runs-on: ubuntu-latest
     name: Build & Deploy
-    permissions:
-      contents: read
-      deployments: write
-      statuses: write
     env:
       PROJECT_NAME: skyshare
 

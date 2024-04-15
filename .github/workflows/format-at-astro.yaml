@@ -3,15 +3,15 @@ name: Format code at ./astro
 on:
   workflow_call: {}
 
-permissions:
-  actions: write
-  checks: write
-  contents: write
-
 jobs:
   auto_format:
     name: Format code at ./astro
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      checks: write
+      contents: write
+
     steps:
       ## PRのブランチをcheckout
       - name: Checkout branch
