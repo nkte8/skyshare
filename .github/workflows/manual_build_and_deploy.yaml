@@ -11,11 +11,11 @@ on:
 jobs:
   get_env_name:
     name: PreTask
-    uses: ./.github/workflows/get-environment-from-branch.yaml
+    uses: ./.github/workflows/oncall_get_env_name.yaml
 
   format_code:
     name: PreTask
-    uses: ./.github/workflows/format-at-astro.yaml
+    uses: ./.github/workflows/oncall_format_astro_code.yaml
     permissions:
       actions: write
       checks: write
