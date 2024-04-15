@@ -29,7 +29,7 @@ Workflow の命名規則を以下に定めます。
 
 Workflow ファイル(`yaml`)の命名規則を以下に定めます。
 
-- 名称はファイル名を見るだけで目的がわかるようにすること
+- Workflowのnameを踏襲すること
 - 接続詞は`_`を用いること
 - 拡張子は[Offical Extensions](https://yaml.org/faq.html)の推奨に習い、`yaml`を用いること
 
