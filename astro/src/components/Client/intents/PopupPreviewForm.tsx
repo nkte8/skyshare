@@ -27,9 +27,9 @@ export const Component = ({
                     <div className="text-left ml-3 break-all">
                         {popupPreviewOptions.postText
                             .split(/(\n)/)
-                            .map((value, index) => {
+                            .map(value => {
                                 return (
-                                    <Fragment key={index}>
+                                    <Fragment key={`preview-text-${value}`}>
                                         {value.match(/\n/) ? <br /> : value}
                                     </Fragment>
                                 )

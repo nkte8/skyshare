@@ -66,7 +66,7 @@ const Component = ({
                         {ids.ids.map(value => {
                             return (
                                 <div
-                                    key={value}
+                                    key={`page-id-${value}`}
                                     className=" bg-white rounded-lg px-2 py-1 m-1 border-2"
                                 >
                                     <a

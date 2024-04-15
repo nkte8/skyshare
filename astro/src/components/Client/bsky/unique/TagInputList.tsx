@@ -57,8 +57,8 @@ export const Component = ({
     }
     return (
         <div className="my-auto overflow-x-scroll flex w-fit minimum-scrollbars">
-            {readSavedTags().map((value, index) => {
-                return <TagButton key={`${index}-${value}`} tag={value} />
+            {readSavedTags().map(value => {
+                return <TagButton key={`tag-${value}`} tag={value} />
             })}
         </div>
     )

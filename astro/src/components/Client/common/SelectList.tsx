@@ -65,7 +65,11 @@ export const Component = <CodeType,>({
                 ].join(" ")}
             >
                 {codeMap.map(value => {
-                    return <option key={value.label}>{value.label}</option>
+                    return (
+                        <option key={`select-list-code-${value.label}`}>
+                            {value.label}
+                        </option>
+                    )
                 })}
             </select>
         </div>
