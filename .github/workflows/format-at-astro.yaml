@@ -1,11 +1,12 @@
-name: Format code at ./astro
+name: "[OnCall] Format ./astro code"
+run-name: "Format ./astro code"
 
 on:
   workflow_call: {}
 
 jobs:
-  auto_format:
-    name: Format code at ./astro
+  format_frontend:
+    name: Format ./astro code
     runs-on: ubuntu-latest
     permissions:
       actions: write

@@ -1,5 +1,5 @@
-name: App Build & Deploy
-run-name: "[Deploy] ${{ github.ref_name }}"
+name: "[Manual] Build & Deploy"
+run-name: "[Build & Deploy] ${{ github.ref_name }}"
 
 on:
   workflow_dispatch: {}
@@ -13,7 +13,7 @@ jobs:
     name: PreTask
     uses: ./.github/workflows/get-environment-from-branch.yaml
 
-  auto_format:
+  format_code:
     name: PreTask
     uses: ./.github/workflows/format-at-astro.yaml
     permissions:
@@ -21,8 +21,8 @@ jobs:
       checks: write
       contents: write
 
-  deploy:
-    needs: ["get_env_name", "auto_format"]
+  deploy_frontend:
+    needs: ["get_env_name", "format_code"]
     environment:
       name: ${{ needs.get_env_name.outputs.env_name }}
       url: ${{ steps.published.outputs.pageurl }}
