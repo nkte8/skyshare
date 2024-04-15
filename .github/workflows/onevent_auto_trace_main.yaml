@@ -1,0 +1,28 @@
+name: "[OnEvent] Auto-trace main branch"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  change-base:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout hotfix
+        uses: actions/checkout@v4
+        with:
+          ref: hotfix
+
+      - name: Force change hotfix HEAD to main
+        run: |
+          git branch --contains
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+          git push -f
