@@ -23,7 +23,9 @@ export const api = async ({
         },
     })
         .then(async response => {
-            const responseParsed = ZodIdsFetchOutput.safeParse(await response.json())
+            const responseParsed = ZodIdsFetchOutput.safeParse(
+                await response.json(),
+            )
 
             if (!responseParsed.success) {
                 const e: Error = new Error(
