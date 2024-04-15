@@ -78,7 +78,7 @@ export const Component = ({
                 {drafts.length > 0 ? (
                     drafts.map((draft, index) => (
                         <div
-                            key={index}
+                            key={`draft-${draft}`}
                             className={
                                 ["flex", "mb-0", "items-center", "py-4"].join(
                                     " ",
