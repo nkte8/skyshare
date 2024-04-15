@@ -5,19 +5,19 @@ import { Dispatch, SetStateAction, useEffect } from "react"
 import OverlayDialog from "../../common/OverlayDialog"
 
 // service
-import { readDrafts, saveDrafts } from "@/utils/useLocalStorage";
+import { readDrafts, saveDrafts } from "@/utils/useLocalStorage"
 
 export const Component = ({
     setPostText,
     drafts,
-    setDrafts
+    setDrafts,
 }: {
-    setPostText: Dispatch<SetStateAction<string>>,
-    drafts: Array<string>,
-    setDrafts: Dispatch<SetStateAction<Array<string>>>,
+    setPostText: Dispatch<SetStateAction<string>>
+    drafts: Array<string>
+    setDrafts: Dispatch<SetStateAction<Array<string>>>
 }) => {
     useEffect(() => {
-        setDrafts(readDrafts());
+        setDrafts(readDrafts())
     }, [])
 
     /**
@@ -58,55 +58,72 @@ export const Component = ({
         <OverlayDialog
             buttonOption={{
                 content: "下書き一覧",
-                className: ["mr-2"].join(" ")
-            }}>
-            <div className={[
-                "text-left",
-                "overflow-auto",
-                "max-h-dvh",
-                "px-2", "m-0",
-                "sm:min-w-96", "sm:max-w-screen-sm",
-                "min-w-48", "max-w-full"].join(" ")}>
-                <div className="border-gray-200 border-b-2">
-                    下書き一覧
-                </div>
-                {drafts.length > 0 ? drafts.map((draft, index) => (
-                    <div key={index} className={[
-                        "flex", "mb-0",
-                        "items-center",
-                        "py-4"].join(" ") + ` ${index !== drafts.length - 1 ? "border-b border-gray-200" : ""}`
-                    }>
-                        <div className={[
-                            "flex-1", "cursor-pointer",
-                            "line-clamp-1", "pr-4",
-                            "break-all", "mb-0"].join(" ")}
-                            onClick={() => {
-                                handleClickDraft(draft, index)
-                            }}>
-                            {draft.trim()}
+                className: ["mr-2"].join(" "),
+            }}
+        >
+            <div
+                className={[
+                    "text-left",
+                    "overflow-auto",
+                    "max-h-dvh",
+                    "px-2",
+                    "m-0",
+                    "sm:min-w-96",
+                    "sm:max-w-screen-sm",
+                    "min-w-48",
+                    "max-w-full",
+                ].join(" ")}
+            >
+                <div className="border-gray-200 border-b-2">下書き一覧</div>
+                {drafts.length > 0 ? (
+                    drafts.map((draft, index) => (
+                        <div
+                            key={`draft-${draft}`}
+                            className={
+                                ["flex", "mb-0", "items-center", "py-4"].join(
+                                    " ",
+                                ) +
+                                ` ${index !== drafts.length - 1 ? "border-b border-gray-200" : ""}`
+                            }
+                        >
+                            <div
+                                className={[
+                                    "flex-1",
+                                    "cursor-pointer",
+                                    "line-clamp-1",
+                                    "pr-4",
+                                    "break-all",
+                                    "mb-0",
+                                ].join(" ")}
+                                onClick={() => {
+                                    handleClickDraft(draft, index)
+                                }}
+                            >
+                                {draft.trim()}
+                            </div>
+                            <button
+                                className={[
+                                    "px-2 py-1",
+                                    "bg-red-500",
+                                    "text-white",
+                                    "rounded",
+                                    "hover:bg-red-600",
+                                    "focus:outline-none",
+                                    "focus:ring-2",
+                                    "focus:ring-red-500",
+                                    "focus:ring-opacity-50",
+                                ].join(" ")}
+                                onClick={() => {
+                                    handleDeleteDraft(index)
+                                }}
+                            >
+                                削除
+                            </button>
                         </div>
-                        <button
-                            className={[
-                                "px-2 py-1",
-                                "bg-red-500",
-                                "text-white",
-                                "rounded",
-                                "hover:bg-red-600",
-                                "focus:outline-none",
-                                "focus:ring-2",
-                                "focus:ring-red-500",
-                                "focus:ring-opacity-50"].join(" ")}
-                            onClick={() => {
-                                handleDeleteDraft(index)
-                            }}>
-                            削除
-                        </button>
-                    </div>
-                )) :
-                    <div>
-                        下書きがありません
-                    </div>
-                }
+                    ))
+                ) : (
+                    <div>下書きがありません</div>
+                )}
             </div>
         </OverlayDialog>
     )

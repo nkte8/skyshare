@@ -1,5 +1,5 @@
 // utils
-import { KeyboardEvent, useRef, ReactNode } from "react";
+import { KeyboardEvent, useRef, ReactNode } from "react"
 
 /**
  * Dialogの共通コンポーネント
@@ -13,31 +13,31 @@ export const Component = ({
     callbackOpenDialog,
     callbackCloseDialog,
     buttonOption,
-    children
+    children,
 }: {
-    callbackOpenDialog?: () => void,
-    callbackCloseDialog?: () => void,
+    callbackOpenDialog?: () => void
+    callbackCloseDialog?: () => void
     buttonOption: {
-        className: string,
+        className: string
         content: ReactNode
     }
     children: ReactNode
 }) => {
-    const ref = useRef<HTMLDialogElement | null>(null);
+    const ref = useRef<HTMLDialogElement | null>(null)
 
     const handleOpenDialog = () => {
         typeof callbackOpenDialog !== "undefined" && callbackOpenDialog()
         if (ref.current) {
             ref.current.showModal()
         }
-    };
+    }
 
     const handleCloseDialog = () => {
         if (ref.current) {
-            ref.current.close();
+            ref.current.close()
         }
         typeof callbackCloseDialog !== "undefined" && callbackCloseDialog()
-    };
+    }
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
         if (event.key === "Escape") {
@@ -49,16 +49,19 @@ export const Component = ({
         <>
             <button
                 onClick={handleOpenDialog}
-                className={buttonOption.className}>
+                className={buttonOption.className}
+            >
                 {buttonOption.content}
             </button>
-            <dialog ref={ref}
+            <dialog
+                ref={ref}
                 className="p-10 rounded-2xl"
                 onClick={handleCloseDialog}
-                onKeyDown={handleKeyDown}>
+                onKeyDown={handleKeyDown}
+            >
                 {children}
             </dialog>
         </>
-    );
-};
+    )
+}
 export default Component

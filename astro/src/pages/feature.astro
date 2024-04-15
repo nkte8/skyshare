@@ -1,117 +1,117 @@
 ---
-import { servicename, githuburl, zennurl } from "@/env/vars";
-import { baseurl, qaurl, abouturl, pagesPrefix } from "@/env/envs";
-import version from "@/env/version";
-import Pagelayout from "@/layouts/Pagelayout.astro";
+import { servicename, githuburl, zennurl } from "@/env/vars"
+import { baseurl, qaurl, abouturl, pagesPrefix } from "@/env/envs"
+import version from "@/env/version"
+import Pagelayout from "@/layouts/Pagelayout.astro"
 const siteurl = Astro.url.origin
 const example_url = new URL(
-	baseurl + pagesPrefix + "/nlla.bsky.social_3kk7qzpffl22n/",
-	siteurl,
-);
-import { Picture } from "astro:assets";
-import ogp_example from "@/images/ogp_nlla.bsky.jpg";
-import link_img from "@/images/link.svg";
+    baseurl + pagesPrefix + "/nlla.bsky.social_3kk7qzpffl22n/",
+    siteurl,
+)
+import { Picture } from "astro:assets"
+import ogp_example from "@/images/ogp_nlla.bsky.jpg"
+import link_img from "@/images/link.svg"
 
-const title = `Feature - ${servicename}`;
-const robots = ["index", "nofollow", "noarchive", "noimageindex"];
+const title = `Feature - ${servicename}`
+const robots = ["index", "nofollow", "noarchive", "noimageindex"]
 ---
 
 <Pagelayout
-	cardPath=`/materials/ogp_main.png?updated=${version}`
-	pageTitle={title}
-	robots={robots}
-	hidePostButton={true}
+    cardPath=`/materials/ogp_main.png?updated=${version}`
+    pageTitle={title}
+    robots={robots}
+    hidePostButton={true}
 >
-	<div class="mb-8">
-		<h1>{servicename}</h1>
-		<h3>
-			{
-				servicename
-			}は、Bluesky投稿専用クライアント、およびOGPカード/ページジェネレータです。
-		</h3>
-	</div>
-	<div class="mb-8">
-		<h2>詳しい仕組み</h2>
-		<div>
-			<div>
-				当サイトからポストを行うと、Blueskyへの投稿と同時に、
-				OGPカードおよび画像が設定されたWebページを生成します。
-			</div>
-			<div>
-				<a href={example_url}>
-					例としてはこのようなページが生成されます。
-				</a>
-				ツイートしようとすると、以下のような画像(1200x630px)がツイートに添付されます。
-			</div><div>
-				初回のみ読み込み時間はありますが、ツイート前・後問わず必ず挿入されます。
-			</div>
-			<div class="my-4">
-				<Picture
-					class="md:max-w-xl shadow-lg mx-auto w-4/5"
-					src={ogp_example}
-					alt=""
-				/>
-			</div>
-			<div>
-				Bluesky投稿から生成されたWebページをXにて投稿していただくことで、両SNSへの投稿を疑似的にサポートする、というサービスとなります。
-			</div>
-			<div class="mb-4">
-				Bluesky投稿後、以下のような投稿を生成する投稿リンクを払い出されるので、Xへの投稿もスムーズです。
-			</div>
-			<img class="w-4 inline-block" src={link_img.src} />
+    <div class="mb-8">
+        <h1>{servicename}</h1>
+        <h3>
+            {
+                servicename
+            }は、Bluesky投稿専用クライアント、およびOGPカード/ページジェネレータです。
+        </h3>
+    </div>
+    <div class="mb-8">
+        <h2>詳しい仕組み</h2>
+        <div>
+            <div>
+                当サイトからポストを行うと、Blueskyへの投稿と同時に、
+                OGPカードおよび画像が設定されたWebページを生成します。
+            </div>
+            <div>
+                <a href={example_url}>
+                    例としてはこのようなページが生成されます。
+                </a>
+                ツイートしようとすると、以下のような画像(1200x630px)がツイートに添付されます。
+            </div><div>
+                初回のみ読み込み時間はありますが、ツイート前・後問わず必ず挿入されます。
+            </div>
+            <div class="my-4">
+                <Picture
+                    class="md:max-w-xl shadow-lg mx-auto w-4/5"
+                    src={ogp_example}
+                    alt=""
+                />
+            </div>
+            <div>
+                Bluesky投稿から生成されたWebページをXにて投稿していただくことで、両SNSへの投稿を疑似的にサポートする、というサービスとなります。
+            </div>
+            <div class="mb-4">
+                Bluesky投稿後、以下のような投稿を生成する投稿リンクを払い出されるので、Xへの投稿もスムーズです。
+            </div>
+            <img class="w-4 inline-block" src={link_img.src} />
 
-			<a
-				target="_blank"
-				href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。${example_url}`}
-				>投稿リンクの例（投稿用の本文付きで𝕏が開きます）</a
-			>
-		</div>
-	</div>
+            <a
+                target="_blank"
+                href={`https://twitter.com/intent/tweet?text=投稿リンクのサンプルです。${example_url.toString()}`}
+                >投稿リンクの例（投稿用の本文付きで𝕏が開きます）</a
+            >
+        </div>
+    </div>
 
-	<div class="mb-8">
-		<h2>当サイトの仕様について</h2>
-		<div>
-			<a href={abouturl}>当サイトについて</a>を参照してください。
-		</div>
-	</div>
+    <div class="mb-8">
+        <h2>当サイトの仕様について</h2>
+        <div>
+            <a href={abouturl}>当サイトについて</a>を参照してください。
+        </div>
+    </div>
 
-	<div class="mb-8">
-		<h2>よくある質問</h2>
-		<a href={qaurl}>Q&A</a>を参照してください。
-	</div>
+    <div class="mb-8">
+        <h2>よくある質問</h2>
+        <a href={qaurl}>Q&A</a>を参照してください。
+    </div>
 
-	<div class="mb-8">
-		<h2>ソースコードについて</h2>
-		<div>
-			<div>
-				Blueskyを操作するAPIであるAT
-				Protocolは開発段階であるため前例が少なく、
-				まだまだハードルが高い内容となっています。
-				開発者がもっと低い敷居で参加できたらという想いから、
-				当サイトはOSSの体をとっています。
-			</div>
-			<div>
-				<a href={githuburl}
-					>こちらで全てのソースコードを閲覧・使用することができます(BSD-3-Clause
-					license)
-				</a>
-			</div>
+    <div class="mb-8">
+        <h2>ソースコードについて</h2>
+        <div>
+            <div>
+                Blueskyを操作するAPIであるAT
+                Protocolは開発段階であるため前例が少なく、
+                まだまだハードルが高い内容となっています。
+                開発者がもっと低い敷居で参加できたらという想いから、
+                当サイトはOSSの体をとっています。
+            </div>
+            <div>
+                <a href={githuburl}
+                    >こちらで全てのソースコードを閲覧・使用することができます(BSD-3-Clause
+                    license)
+                </a>
+            </div>
 
-			<div>
-				ATProtocolの習熟や、その他サービスの開発に役立てていただければ幸いです。
-			</div>
-		</div>
-	</div>
+            <div>
+                ATProtocolの習熟や、その他サービスの開発に役立てていただければ幸いです。
+            </div>
+        </div>
+    </div>
 
-	<div class="mb-8">
-		<div>
-			<h2>もっと詳しく</h2>
-			<div>
-				当サイトはもちろんサービスとしてあったらいいなという想いから制作しましたが、
-				これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。
-				<a href={zennurl}>Zennにて当サイトの制作について</a
-				>記載しています。技術記事というよりは読み物としてお楽しみください。
-			</div>
-		</div>
-	</div>
+    <div class="mb-8">
+        <div>
+            <h2>もっと詳しく</h2>
+            <div>
+                当サイトはもちろんサービスとしてあったらいいなという想いから制作しましたが、
+                これに加えてTypescript、React、Astro等の技術習得の学習の一環という側面もあります。
+                <a href={zennurl}>Zennにて当サイトの制作について</a
+                >記載しています。技術記事というよりは読み物としてお楽しみください。
+            </div>
+        </div>
+    </div>
 </Pagelayout>

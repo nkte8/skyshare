@@ -1,9 +1,12 @@
-import etype from "./models/error.json";
-const endpoint_url = import.meta.env.PUBLIC_CREATEPAGES_ENDPOINT
+import { z } from "zod"
+import etype from "./models/error.json"
 
-type output = {
-    uri: string
-}
+const endpoint_url = import.meta.env.PUBLIC_CREATEPAGES_ENDPOINT as string
+
+const ZodPageCreationOutput = z.object({
+    uri: z.string(),
+})
+export type pageCreationOutput = z.infer<typeof ZodPageCreationOutput>
 
 /**
  * pageDBへページを追加
@@ -16,25 +19,37 @@ export const api = async ({
     uri,
     accessJwt,
 }: {
-    uri: string,
+    uri: string
     accessJwt: string
-}): Promise<output & typeof etype> => {
-    return fetch(endpoint_url,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(
-                {
-                    uri: uri,
-                    accessJwt: accessJwt
-                })
-        }).then((response) => response.json()
-        ).catch((e: Error) => {
+}): Promise<pageCreationOutput | typeof etype> => {
+    return fetch(endpoint_url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            uri: uri,
+            accessJwt: accessJwt,
+        }),
+    })
+        .then(async response => {
+            const responseParsed = ZodPageCreationOutput.safeParse(
+                await response.json(),
+            )
+            if (!responseParsed.success) {
+                const e: Error = new Error(
+                    "Unexpected Response Type@createPage::api",
+                )
+                e.name = "Unexpected Response Type@createPage::api"
+                throw e
+            }
+            const apiResult: pageCreationOutput = responseParsed.data
+            return apiResult
+        })
+        .catch((e: Error) => {
             return {
                 error: e.name,
-                message: e.message
+                message: e.message,
             }
         })
 }

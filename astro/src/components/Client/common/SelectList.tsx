@@ -1,31 +1,40 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react"
 
-type codeMap = {
-    label: string,
-    code: any,
+type CodeMap<CodeType> = {
+    label: string
+    code: CodeType
 }
-export const Component = ({
+export const Component = <CodeType,>({
     disabled,
     setCode,
-    codeMap
+    codeMap,
 }: {
-    disabled: boolean,
-    setCode: Dispatch<SetStateAction<any>>,
-    codeMap: Array<codeMap>
+    disabled: boolean
+    setCode: Dispatch<SetStateAction<CodeType>>
+    codeMap: CodeMap<CodeType>[]
 }) => {
     const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        let value: any = null
-        const item = codeMap.find((opt) => opt.label === event.target.value)
-        if (typeof item !== "undefined") {
-            value = item.code
+        if (codeMap.length === 0) {
+            return
         }
-        setCode(value)
+
+        const item: CodeMap<CodeType> | undefined = codeMap.find(
+            opt => opt.label === event.target.value,
+        )
+
+        // itemが取得できなかった場合、codeMapの最初の項を採用する。
+        const code: CodeType = item === undefined ? codeMap[0].code : item.code
+
+        setCode(code)
     }
     return (
-        <>
-            <div className={[
-                "p-0", "h-8", "text-sm",
-                "my-auto", "rounded-lg",
+        <div
+            className={[
+                "p-0",
+                "h-8",
+                "text-sm",
+                "my-auto",
+                "rounded-lg",
                 "relative",
                 "border-2",
                 "after:my-auto",
@@ -36,29 +45,34 @@ export const Component = ({
                 "after:bottom-0",
                 "after:h-fit",
                 "after:text-gray-300",
-                "after:pointer-events-none"
-            ].join(" ")}>
-                <select
-                    onChange={handleSelect}
-                    disabled={disabled}
-                    className={[
-                        "appearance-none",
-                        "block", "h-full", "w-full",
-                        "pl-2", "pr-6", "py-1",
-                        "bg-white",
-                        "rounded-lg",
-                        "disabled:bg-gray-200"
-                    ].join(" ")}>
-                    {codeMap.map((value) => {
-                        return (
-                            <option key={value.label}>
-                                {value.label}
-                            </option>
-                        )
-                    })}
-                </select>
-            </div>
-        </>
+                "after:pointer-events-none",
+            ].join(" ")}
+        >
+            <select
+                onChange={handleSelect}
+                disabled={disabled}
+                className={[
+                    "appearance-none",
+                    "block",
+                    "h-full",
+                    "w-full",
+                    "pl-2",
+                    "pr-6",
+                    "py-1",
+                    "bg-white",
+                    "rounded-lg",
+                    "disabled:bg-gray-200",
+                ].join(" ")}
+            >
+                {codeMap.map(value => {
+                    return (
+                        <option key={`select-list-code-${value.label}`}>
+                            {value.label}
+                        </option>
+                    )
+                })}
+            </select>
+        </div>
     )
 }
 export default Component

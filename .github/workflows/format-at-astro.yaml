@@ -1,0 +1,42 @@
+name: Format code at ./astro
+
+on:
+  workflow_call: {}
+
+permissions:
+  actions: write
+  checks: write
+  contents: write
+
+jobs:
+  auto_format:
+    name: Format code at ./astro
+    runs-on: ubuntu-latest
+    steps:
+      ## PRのブランチをcheckout
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Run Prettier at ./astro
+        id: format
+        shell: bash
+        working-directory: ./astro
+        run: |
+          node --version
+          npm install
+          npx prettier --write --list-different ./src
+
+      - name: Commit formatted
+        working-directory: ./astro
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          if (git diff --shortstat | grep '[0-9]'); then
+            git add .
+            git commit -m "[Github Action] Format code at ./astro"
+            git push
+          else
+            echo "no difference found."
+          fi

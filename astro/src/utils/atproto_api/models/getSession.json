@@ -8,9 +8,7 @@
             "https://w3id.org/security/suites/secp256k1-2019/v1"
         ],
         "id": "did:plc:XXXXXXXXXXXXXXXXX",
-        "alsoKnownAs": [
-            "at://nlla.bsky.social"
-        ],
+        "alsoKnownAs": ["at://nlla.bsky.social"],
         "verificationMethod": [
             {
                 "id": "did:plc:XXXXXXXXXXXXXXXXX#atproto",

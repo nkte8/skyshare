@@ -1,5 +1,5 @@
 import type { APIContext, APIRoute } from "astro"
-import type { ogpMetaData } from "@/lib/api/types"
+import type { apiRequest, errorResponse, ogpMetaData } from "@/lib/api/types"
 import { corsAllowOrigin } from "@/lib/vars"
 import validateRequestReturnURL from "@/lib/api/validateRequest"
 
@@ -19,7 +19,7 @@ const findEncoding = async (htmlBlob: Blob): Promise<string> => {
 
     for (const filter of headerRegExp) {
         if (charset === undefined) {
-            const regResult = filter.exec(text)
+            const regResult: RegExpExecArray | null = filter.exec(text)
             if (regResult !== null) {
                 charset = regResult[1]
             }
@@ -57,7 +57,9 @@ export const GET: APIRoute = async ({
         })
     }
     // APIの事前処理実施
-    const validateResult = validateRequestReturnURL({ request })
+    const validateResult: apiRequest | errorResponse = validateRequestReturnURL(
+        { request },
+    )
 
     // エラーの場合はエラーレスポンスを返却
     if (validateResult.type === "error") {
@@ -71,8 +73,6 @@ export const GET: APIRoute = async ({
     const url: string = validateResult.decodedUrl
     const decodeAsText = async (arrayBuffer: Blob, encoding: string) =>
         new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer())
-
-    let responseHTML: string = ""
 
     try {
         const htmlBlob: Blob = await fetch(url, {
@@ -95,9 +95,7 @@ export const GET: APIRoute = async ({
             await decodeAsText(htmlBlob, encoding),
         )
 
-        responseHTML = html
-
-        const meta = extractHead({ html })
+        const meta: ogpMetaData = extractHead({ html })
 
         const response = new Response(JSON.stringify(meta), {
             status: 200,
@@ -110,21 +108,19 @@ export const GET: APIRoute = async ({
             name = error.name
             msg = error.message
         }
+
+        const errorObject: errorResponse = {
+            type: "error",
+            error: name,
+            message: msg,
+            status: 500,
+        }
+
         // return new Response(JSON.stringify(<errorResponse>{
-        return new Response(
-            JSON.stringify({
-                type: "error",
-                error: name,
-                message: msg,
-                status: 500,
-                html: responseHTML,
-                // ogpResult: responseOGPResult,
-            }),
-            {
-                status: 500,
-                headers: headers,
-            },
-        )
+        return new Response(JSON.stringify(errorObject), {
+            status: 500,
+            headers: headers,
+        })
     }
 }
 
@@ -141,10 +137,10 @@ const extractHead = ({ html }: { html: string }): ogpMetaData => {
     let image: string | undefined = undefined
 
     $("meta").each((_, element) => {
-        const property = $(element).attr("property")
-        const name = $(element).attr("name")
-        const content = $(element).attr("content")
-        const value = $(element).attr("value")
+        const property: string | undefined = $(element).attr("property")
+        const name: string | undefined = $(element).attr("name")
+        const content: string | undefined = $(element).attr("content")
+        const value: string | undefined = $(element).attr("value")
 
         if (typeof content === "undefined") {
             return

@@ -1,25 +1,21 @@
 import { z } from "zod"
 import etype from "./models/error.json"
 const endpoint_url = import.meta.env.PUBLIC_GETPAGES_ENDPOINT as string
-const object = "page"
+const object = "user"
 
-export const ZodPageFetchOutput = z.object({
-    ogp: z.string(),
-    imgs: z.array(
-        z.object({
-            thumb: z.string(),
-            alt: z.string(),
-        }),
-    ),
+const ZodIdsFetchOutput = z.object({
+    ids: z.array(z.string()),
 })
-export type pageFetchOutput = z.infer<typeof ZodPageFetchOutput>
+export type idsFetchOutput = {
+    ids: Array<string>
+}
 
 export const api = async ({
-    id,
+    handle,
 }: {
-    id: string
-}): Promise<pageFetchOutput | typeof etype> => {
-    const url = new URL(object + "/" + encodeURIComponent(id), endpoint_url)
+    handle: string
+}): Promise<idsFetchOutput | typeof etype> => {
+    const url = new URL(object + "/" + encodeURIComponent(handle), endpoint_url)
     return fetch(url, {
         method: "GET",
         headers: {
@@ -27,19 +23,19 @@ export const api = async ({
         },
     })
         .then(async response => {
-            const responseParsed = ZodPageFetchOutput.safeParse(
+            const responseParsed = ZodIdsFetchOutput.safeParse(
                 await response.json(),
             )
 
             if (!responseParsed.success) {
                 const e: Error = new Error(
-                    "Unexpected Response Type@getPages::api",
+                    "Unexpected Response Type@getIds::api",
                 )
-                e.name = "Unexpected Response Type@getPages::api"
+                e.name = "Unexpected Response Type@getIds::api"
                 throw e
             }
 
-            const apiResult: pageFetchOutput = responseParsed.data
+            const apiResult: idsFetchOutput = responseParsed.data
             return apiResult
         })
         .catch((e: Error) => {
