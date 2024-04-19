@@ -55,6 +55,11 @@ const createInitialPostText = (searchParams: URLSearchParams) => {
     return shared_content
 }
 
+/** リクエストパラメータ */
+const searchParams = new URLSearchParams(window.location.search)
+/** 投稿テキストの初期値 */
+const initialPostText: string = createInitialPostText(searchParams)
+
 const Component = ({
     setMsgInfo,
     isProcessing,
@@ -72,9 +77,6 @@ const Component = ({
     setMediaData: Dispatch<SetStateAction<MediaData>>
     setPopupPreviewOptions: Dispatch<SetStateAction<popupPreviewOptions>>
 }) => {
-    const searchParams = new URLSearchParams(window.location.search)
-    const initialPostText = createInitialPostText(searchParams)
-
     // Post内容を格納する変数とディスパッチャー
     const [postText, setPostText] = useState<string>(initialPostText)
     // Postの実行状態を管理する変数とディスパッチャー
