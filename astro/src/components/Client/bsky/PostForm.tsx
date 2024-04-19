@@ -37,6 +37,24 @@ export type callbackPostOptions = {
     previewData: Blob | null
 }
 
+const createInitialPostText = (searchParams: URLSearchParams) => {
+    const shared_title: string | null = searchParams.get("sharedTitle")
+    const shared_url: string | null = searchParams.get("sharedUrl")
+    const shared_text: string | null = searchParams.get("sharedText")
+
+    let shared_content: string = ""
+    if (shared_title !== null) {
+        shared_content += `${shared_title}\n`
+    }
+    if (shared_url !== null) {
+        shared_content += `${shared_url}\n`
+    }
+    if (shared_text !== null) {
+        shared_content += `${shared_text}\n`
+    }
+    return shared_content
+}
+
 const Component = ({
     setMsgInfo,
     isProcessing,
@@ -54,8 +72,11 @@ const Component = ({
     setMediaData: Dispatch<SetStateAction<MediaData>>
     setPopupPreviewOptions: Dispatch<SetStateAction<popupPreviewOptions>>
 }) => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const initialPostText = createInitialPostText(searchParams)
+
     // Post内容を格納する変数とディスパッチャー
-    const [postText, setPostText] = useState<string>("")
+    const [postText, setPostText] = useState<string>(initialPostText)
     // Postの実行状態を管理する変数とディスパッチャー
     const [language, setLanguage] = useState<string>("ja")
     // 下書きのstate情報
