@@ -43,21 +43,21 @@ export type callbackPostOptions = {
  * @returns 投稿テキストの初期値
  */
 const createInitialPostText = (searchParams: URLSearchParams) => {
-    const shared_title: string | null = searchParams.get("sharedTitle")
-    const shared_text: string | null = searchParams.get("sharedText")
-    const shared_url: string | null = searchParams.get("sharedUrl")
+    const sharedTitle: string | null = searchParams.get("sharedTitle")
+    const sharedText: string | null = searchParams.get("sharedText")
+    const sharedUrl: string | null = searchParams.get("sharedUrl")
 
-    let shared_content: string = ""
-    if (shared_title !== null) {
-        shared_content += `${shared_title}\n`
+    let sharedContent: string = ""
+    if (sharedTitle !== null) {
+        sharedContent += `${sharedTitle}\n`
     }
-    if (shared_text !== null) {
-        shared_content += `${shared_text}\n`
+    if (sharedText !== null) {
+        sharedContent += `${sharedText}\n`
     }
-    if (shared_url !== null) {
-        shared_content += `${shared_url}\n`
+    if (sharedUrl !== null) {
+        sharedContent += `${sharedUrl}\n`
     }
-    return shared_content
+    return sharedContent
 }
 
 /** リクエストパラメータ */
