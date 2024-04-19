@@ -37,20 +37,25 @@ export type callbackPostOptions = {
     previewData: Blob | null
 }
 
+/**
+ * リクエストパラメータから投稿テキストの初期値を生成します
+ * @param searchParams リクエストパラメータ
+ * @returns 投稿テキストの初期値
+ */
 const createInitialPostText = (searchParams: URLSearchParams) => {
     const shared_title: string | null = searchParams.get("sharedTitle")
-    const shared_url: string | null = searchParams.get("sharedUrl")
     const shared_text: string | null = searchParams.get("sharedText")
+    const shared_url: string | null = searchParams.get("sharedUrl")
 
     let shared_content: string = ""
     if (shared_title !== null) {
         shared_content += `${shared_title}\n`
     }
-    if (shared_url !== null) {
-        shared_content += `${shared_url}\n`
-    }
     if (shared_text !== null) {
         shared_content += `${shared_text}\n`
+    }
+    if (shared_url !== null) {
+        shared_content += `${shared_url}\n`
     }
     return shared_content
 }
