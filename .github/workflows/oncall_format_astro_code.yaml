@@ -1,17 +1,18 @@
-name: Format code at ./astro
+name: "[OnCall] Format ./astro code"
+run-name: "Format ./astro code"
 
 on:
   workflow_call: {}
 
-permissions:
-  actions: write
-  checks: write
-  contents: write
-
 jobs:
-  auto_format:
-    name: Format code at ./astro
+  format_frontend:
+    name: Format ./astro code
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      checks: write
+      contents: write
+
     steps:
       ## PRのブランチをcheckout
       - name: Checkout branch

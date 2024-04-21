@@ -1,5 +1,5 @@
-name: App Build & Deploy
-run-name: "[Deploy] ${{ github.ref_name }}"
+name: "[Manual] Build & Deploy"
+run-name: "[Build & Deploy] ${{ github.ref_name }}"
 
 on:
   workflow_dispatch: {}
@@ -11,27 +11,23 @@ on:
 jobs:
   get_env_name:
     name: PreTask
-    uses: ./.github/workflows/get-environment-from-branch.yaml
+    uses: ./.github/workflows/oncall_get_env_name.yaml
 
-  auto_format:
+  format_code:
     name: PreTask
-    uses: ./.github/workflows/format-at-astro.yaml
+    uses: ./.github/workflows/oncall_format_astro_code.yaml
     permissions:
       actions: write
       checks: write
       contents: write
 
-  deploy:
-    needs: ["get_env_name", "auto_format"]
+  deploy_frontend:
+    needs: ["get_env_name", "format_code"]
     environment:
       name: ${{ needs.get_env_name.outputs.env_name }}
       url: ${{ steps.published.outputs.pageurl }}
     runs-on: ubuntu-latest
     name: Build & Deploy
-    permissions:
-      contents: read
-      deployments: write
-      statuses: write
     env:
       PROJECT_NAME: skyshare
 

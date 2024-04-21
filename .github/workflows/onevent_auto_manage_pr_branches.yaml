@@ -1,11 +1,11 @@
-name: Auto-manage PR branches
+name: "[OnEvent] Auto-manage PR branches"
 
 on:
   pull_request:
     types: ["opened", "edited", "reopened"]
 
 jobs:
-  change-base:
+  change_base:
     runs-on: ubuntu-latest
 
     permissions:
