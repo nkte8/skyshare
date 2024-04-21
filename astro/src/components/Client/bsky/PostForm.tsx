@@ -14,7 +14,9 @@ import LanguageSelectList from "./selectLists/LanguageSelectList"
 import Details from "../common/Details"
 import TagInputList from "./unique/TagInputList"
 import SelfLabelsSelectList from "./selectLists/SelfLabelsSelectList"
-import LinkcardAttachButton from "./buttons/LinkcardAttachButton"
+import LinkcardAttachButton, {
+    handleGetOGP,
+} from "./buttons/LinkcardAttachButton"
 import PostButton from "./buttons/PostButton"
 import AddImageButton from "./buttons/AddImageButton"
 import MediaPreview from "./MediaPreview"
@@ -82,6 +84,8 @@ const Component = ({
     setMediaData: Dispatch<SetStateAction<MediaData>>
     setPopupPreviewOptions: Dispatch<SetStateAction<popupPreviewOptions>>
 }) => {
+    // 配置されたページのURL
+    const siteurl = location.origin
     // Post内容を格納する変数とディスパッチャー
     const [postText, setPostText] = useState<string>(initialPostText)
     // Postの実行状態を管理する変数とディスパッチャー
@@ -109,6 +113,19 @@ const Component = ({
             e.preventDefault()
         }
         window.addEventListener("dragover", handleDragOver)
+        const getOGP = async () => {
+            await handleGetOGP({
+                postText,
+                setProcessing,
+                setMsgInfo,
+                siteurl,
+                setMediaData,
+            })
+        }
+        if (postText !== "") {
+            getOGP().catch((_: unknown) => {})
+        }
+
         return () => {
             window.removeEventListener("dragover", handleDragOver)
         }
@@ -213,6 +230,7 @@ const Component = ({
                 />
             </TextInputBox>
             <LinkcardAttachButton
+                siteurl={siteurl}
                 postText={postText}
                 setMediaData={setMediaData}
                 isProcessing={isProcessing}
