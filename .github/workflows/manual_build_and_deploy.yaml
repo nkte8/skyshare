@@ -14,6 +14,7 @@ jobs:
     uses: ./.github/workflows/oncall_get_env_name.yaml
 
   format_code:
+    if: ${{ !github.head_ref == 'develop' || !github.head_ref == 'main' || !github.head_ref == 'hotfix' }}
     name: PreTask
     uses: ./.github/workflows/oncall_format_astro_code.yaml
     permissions:
@@ -22,7 +23,7 @@ jobs:
       contents: write
 
   deploy_frontend:
-    needs: ["get_env_name", "format_code"]
+    needs: ["get_env_name"]
     environment:
       name: ${{ needs.get_env_name.outputs.env_name }}
       url: ${{ steps.published.outputs.pageurl }}
@@ -59,7 +60,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy ./astro/dist --commit-dirty=true --project-name=${{ env.PROJECT_NAME }}
-      
+
       ## cloudflare pagesのURLは28文字以上にならない
       - name: Post publish
         id: published
