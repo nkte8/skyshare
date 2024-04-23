@@ -1,5 +1,26 @@
 # Skyshare 更新履歴
 
+## 1.4.12
+
+### Patch Changes
+
+- Androidでのみ、Skyshareを共有先に選べるようになりました。
+  - Android上でPWAインストールをした場合、Skyshareを共有先に選べるようになったようです。
+    - Androidシミュレータ上では動作しなかったため、コラボレータによる実機検証を行っていただきました。
+    - 自動で共有対象のタイトル・URLの差し込み、OGPの取得処理もinvokeするようにしました。
+  - 実装はおなじみ[ZEKE/じーく氏(@zeke320.bsky.social)](https://bsky.app/profile/zeke320.bsky.social)に実装していただけました！ありがとう！
+  - iOSについては、本技術の基盤となっているWebアプリマニフェストの`share_target`メンバに非対応であるため使えません。
+    - Webアプリマニフェストの`share_target`メンバの詳細は右記になります: [share_target - ウェブアプリマニフェスト | MDN](https://developer.mozilla.org/ja/docs/Web/Manifest/share_target)
+
+#### 【Collaborator/Contributor向け情報】
+
+- [OSSとしてのSkyshare](https://github.com/nkte8/skyshare)のフロントエンドのコード品質が大きく向上しました！
+  - コードルールに沿ってにプログラムは修正され、フォーマッタによって一定の規則に基づいた整形がされました！
+    - また、フォーマッタをビルダーに統合し、ある程度のコードを自動で整形・ブランチを修正するようになりました。
+  - こちらも8割9分[ZEKE/じーく氏(@zeke320.bsky.social)](https://bsky.app/profile/zeke320.bsky.social)に実装していただけました！感謝....
+  - 一方バックエンドのコードについてはまだ無法地帯なため、今後、同様にルールの制定を行い修正をしていきたいと考えています。
+    - また、現在のアーキテクチャ自体を改修することも検討・調査中です。
+
 ## 1.4.11
 
 ### Patch Changes
@@ -171,23 +192,23 @@
 - 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
 
 ```ts
-export type MediaData = LinkCard | Images | null;
+export type MediaData = LinkCard | Images | null
 type LinkCard = {
-  type: "external";
+  type: "external"
   images: Array<{
-    blob: Blob | null;
-  }>;
+    blob: Blob | null
+  }>
   meta: ogpMetaData & {
-    url: string;
-  };
-};
+    url: string
+  }
+}
 type Images = {
-  type: "images";
+  type: "images"
   images: Array<{
-    alt: string;
-    blob: Blob;
-  }>;
-};
+    alt: string
+    blob: Blob
+  }>
+}
 ```
 
 - これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。
