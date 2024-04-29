@@ -1,5 +1,4 @@
 {
-    // source: https://www.scrapingdog.com/blog/user-agent-in-web-scraping/#User_Agent_rotation_with_Python
     "list": [
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_15) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5392.175 Safari/537.36",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.4.263.6 Safari/537.36",
