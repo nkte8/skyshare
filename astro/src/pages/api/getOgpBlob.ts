@@ -1,3 +1,4 @@
+import { getRandomUserAgent } from "@/lib/api/userAgents"
 import type { APIContext, APIRoute } from "astro"
 import validateRequestReturnURL from "@/lib/api/validateRequest"
 import createErrResponse from "@/lib/api/createErrResponse"
@@ -45,7 +46,7 @@ export const GET: APIRoute = async ({ request }: APIContext) => {
             headers: {
                 "Accept-Language": validateResult.language,
                 "Cache-Control": "no-cache",
-                "User-Agent": "bot",
+                "User-Agent": getRandomUserAgent(),
             },
         }).then(res => res.blob())
         const response: Response = new Response(blob, {

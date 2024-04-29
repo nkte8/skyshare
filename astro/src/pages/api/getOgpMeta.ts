@@ -1,3 +1,4 @@
+import { getRandomUserAgent } from "@/lib/api/userAgents"
 import type { APIContext, APIRoute } from "astro"
 import type { apiRequest, errorResponse, ogpMetaData } from "@/lib/api/types"
 import { corsAllowOrigin } from "@/lib/vars"
@@ -81,7 +82,7 @@ export const GET: APIRoute = async ({
                 Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": validateResult.language,
                 "Cache-Control": "no-cache",
-                "User-Agent": "bot",
+                "User-Agent": getRandomUserAgent(),
             },
         })
             .then(res => res.blob())
