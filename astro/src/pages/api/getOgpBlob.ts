@@ -1,7 +1,7 @@
-import { getRandomUserAgent } from "@/lib/api/userAgents"
 import type { APIContext, APIRoute } from "astro"
 import validateRequestReturnURL from "@/lib/api/validateRequest"
 import createErrResponse from "@/lib/api/createErrResponse"
+import { getUserAgent } from "@/lib/api/userAgents"
 import { corsAllowOrigin } from "@/lib/vars"
 import { errorResponse } from "@/lib/api/types"
 // SSRを有効化
@@ -40,13 +40,15 @@ export const GET: APIRoute = async ({ request }: APIContext) => {
 
     // 正常な場合はURLとして扱う
     const url: string = validateResult.decodedUrl
+    const userAgent: string = getUserAgent(request.headers, url)
+
     try {
         const blob: Blob = await fetch(url, {
             method: "GET",
             headers: {
                 "Accept-Language": validateResult.language,
                 "Cache-Control": "no-cache",
-                "User-Agent": getRandomUserAgent(),
+                "User-Agent": userAgent,
             },
         }).then(res => res.blob())
         const response: Response = new Response(blob, {

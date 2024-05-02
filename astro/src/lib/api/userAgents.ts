@@ -1,11 +1,13 @@
-import userAgents from "./data/useragents.json"
+const twitterHostnames = ["twitter.com", "x.com"]
 
-export const getRandomUserAgent = (): string => {
-    return String(
-        (userAgents as { list: string[] }).list[
-            Math.floor(
-                Math.random() * (userAgents as { list: string[] }).list.length,
-            )
-        ],
-    )
+export const getUserAgent = (headers: Headers, url: string): string => {
+    const userAgent: string | null = headers.get("User-Agent")
+    if (userAgent === null || isTwitterUrl(new URL(url))) {
+        return "bot"
+    }
+    return userAgent
+}
+
+export const isTwitterUrl = (url: URL): boolean => {
+    return twitterHostnames.includes(url.hostname)
 }
