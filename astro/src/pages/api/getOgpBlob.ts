@@ -40,6 +40,7 @@ export const GET: APIRoute = async ({ request }: APIContext) => {
 
     // 正常な場合はURLとして扱う
     const url: string = validateResult.decodedUrl
+    // OGPの取得先ごとに適切なUserAgentを設定
     const userAgent: string = getUserAgent(request.headers, url)
 
     try {
