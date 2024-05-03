@@ -1,5 +1,6 @@
 import type { APIContext, APIRoute } from "astro"
 import type { apiRequest, errorResponse, ogpMetaData } from "@/lib/api/types"
+import { getUserAgent } from "@/lib/api/userAgents"
 import { corsAllowOrigin } from "@/lib/vars"
 import validateRequestReturnURL from "@/lib/api/validateRequest"
 
@@ -74,6 +75,9 @@ export const GET: APIRoute = async ({
     const decodeAsText = async (arrayBuffer: Blob, encoding: string) =>
         new TextDecoder(encoding).decode(await arrayBuffer.arrayBuffer())
 
+    // OGPの取得先ごとに適切なUserAgentを設定
+    const userAgent: string = getUserAgent(request.headers, url)
+
     try {
         const htmlBlob: Blob = await fetch(url, {
             method: "GET",
@@ -81,7 +85,7 @@ export const GET: APIRoute = async ({
                 Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": validateResult.language,
                 "Cache-Control": "no-cache",
-                "User-Agent": "bot",
+                "User-Agent": userAgent,
             },
         })
             .then(res => res.blob())
