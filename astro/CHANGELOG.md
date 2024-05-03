@@ -1,5 +1,16 @@
 # Skyshare 更新履歴
 
+## 1.4.13
+
+### Patch Changes
+
+- 一部のウェブサイトで、特定のユーザーエージェントのためにOGP画像が取得できないことがあるバグの修正しました。
+  - 一部のウェブサイトではユーザエージェントによってはOGP画像の取得に関して取得ができなくなるといった仕様があるようです。
+    - 一方`X.com`などでは、特定のユーザエージェントを指定しなければOGP画像の取得ができません。
+  - 本修正では、リクエスト先のオリジンによってユーザエージェントを変更する処理を追加しました。
+  - [ZEKE/じーく氏(@zeke320.bsky.social)](https://bsky.app/profile/zeke320.bsky.social)が発見・対応してくれました！ありがとうございます！
+  - 利用者のユーザエージェントを利用することに関して、プライバシーポリシーへ内容を追記しました。
+
 ## 1.4.12
 
 ### Patch Changes
@@ -192,23 +203,23 @@
 - 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
 
 ```ts
-export type MediaData = LinkCard | Images | null
+export type MediaData = LinkCard | Images | null;
 type LinkCard = {
-  type: "external"
+  type: "external";
   images: Array<{
-    blob: Blob | null
-  }>
+    blob: Blob | null;
+  }>;
   meta: ogpMetaData & {
-    url: string
-  }
-}
+    url: string;
+  };
+};
 type Images = {
-  type: "images"
+  type: "images";
   images: Array<{
-    alt: string
-    blob: Blob
-  }>
-}
+    alt: string;
+    blob: Blob;
+  }>;
+};
 ```
 
 - これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。
