@@ -21,7 +21,7 @@ export const Component = ({
             outputText = [tag + " "].join("")
         } else {
             // 末尾が改行文字か、半角文字の場合は区切り記号を挿入しない
-            console.log(`last : "${postText.slice(-1)}"`)
+            // console.log(`last : "${postText.slice(-1)}"`)
             outputText = [
                 postText,
                 new RegExp(/[ \n\r]/).test(postText.slice(-1)) ? "" : " ",

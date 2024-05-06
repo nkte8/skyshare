@@ -190,11 +190,12 @@ const Component = ({
                 msg = "Unexpected Unknown Error"
                 if (e instanceof Error) {
                     if (e.name === "AbortError") {
-                        msg = "共有が中断されたため、Blueskyにのみ投稿されました"
-                    // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
-                    // } else if (e.name === "NotAllowedError") {
-                    //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
-                    }else {
+                        msg =
+                            "共有が中断されたため、Blueskyにのみ投稿されました"
+                        // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
+                        // } else if (e.name === "NotAllowedError") {
+                        //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
+                    } else {
                         msg = e.name + ": " + e.message
                         isError = true
                     }
@@ -313,9 +314,14 @@ const Component = ({
                         disabled={isProcessing}
                     />
                 </div>
-                <div className="flex flex-wrap mb-4">
+                <div className="flex flex-wrap my-2 mx-2 gap-x-8 gap-y-1">
+                    <UseWebAPIToggle
+                        labeltext={"共有メニューからXを開く"}
+                        prop={useWebAPI}
+                        setProp={setUseWebAPI}
+                    />
                     <AutoXPopupToggle
-                        labeltext={"Xを自動で開く"}
+                        labeltext={"Xを自動でポップアップする"}
                         prop={isAutoPop}
                         setProp={setAutoPop}
                         isLocked={useWebAPI}
@@ -325,11 +331,6 @@ const Component = ({
                         prop={isNoGenerate}
                         setProp={setNoGenerate}
                         isLocked={useWebAPI}
-                    />
-                    <UseWebAPIToggle
-                        labeltext={"Xではなく共有メニューを表示する(対応ブラウザのみ)"}
-                        prop={useWebAPI}
-                        setProp={setUseWebAPI}
                     />
                 </div>
             </div>
