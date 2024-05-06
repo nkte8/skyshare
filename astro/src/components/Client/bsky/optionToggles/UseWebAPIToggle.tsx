@@ -5,7 +5,7 @@ import { Dispatch, ReactNode, SetStateAction } from "react"
 import ToggleSwitch from "../../common/ToggleSwitch"
 
 // service
-import { readForceIntent, setForceIntent } from "@/utils/useLocalStorage"
+import { readUseWebShareAPI, setUseWebShareAPI } from "@/utils/useLocalStorage"
 
 const Component = ({
     labeltext,
@@ -16,13 +16,12 @@ const Component = ({
     prop: boolean
     setProp: Dispatch<SetStateAction<boolean>>
 }) => {
-    // このコンポーネントおよび関連コンポーネントはWebShareAPI採用に伴い、削除予定
     return (
         <ToggleSwitch
             prop={prop}
             setProp={setProp}
-            initialValue={readForceIntent(false)}
-            setPropConfig={setForceIntent}
+            initialValue={readUseWebShareAPI(false)}
+            setPropConfig={setUseWebShareAPI}
             labeltext={labeltext}
             isLocked={false}
         />

@@ -23,6 +23,7 @@ const Component = ({
             initialValue={readAppendVia(false)}
             setPropConfig={setAppendVia}
             labeltext={labeltext}
+            isLocked={false}
         />
     )
 }

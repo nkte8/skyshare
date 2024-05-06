@@ -6,13 +6,13 @@ export type msgInfo = {
     isError: boolean
 }
 
-export type MediaData = LinkCard | Images | null
+export type MediaData = LinkCard | Images | undefined
 type LinkCard = {
     type: "external"
     // 処理の便宜上 Imagesと同様にArrayとしているが
     // 実際は項目数1の配列。改善したい。
     images: Array<{
-        blob: Blob | null
+        blob: Blob | undefined
     }>
     meta: ogpMetaData & {
         url: string
@@ -20,8 +20,9 @@ type LinkCard = {
 }
 type Images = {
     type: "images"
-    images: Array<{
+    images: {
         alt: string
         blob: Blob
-    }>
+    }[]
+    files: File[]
 }

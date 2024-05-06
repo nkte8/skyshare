@@ -22,7 +22,7 @@ const handleGetOGP = async ({
     setProcessing: Dispatch<SetStateAction<boolean>>
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
     siteurl: string
-    setMediaData: Dispatch<SetStateAction<MediaData | null>>
+    setMediaData: Dispatch<SetStateAction<MediaData>>
 }) => {
     const linkUrl = getLinkFromPostText({ postText })
     if (linkUrl === null) return
@@ -32,7 +32,7 @@ const handleGetOGP = async ({
         msg: "リンクカードを取得中...",
     })
     try {
-        let blob: Blob | null = null
+        let blob: Blob | undefined = undefined
         const ogpMeta = await getOgpMeta({
             siteurl,
             externalUrl: linkUrl,
@@ -78,7 +78,7 @@ const handleGetOGP = async ({
             })
         }
         //リンクカード設定を解除
-        setMediaData(null)
+        setMediaData(undefined)
     }
     setProcessing(false)
 }
@@ -108,7 +108,7 @@ export const Component = ({
     siteurl,
 }: {
     postText: string
-    setMediaData: Dispatch<SetStateAction<MediaData | null>>
+    setMediaData: Dispatch<SetStateAction<MediaData>>
     isProcessing: boolean
     setProcessing: Dispatch<SetStateAction<boolean>>
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>

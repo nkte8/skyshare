@@ -39,11 +39,13 @@ const Component = ({
         classNameImage?: string
         className?: string
     }) => {
-        const mediaBlob =
-            mediaData !== null ? mediaData.images[index].blob : null
+        const mediaBlob: Blob | undefined =
+            typeof mediaData !== "undefined"
+                ? mediaData.images[index].blob
+                : undefined
 
-        const alt =
-            mediaData !== null && mediaData.type === "images"
+        const alt: string | undefined =
+            typeof mediaData !== "undefined" && mediaData.type === "images"
                 ? mediaData.images[index].alt
                 : undefined
         return (
@@ -53,10 +55,11 @@ const Component = ({
                     mediaData={mediaData}
                     setMediaData={setMediaData}
                 />
-                {mediaData !== null && mediaData.type === "images" && (
-                    <AltDialog itemId={index} mediaData={mediaData} />
-                )}
-                {mediaBlob !== null ? (
+                {typeof mediaData !== "undefined" &&
+                    mediaData.type === "images" && (
+                        <AltDialog itemId={index} mediaData={mediaData} />
+                    )}
+                {typeof mediaBlob !== "undefined" ? (
                     <img
                         src={URL.createObjectURL(mediaBlob)}
                         alt={alt}
@@ -182,7 +185,7 @@ const Component = ({
     const [PreviewForm, setPreviewForm] = useState<ReactNode>(PreviewLayout(-1))
 
     useEffect(() => {
-        if (mediaData !== null) {
+        if (typeof mediaData !== "undefined") {
             if (mediaData.type === "external") {
                 setPreviewForm(PreviewLayout(mediaData.images !== null ? 1 : 0))
             }
@@ -197,9 +200,10 @@ const Component = ({
     return (
         <div className={["border-2", "rounded-2xl", "p-2"].join(" ")}>
             <div className="aspect-[1.91/1] relative m-0">{PreviewForm}</div>
-            {mediaData !== null && mediaData.type === "external" && (
-                <MetaView mediaData={mediaData} />
-            )}
+            {typeof mediaData !== "undefined" &&
+                mediaData.type === "external" && (
+                    <MetaView mediaData={mediaData} />
+                )}
         </div>
     )
 }

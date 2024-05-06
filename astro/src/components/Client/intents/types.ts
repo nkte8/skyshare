@@ -19,8 +19,8 @@ export type intentPreset = {
  * @param postText ポスト内容
  */
 export type popupPreviewOptions = {
-    mediaObjectURL: string | null
-    ogpTitle: string | null
+    mediaObjectURL: string | undefined
+    ogpTitle: string | undefined
     postText: string
 }
 

@@ -46,6 +46,7 @@ export const Component = ({
     setProcessing,
     setMsgInfo,
     disabled,
+    userAgent,
 }: {
     postText: string
     language: string
@@ -55,26 +56,25 @@ export const Component = ({
         noGenerateOgp: boolean
         // autoPopup: boolean
     }
-    mediaData: MediaData | null
-    callback: (options: callbackPostOptions) => void
+    mediaData: MediaData
+    callback: (options: callbackPostOptions) => Promise<void>
     isProcessing: boolean
     setProcessing: Dispatch<SetStateAction<boolean>>
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
     disabled: boolean
+    userAgent: string
 }) => {
     // 配置されたサイトのURL
     const siteurl = location.origin
     // セッション
     const { session } = useContext(Session_context)
     /** Apple製品利用者の可能性がある場合True */
-    const isAssumedAsAppleProdUser = navigator.userAgent
-        .toLowerCase()
-        .includes("mac os x")
+    const isAssumedAsAppleProdUser = userAgent.includes("mac os x")
 
     const handlePost = async () => {
         const isValidPost = (): boolean => {
             let result: boolean = postText.length >= 1
-            if (mediaData !== null) {
+            if (typeof mediaData !== "undefined") {
                 result = result || mediaData.images.length > 0
             }
             return result
@@ -100,9 +100,9 @@ export const Component = ({
         try {
             // プレビューへ送るテキストを別途初期化
             const callbackPostOptions: callbackPostOptions = {
-                postText,
-                previewTitle: null,
-                previewData: null,
+                externalPostText: postText,
+                previewTitle: undefined,
+                previewData: undefined,
             }
             // facetを取得
             const facets = await detectFacets({ text: postText })
@@ -161,21 +161,21 @@ export const Component = ({
             // didが取得できた項目に関して置き換え処理
             resultResolveHandle.forEach((value, index) => {
                 const mentionHandle = parseResult[index]
-                const callbackPostText = callbackPostOptions.postText
+                const callbackPostText = callbackPostOptions.externalPostText
                 if (value !== null) {
-                    callbackPostOptions.postText = callbackPostText.replace(
-                        mentionHandle,
-                        new URL(
-                            mentionHandle.slice(1),
-                            bskyProfileURL,
-                        ).toString(),
-                    )
-                    console.log(callbackPostOptions.postText)
+                    callbackPostOptions.externalPostText =
+                        callbackPostText.replace(
+                            mentionHandle,
+                            new URL(
+                                mentionHandle.slice(1),
+                                bskyProfileURL,
+                            ).toString(),
+                        )
                 }
             })
 
             const ImageAttached =
-                mediaData !== null &&
+                typeof mediaData !== "undefined" &&
                 mediaData.images.length > 0 &&
                 mediaData.images[0].blob !== null
 
@@ -184,7 +184,7 @@ export const Component = ({
                 // メディアのデータを圧縮
                 const compressTasks: Array<Promise<ArrayBuffer>> = []
                 mediaData.images.forEach((value, index) => {
-                    if (value.blob !== null) {
+                    if (typeof value.blob !== "undefined") {
                         const file: File = new File(
                             [value.blob],
                             `media${index}.data`,
@@ -267,11 +267,11 @@ export const Component = ({
                         }
                         // Bluesky側Post本文にURLのリンクカードがない場合はintent宛に埋め込む
                         if (
-                            callbackPostOptions.postText.indexOf(
+                            callbackPostOptions.externalPostText.indexOf(
                                 mediaData.meta.url,
                             ) < 0
                         ) {
-                            callbackPostOptions.postText += `${postText !== "" ? "\n" : ""}${mediaData.meta.url}`
+                            callbackPostOptions.externalPostText += `${postText !== "" ? "\n" : ""}${mediaData.meta.url}`
                         }
                         break
                 }
@@ -320,7 +320,7 @@ export const Component = ({
                 const [id, rkey] = createPageResult.uri.split("/")
                 const ogpUrl = new URL(`${pagesPrefix}/${id}@${rkey}/`, siteurl)
                 // 本文に生成URLを付与
-                callbackPostOptions.postText += `${
+                callbackPostOptions.externalPostText += `${
                     postText !== "" ? "\n" : ""
                 }${ogpUrl.toString()}`
                 // 生成URLからogpを取得
@@ -344,7 +344,10 @@ export const Component = ({
                 }
             }
             // 外部URLの場合は取得済みであろう内容を使用する
-            if (mediaData !== null && mediaData.type === "external") {
+            if (
+                typeof mediaData !== "undefined" &&
+                mediaData.type === "external"
+            ) {
                 if (ImageAttached) {
                     const blob = mediaData.images[0].blob!
                     callbackPostOptions.previewData = blob
@@ -352,7 +355,7 @@ export const Component = ({
                 callbackPostOptions.previewTitle = mediaData.meta.title
             }
             // callbackを起動
-            callback(callbackPostOptions)
+            await callback(callbackPostOptions)
         } catch (error: unknown) {
             let msg: string = "Unexpected Unknown Error"
             if (error instanceof Error) {

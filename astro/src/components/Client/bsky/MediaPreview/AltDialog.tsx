@@ -33,7 +33,7 @@ export const Component = ({
     mediaData: MediaData
 }) => {
     // mediaDataがimageではない場合はコンポーネントを無効に
-    if (mediaData === null || mediaData.type !== "images") {
+    if (typeof mediaData === "undefined" || mediaData.type !== "images") {
         return
     }
     let mediaDataItem = mediaData.images[itemId]

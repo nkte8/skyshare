@@ -11,10 +11,12 @@ const Component = ({
     labeltext,
     prop,
     setProp,
+    isLocked,
 }: {
     labeltext: ReactNode
     prop: boolean
     setProp: Dispatch<SetStateAction<boolean>>
+    isLocked: boolean
 }) => {
     return (
         <ToggleSwitch
@@ -23,6 +25,7 @@ const Component = ({
             initialValue={readNoGenerate(false)}
             setPropConfig={setNoGenerate}
             labeltext={labeltext}
+            isLocked={isLocked}
         />
     )
 }
