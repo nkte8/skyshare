@@ -171,7 +171,7 @@ const Component = ({
         if (useWebAPI) {
             let msg: string = "共有メニューを展開中..."
             let isError: boolean = false
-            const url = mediaData?.type === "external" ? mediaData.meta.url : ""
+            const url = mediaData?.type === "external" ? mediaData.meta.url : undefined
             const files = mediaData?.type === "images" ? mediaData.files : []
             try {
                 if (navigator.share !== undefined) {
