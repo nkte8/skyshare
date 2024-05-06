@@ -1,5 +1,37 @@
 # Skyshare 更新履歴
 
+## 1.5.0
+
+### Minor Changes
+
+- オプション名を変更しました。
+  - `Xを自動で開く` → `Xを自動でポップアップする`
+- **WebShareAPIに対応し、Xへの画像データの直接受け渡しが可能になりました！**
+  - `共有メニューからXを開く`オプションが選択可能になりました。
+    - 共有メニューが開くのでXを選択してください。
+    - この方法で対応をした場合、画像をXアプリへ直接転送可能になります。
+  - これをONにすると以下のオプションが強制的に変更されます。
+    - `Xを自動でポップアップする(Xを自動で開く)`がOFFになります。共有メニューからXアプリを起動してください。
+    - `Xへの画像は自身で添付する`がONになります。
+      - 共有をキャンセルした場合、`Xへの画像は自分で添付する`がオフの状態の投稿プレビューが開きます。
+  - 動作確認状況は以下です。
+    - iOS 17.4.1/MacOS Sonoma(実機)にて投稿までの動作を確認しています。
+    - Android 14.0(Emulator)にて、共有メニューが表示される箇所まで確認しています。
+    - Windows 11の`Chrome/Edge`にて、共有メニューが表示される箇所まで確認しています。
+      - **Windowsブラウザについては共有のキャンセルを検知できないため、共有をキャンセルした場合プレビュー画面が開きません。**
+    - Windowsの`firefox`は*WebShareAPIに非対応*なので、利用できません。
+      - 詳細はこちらをご確認ください: [ウェブ共有 API - Web API | MDN](https://developer.mozilla.org/ja/docs/Web/API/Web_Share_API#api.navigator.canshare)
+- `Xの投稿はアプリを強制的に起動する`オプションが削除予定になりました。
+  - WebShareAPIの採用により、今後はXアプリでの投稿はWebShareAPI、Xアプリ非導入環境の場合はintentという棲み分けを行います。
+- 当サイトについての`必須環境（最低限の動作確認が可能な環境）`を更新しました。
+  - バグ対応する体力が残っていないため、申し訳ありませんが推奨環境での利用をご検討ください。
+  - 検証自体は上記でも行っているように、実施可能な範囲で実施していきます。
+
+#### 【Collaborator/Contributor向け情報】
+
+- 内部処理に大きな変更があります。[PRに詳細を記載しているため、ご確認ください](https://github.com/nkte8/skyshare/pull/115)。
+  - そろそろ`null`を滅ぼします。やるべきときが来たので。
+
 ## 1.4.13
 
 ### Patch Changes
@@ -203,23 +235,23 @@
 - 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
 
 ```ts
-export type MediaData = LinkCard | Images | null;
+export type MediaData = LinkCard | Images | null
 type LinkCard = {
-  type: "external";
+  type: "external"
   images: Array<{
-    blob: Blob | null;
-  }>;
+    blob: Blob | null
+  }>
   meta: ogpMetaData & {
-    url: string;
-  };
-};
+    url: string
+  }
+}
 type Images = {
-  type: "images";
+  type: "images"
   images: Array<{
-    alt: string;
-    blob: Blob;
-  }>;
-};
+    alt: string
+    blob: Blob
+  }>
+}
 ```
 
 - これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。

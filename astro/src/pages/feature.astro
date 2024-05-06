@@ -9,7 +9,7 @@ const example_url = new URL(
     siteurl,
 )
 import { Picture } from "astro:assets"
-import ogp_example from "@/images/ogp_nlla.bsky.jpg"
+import ogp_example from "@/images/ogp.bsky.jpg"
 import link_img from "@/images/link.svg"
 
 const title = `Feature - ${servicename}`
@@ -56,7 +56,8 @@ const robots = ["index", "nofollow", "noarchive", "noimageindex"]
                 Bluesky投稿から生成されたWebページをXにて投稿していただくことで、両SNSへの投稿を疑似的にサポートする、というサービスとなります。
             </div>
             <div class="mb-4">
-                Bluesky投稿後、以下のような投稿を生成する投稿リンクを払い出されるので、Xへの投稿もスムーズです。
+                Bluesky投稿後、以下のような投稿を生成する投稿リンクを払い出されるので、Xへの投稿もスムーズです。<br
+                />また、WebShareAPI（共有メニュー）対応デバイス・ブラウザの場合は、この機能を使わずデータを転送できます。<code>共有メニューからXを開く</code>をONにしてください。
             </div>
             <img class="w-4 inline-block" src={link_img.src} />
 
