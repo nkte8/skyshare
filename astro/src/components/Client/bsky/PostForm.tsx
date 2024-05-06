@@ -32,6 +32,9 @@ import { link } from "../common/tailwindVariants"
 import { popupPreviewOptions } from "../intents/types"
 import { type msgInfo, type modes, MediaData } from "../common/types"
 
+// resources
+import share from "@/images/share.svg"
+
 const MemoMediaPreview = memo(MediaPreview)
 
 export type callbackPostOptions = {
@@ -171,8 +174,10 @@ const Component = ({
         if (useWebAPI) {
             let msg: string = "共有メニューを展開中..."
             let isError: boolean = false
-            const url = mediaData?.type === "external" ? mediaData.meta.url : undefined
-            const files = mediaData?.type === "images" ? mediaData.files : undefined
+            const url =
+                mediaData?.type === "external" ? mediaData.meta.url : undefined
+            const files =
+                mediaData?.type === "images" ? mediaData.files : undefined
             try {
                 if (navigator.share !== undefined) {
                     await navigator.share({
@@ -316,12 +321,26 @@ const Component = ({
                 </div>
                 <div className="flex flex-wrap my-2 mx-2 gap-x-8 gap-y-1">
                     <UseWebAPIToggle
-                        labeltext={"共有メニューからXを開く"}
+                        labeltext={
+                            <>
+                                共有ﾒﾆｭｰ
+                                <img
+                                    src={share.src}
+                                    className={[
+                                        "h-8",
+                                        "p-0.5",
+                                        "inline-block",
+                                        "align-middle",
+                                    ].join(" ")}
+                                />
+                                でアプリ版Xへ投稿をコピーする
+                            </>
+                        }
                         prop={useWebAPI}
                         setProp={setUseWebAPI}
                     />
                     <AutoXPopupToggle
-                        labeltext={"Xを自動でポップアップする"}
+                        labeltext={"ブラウザ版Xを自動でポップアップする"}
                         prop={isAutoPop}
                         setProp={setAutoPop}
                         isLocked={useWebAPI}
