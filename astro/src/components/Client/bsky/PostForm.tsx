@@ -172,7 +172,7 @@ const Component = ({
             let msg: string = "共有メニューを展開中..."
             let isError: boolean = false
             const url = mediaData?.type === "external" ? mediaData.meta.url : undefined
-            const files = mediaData?.type === "images" ? mediaData.files : []
+            const files = mediaData?.type === "images" ? mediaData.files : undefined
             try {
                 if (navigator.share !== undefined) {
                     await navigator.share({
