@@ -190,7 +190,7 @@ const Component = ({
                 msg = "Unexpected Unknown Error"
                 if (e instanceof Error) {
                     if (e.name === "AbortError") {
-                        msg = "共有を中断しました"
+                        msg = "共有が中断されたため、Blueskyにのみ投稿されました"
                     // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
                     // } else if (e.name === "NotAllowedError") {
                     //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
