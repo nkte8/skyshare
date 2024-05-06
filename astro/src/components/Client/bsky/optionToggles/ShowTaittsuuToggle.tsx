@@ -23,6 +23,7 @@ const Component = ({
             initialValue={readShowTaittsuu(false)}
             setPropConfig={setShowTaittsuu}
             labeltext={labeltext}
+            isLocked={false}
         />
     )
 }

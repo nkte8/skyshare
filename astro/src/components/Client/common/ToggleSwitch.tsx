@@ -6,12 +6,14 @@ const Component = ({
     setProp,
     initialValue,
     setPropConfig,
+    isLocked
 }: {
     labeltext: ReactNode
     prop: boolean
     setProp: Dispatch<SetStateAction<boolean>>
     initialValue: boolean
     setPropConfig: (flag: boolean) => void
+    isLocked: boolean
 }) => {
     const inputRef = useRef<HTMLInputElement>(null!)
     const handleClick = () => {
@@ -35,18 +37,19 @@ const Component = ({
 
     return (
         <>
-            <div className="mr-2 my-auto flex">
+            <div className="my-auto flex">
                 <input
                     ref={inputRef}
                     checked={prop}
                     onChange={handleCheck}
+                    disabled={isLocked}
                     type="checkbox"
                     className="peer sr-only"
                 />
                 <label className="text-sm">{labeltext}:&nbsp;</label>
                 <span
                     onClick={handleClick}
-                    className="my-auto block w-8 bg-gray-500 rounded-full p-[1px] 
+                    className="cursor-pointer my-auto block w-8 bg-gray-500 rounded-full p-[1px] 
                         after:block after:h-4 after:w-4 after:rounded-full 
                         after:bg-white after:transition 
                         peer-checked:bg-blue-500 

@@ -9,7 +9,8 @@ import AutoXPopupToggle from "./optionToggles/AutoXPopupToggle"
 import NoGenerateToggle from "./optionToggles/NoGenerateToggle"
 import ShowTaittsuuToggle from "./optionToggles/ShowTaittsuuToggle"
 import ForceIntentToggle from "./optionToggles/ForceIntentToggle"
-import AppendVia from "./optionToggles/AppendViaToggle"
+import AppendViaToggle from "./optionToggles/AppendViaToggle"
+import UseWebAPIToggle from "./optionToggles/UseWebAPIToggle"
 import LanguageSelectList from "./selectLists/LanguageSelectList"
 import Details from "../common/Details"
 import TagInputList from "./unique/TagInputList"
@@ -34,9 +35,9 @@ import { type msgInfo, type modes, MediaData } from "../common/types"
 const MemoMediaPreview = memo(MediaPreview)
 
 export type callbackPostOptions = {
-    postText: string
-    previewTitle: string | null
-    previewData: Blob | null
+    externalPostText: string
+    previewTitle: string | undefined
+    previewData: Blob | undefined
 }
 
 /**
@@ -92,6 +93,8 @@ const Component = ({
     const [language, setLanguage] = useState<string>("ja")
     // 下書きのstate情報
     const [drafts, setDrafts] = useState<Array<string>>([])
+    // ユーザエージェント
+    const userAgent = window.navigator.userAgent.toLowerCase()
 
     // Options
     // ポスト時に自動でXを開く
@@ -106,6 +109,12 @@ const Component = ({
     const [selfLabel, setSelfLabel] = useState<label.value | null>(null)
     // viaを付与する
     const [appendVia, setAppendVia] = useState<boolean>(false)
+    // viaを付与する
+    const [useWebAPI, setUseWebAPI] = useState<boolean>(false)
+
+    // 判定式
+    const isAutoPop = autoPop && !useWebAPI
+    const isNoGenerate = useWebAPI || noGenerate
 
     useEffect(() => {
         const handleDragOver = (e: DragEvent) => {
@@ -135,7 +144,7 @@ const Component = ({
      * 投稿リセット（下書きを削除）ボタンを押した際の動作
      */
     const handlerCancel = () => {
-        setMediaData(null)
+        setMediaData(undefined)
         setPostText("")
     }
 
@@ -143,23 +152,64 @@ const Component = ({
      * PostButtonコンポーネントのcallback関数
      * @param options callback元から取得したいオプション
      */
-    const callbackPost = (options: callbackPostOptions) => {
-        if (autoPop) {
+    const callbackPost = async (options: callbackPostOptions) => {
+        if (isAutoPop) {
             callPopup({
-                postText: options.postText,
+                postText: options.externalPostText,
                 kind: "xcom",
             })
         }
-        const mediaObjectURL: string | null = options.previewData
+        let isNeedSetMode = true
+        const mediaObjectURL: string | undefined = options.previewData
             ? URL.createObjectURL(options.previewData)
-            : null
+            : undefined
         const popupPreviewOptions: popupPreviewOptions = {
-            postText: options.postText,
+            postText: options.externalPostText,
             mediaObjectURL: mediaObjectURL,
             ogpTitle: options.previewTitle,
         }
-        setPopupPreviewOptions(popupPreviewOptions)
-        setMode("xcom")
+        if (useWebAPI) {
+            let msg: string = "共有メニューを展開中..."
+            let isError: boolean = false
+            const url = mediaData?.type === "external" ? mediaData.meta.url : ""
+            const files = mediaData?.type === "images" ? mediaData.files : []
+            try {
+                if (navigator.share !== undefined) {
+                    await navigator.share({
+                        text: options.externalPostText,
+                        url: url,
+                        files: files,
+                    })
+                    isNeedSetMode = false
+                } else {
+                    isError = true
+                    msg = "このブラウザは現在WebShareAPIに対応していません"
+                }
+                msg = "共有を完了しました"
+            } catch (e: unknown) {
+                msg = "Unexpected Unknown Error"
+                if (e instanceof Error) {
+                    if (e.name === "AbortError") {
+                        msg =
+                            "共有が中断されたため、Blueskyにのみ投稿されました"
+                        // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
+                        // } else if (e.name === "NotAllowedError") {
+                        //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
+                    } else {
+                        msg = e.name + ": " + e.message
+                        isError = true
+                    }
+                }
+            }
+            setMsgInfo({
+                msg: msg,
+                isError: isError,
+            })
+        }
+        if (isNeedSetMode) {
+            setPopupPreviewOptions(popupPreviewOptions)
+            setMode("xcom")
+        }
         handlerCancel()
     }
 
@@ -169,7 +219,7 @@ const Component = ({
      */
     const isValidPost = () =>
         postText.length >= 1 ||
-        (mediaData !== null && mediaData.images.length > 0)
+        (typeof mediaData !== "undefined" && mediaData.images.length > 0)
 
     return (
         <Tweetbox>
@@ -196,7 +246,7 @@ const Component = ({
                         language={language}
                         selfLabel={selfLabel}
                         options={{
-                            noGenerateOgp: noGenerate,
+                            noGenerateOgp: isNoGenerate,
                             appendVia: appendVia,
                         }}
                         mediaData={mediaData}
@@ -205,6 +255,7 @@ const Component = ({
                         setProcessing={setProcessing}
                         setMsgInfo={setMsgInfo}
                         disabled={!isValidPost()}
+                        userAgent={userAgent}
                     />
                 </div>
             </div>
@@ -263,16 +314,23 @@ const Component = ({
                         disabled={isProcessing}
                     />
                 </div>
-                <div className="flex flex-wrap mb-4">
+                <div className="flex flex-wrap my-2 mx-2 gap-x-8 gap-y-1">
+                    <UseWebAPIToggle
+                        labeltext={"共有メニューからXを開く"}
+                        prop={useWebAPI}
+                        setProp={setUseWebAPI}
+                    />
                     <AutoXPopupToggle
-                        labeltext={"Xを自動で開く"}
-                        prop={autoPop}
+                        labeltext={"Xを自動でポップアップする"}
+                        prop={isAutoPop}
                         setProp={setAutoPop}
+                        isLocked={useWebAPI}
                     />
                     <NoGenerateToggle
                         labeltext={"Xへの画像は自身で添付する"}
-                        prop={noGenerate}
+                        prop={isNoGenerate}
                         setProp={setNoGenerate}
+                        isLocked={useWebAPI}
                     />
                 </div>
             </div>
@@ -291,15 +349,17 @@ const Component = ({
                             prop={showTaittsuu}
                             setProp={setShowTaittsuu}
                         />
-                        <ForceIntentToggle
-                            labeltext={"Xの投稿はアプリを強制的に起動する"}
-                            prop={noUseXApp}
-                            setProp={setNoUseXApp}
-                        />
-                        <AppendVia
+                        <AppendViaToggle
                             labeltext={"Viaを付与する"}
                             prop={appendVia}
                             setProp={setAppendVia}
+                        />
+                        <ForceIntentToggle
+                            labeltext={
+                                "【削除予定】Xの投稿はアプリを強制的に起動する"
+                            }
+                            prop={noUseXApp}
+                            setProp={setNoUseXApp}
                         />
                     </div>
                 </Details>

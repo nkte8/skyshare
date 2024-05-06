@@ -17,12 +17,12 @@ const Component = ({
         if (itemId < 0 || itemId > 3) {
             return
         }
-        if (mediaData === null) {
+        if (typeof mediaData === "undefined") {
             return
         }
         if (mediaData.type === "external") {
             // linkcardは1枚なので消した時点でlistは空
-            setMediaData(null)
+            setMediaData(undefined)
             return
         }
         if (mediaData.type === "images") {
@@ -30,17 +30,21 @@ const Component = ({
                 return
             }
             // Listから自身のitemIdを取り除き、これをリストに追加する
-            const result = mediaData.images.filter(
+            const imagesResult = mediaData.images.filter(
+                (_, index) => index !== itemId,
+            )
+            const filesResult = mediaData.files.filter(
                 (_, index) => index !== itemId,
             )
             // 全てのメディアが削除された場合は null とする
-            if (result.length <= 0) {
-                setMediaData(null)
+            if (imagesResult.length <= 0) {
+                setMediaData(undefined)
                 return
             }
             setMediaData({
                 type: mediaData.type,
-                images: result,
+                images: imagesResult,
+                files: filesResult,
             })
         }
     }

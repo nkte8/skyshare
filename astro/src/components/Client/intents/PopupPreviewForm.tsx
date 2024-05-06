@@ -38,7 +38,7 @@ export const Component = ({
                 </div>
                 {/* プレビュー画像 */}
                 <div className="block relative h-auto max-w-full">
-                    {popupPreviewOptions.mediaObjectURL !== null && (
+                    {typeof popupPreviewOptions.mediaObjectURL !== "undefined" && (
                         <>
                             {/* 画像 */}
                             {popupPreviewOptions.mediaObjectURL !== "" ? (
@@ -67,7 +67,7 @@ export const Component = ({
                                 </div>
                             )}
                             {/* 画像の左端に表示されるタイトル文字 */}
-                            {popupPreviewOptions.ogpTitle !== null && (
+                            {typeof popupPreviewOptions.ogpTitle !== "undefined" && (
                                 <div className="absolute bottom-2 left-4 bg-opacity-70 rounded-md px-2 text-white bg-black">
                                     {popupPreviewOptions.ogpTitle}
                                 </div>

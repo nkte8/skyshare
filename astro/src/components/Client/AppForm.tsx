@@ -22,7 +22,7 @@ const Component = ({
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
 }) => {
     // メディアのプレビューに関するStateコンストラクタ
-    const [mediaData, setMediaData] = useState<MediaData>(null)
+    const [mediaData, setMediaData] = useState<MediaData>(undefined)
     const [popupPreviewOptions, setPopupPreviewOptions] =
         useState<popupPreviewOptions>(null!)
     const Forms = ({ mode }: { mode: modes }) => {
