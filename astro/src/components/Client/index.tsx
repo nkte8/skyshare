@@ -19,6 +19,7 @@ import PageControllerForm from "./pagedb/PageControllerForm"
 import type model_getProfile from "@/utils/atproto_api/models/getProfile.json"
 import { link } from "./common/tailwindVariants"
 import { buttonID } from "./bsky/types"
+import InfoOverlay from "./bsky/unique/InfoOverlay"
 
 const Component = ({ portalonly = false }: { portalonly?: boolean }) => {
     const [isLoaded, setIsLoad] = useState<boolean>(false)
@@ -82,6 +83,10 @@ const Component = ({ portalonly = false }: { portalonly?: boolean }) => {
                                           setProcessing={setProcessing}
                                           session={session}
                                           setMsgInfo={setMsgInfo}
+                                      />
+                                      <InfoOverlay
+                                          msgInfo={msgInfo}
+                                          hide={!isProcessing}
                                       />
                                       <InfoLabel msgInfo={msgInfo} />
                                       <div

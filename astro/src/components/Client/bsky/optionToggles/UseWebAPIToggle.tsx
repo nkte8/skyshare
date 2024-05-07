@@ -13,7 +13,7 @@ const Component = ({
     labeltext,
     prop,
     setProp,
-    setMsgInfo
+    setMsgInfo,
 }: {
     labeltext: ReactNode
     prop: boolean
@@ -22,7 +22,7 @@ const Component = ({
 }) => {
     const callbackIsShareEnable = (checked: boolean) => {
         if (checked === true) {
-            return isShareEnable({setMsgInfo})
+            return isShareEnable({ setMsgInfo })
         }
         return false
     }

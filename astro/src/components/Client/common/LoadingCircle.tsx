@@ -1,5 +1,5 @@
 import { load_circle } from "./tailwindVariants"
-const Component = ({ size }: { size: "s" | "l" }) => {
+const Component = ({ size }: { size: "s" | "l" | "m" }) => {
     return (
         <svg
             className={load_circle({ size: size })}
