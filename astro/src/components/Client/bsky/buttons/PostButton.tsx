@@ -302,13 +302,11 @@ export const Component = ({
                                 setMsgInfo({
                                     msg: "本文をクリップボードにコピーしました",
                                     isError: false,
-                                })
-                            })
-                            .catch(() => {
-                                setMsgInfo({
-                                    msg: "クリップボードへのコピーに失敗しました",
-                                    isError: true,
-                                })
+                                }),
+                                    setMsgInfo({
+                                        msg: "クリップボードへのコピーに失敗しました",
+                                        isError: true,
+                                    })
                             })
                         await navigator.share(shareData).then(() => {
                             setMsgInfo({

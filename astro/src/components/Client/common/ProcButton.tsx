@@ -36,7 +36,7 @@ const Component = ({
         clickedButtonID !== "" && clickedButtonID === buttonID && showAnimation
     return (
         <button
-            onPointerDown={() => handlerWrapper(handler)}
+            onClick={() => handlerWrapper(handler)}
             className={button_base({
                 disabled: isProcessing || disabled,
                 regectinput: disabled,
