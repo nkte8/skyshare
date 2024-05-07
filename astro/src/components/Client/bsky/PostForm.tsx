@@ -294,7 +294,7 @@ const Component = ({
                                         "align-middle",
                                     ].join(" ")}
                                 />
-                                でアプリ版Xへ投稿をコピーする
+                                でアプリ版Xを開いて投稿する
                             </>
                         }
                         prop={useWebAPI}
