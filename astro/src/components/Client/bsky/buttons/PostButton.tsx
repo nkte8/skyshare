@@ -331,6 +331,7 @@ export const Component = ({
                             msg: msg,
                             isError: isError,
                         })
+                        setProcessing(false)
                         return
                     }
                 }
