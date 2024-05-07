@@ -16,7 +16,6 @@ const Component = ({
     prop: boolean
     setProp: Dispatch<SetStateAction<boolean>>
 }) => {
-    // このコンポーネントおよび関連コンポーネントはWebShareAPI採用に伴い、削除予定
     return (
         <ToggleSwitch
             prop={prop}

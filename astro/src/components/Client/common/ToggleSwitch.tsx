@@ -6,7 +6,8 @@ const Component = ({
     setProp,
     initialValue,
     setPropConfig,
-    isLocked
+    isLocked,
+    callback,
 }: {
     labeltext: ReactNode
     prop: boolean
@@ -14,22 +15,36 @@ const Component = ({
     initialValue: boolean
     setPropConfig: (flag: boolean) => void
     isLocked: boolean
+    callback?: (checked: boolean) => boolean
 }) => {
     const inputRef = useRef<HTMLInputElement>(null!)
     const handleClick = () => {
         inputRef.current.click()
     }
-
+    // callback未定義の場合は、checkedをそのまま返却する関数をいれる
+    const fakeCallback = (checked: boolean) => checked
+    if (typeof callback === "undefined") {
+        callback = fakeCallback
+    }
     const setPropAll = (checked: boolean) => {
         setProp(checked)
         setPropConfig(checked)
     }
     const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
         const checked = event.currentTarget.checked
-        setPropAll(checked)
+        event.currentTarget.checked = callback(checked)
+        // 変更された値と、callbackを実行して得た値が一致している時のみpropを更新
+        if (checked === event.currentTarget.checked) {
+            setPropAll(checked)
+        }
     }
     const handleLoaded = () => {
-        setPropAll(initialValue)
+        const callbackInit = callback(initialValue)
+        if (initialValue === callbackInit) {
+            setPropAll(initialValue)
+        } else {
+            setPropAll(callbackInit)
+        }
     }
     useEffect(() => {
         handleLoaded()
