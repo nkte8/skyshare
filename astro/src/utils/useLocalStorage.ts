@@ -17,7 +17,7 @@ const LSKeyName: Obj = {
     savedTags: "savedTags",
     drafts: "drafts",
     appendVia: "appendVia",
-    useWebShareAPI: "useWebShareAPI"
+    useWebShareAPI: "useWebShareAPI",
 }
 
 const ZodTags = z.array(z.string())
