@@ -41,6 +41,7 @@ export type callbackPostOptions = {
     externalPostText: string
     previewTitle: string | undefined
     previewData: Blob | undefined
+    isNeedChangeMode: boolean
 }
 
 /**
@@ -155,14 +156,13 @@ const Component = ({
      * PostButtonコンポーネントのcallback関数
      * @param options callback元から取得したいオプション
      */
-    const callbackPost = async (options: callbackPostOptions) => {
+    const callbackPost = (options: callbackPostOptions) => {
         if (isAutoPop) {
             callPopup({
                 postText: options.externalPostText,
                 kind: "xcom",
             })
         }
-        let isNeedSetMode = true
         const mediaObjectURL: string | undefined = options.previewData
             ? URL.createObjectURL(options.previewData)
             : undefined
@@ -171,47 +171,7 @@ const Component = ({
             mediaObjectURL: mediaObjectURL,
             ogpTitle: options.previewTitle,
         }
-        if (useWebAPI) {
-            let msg: string = "共有メニューを展開中..."
-            let isError: boolean = false
-            const url =
-                mediaData?.type === "external" ? mediaData.meta.url : undefined
-            const files =
-                mediaData?.type === "images" ? mediaData.files : undefined
-            try {
-                if (navigator.share !== undefined) {
-                    await navigator.share({
-                        text: options.externalPostText,
-                        url: url,
-                        files: files,
-                    })
-                    isNeedSetMode = false
-                } else {
-                    isError = true
-                    msg = "このブラウザは現在WebShareAPIに対応していません"
-                }
-                msg = "共有を完了しました"
-            } catch (e: unknown) {
-                msg = "Unexpected Unknown Error"
-                if (e instanceof Error) {
-                    if (e.name === "AbortError") {
-                        msg =
-                            "共有が中断されたため、Blueskyにのみ投稿されました"
-                        // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
-                        // } else if (e.name === "NotAllowedError") {
-                        //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
-                    } else {
-                        msg = e.name + ": " + e.message
-                        isError = true
-                    }
-                }
-            }
-            setMsgInfo({
-                msg: msg,
-                isError: isError,
-            })
-        }
-        if (isNeedSetMode) {
+        if (options.isNeedChangeMode) {
             setPopupPreviewOptions(popupPreviewOptions)
             setMode("xcom")
         }
@@ -253,6 +213,7 @@ const Component = ({
                         options={{
                             noGenerateOgp: isNoGenerate,
                             appendVia: appendVia,
+                            useWebAPI: useWebAPI,
                         }}
                         mediaData={mediaData}
                         callback={callbackPost}
@@ -338,6 +299,7 @@ const Component = ({
                         }
                         prop={useWebAPI}
                         setProp={setUseWebAPI}
+                        setMsgInfo={setMsgInfo}
                     />
                     <AutoXPopupToggle
                         labeltext={"ブラウザ版Xを自動でポップアップする"}
@@ -375,7 +337,7 @@ const Component = ({
                         />
                         <ForceIntentToggle
                             labeltext={
-                                "【削除予定】Xの投稿はアプリを強制的に起動する"
+                                "デバイス固有URLを用いてポップアップを実行する"
                             }
                             prop={noUseXApp}
                             setProp={setNoUseXApp}

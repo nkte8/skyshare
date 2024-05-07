@@ -34,6 +34,7 @@ import { pagesPrefix } from "@/env/envs"
 import saveTagToSavedTags from "../lib/saveTagList"
 import { richTextFacetParser } from "@/utils/richTextParser"
 import { bskyProfileURL } from "@/env/bsky"
+import { isShareEnable } from "../lib/webshareApi"
 
 export const Component = ({
     postText,
@@ -54,10 +55,11 @@ export const Component = ({
     options: {
         appendVia: boolean
         noGenerateOgp: boolean
+        useWebAPI: boolean
         // autoPopup: boolean
     }
     mediaData: MediaData
-    callback: (options: callbackPostOptions) => Promise<void>
+    callback: (options: callbackPostOptions) => void
     isProcessing: boolean
     setProcessing: Dispatch<SetStateAction<boolean>>
     setMsgInfo: Dispatch<SetStateAction<msgInfo>>
@@ -103,6 +105,7 @@ export const Component = ({
                 externalPostText: postText,
                 previewTitle: undefined,
                 previewData: undefined,
+                isNeedChangeMode: true,
             }
             // facetを取得
             const facets = await detectFacets({ text: postText })
@@ -354,8 +357,48 @@ export const Component = ({
                 }
                 callbackPostOptions.previewTitle = mediaData.meta.title
             }
+            // WebShareAPI対応
+            if (options.useWebAPI) {
+                const url =
+                    mediaData?.type === "external"
+                        ? mediaData.meta.url
+                        : undefined
+                const files =
+                    mediaData?.type === "images" ? mediaData.files : undefined
+
+                const shareData = {
+                    text: callbackPostOptions.externalPostText,
+                    url: url,
+                    files: files,
+                }
+                if (isShareEnable({ setMsgInfo, shareData })) {
+                    try {
+                        await navigator.share(shareData)
+                        callbackPostOptions.isNeedChangeMode = false
+                    } catch (e: unknown) {
+                        let msg = "Unexpected Unknown Error"
+                        let isError: boolean = false
+                        if (e instanceof Error) {
+                            if (e.name === "AbortError") {
+                                msg =
+                                    "共有が中断されたため、Blueskyにのみ投稿されました"
+                                // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
+                                // } else if (e.name === "NotAllowedError") {
+                                //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
+                            } else {
+                                msg = e.name + ": " + e.message
+                                isError = true
+                            }
+                        }
+                        setMsgInfo({
+                            msg: msg,
+                            isError: isError,
+                        })
+                    }
+                }
+            }
             // callbackを起動
-            await callback(callbackPostOptions)
+            callback(callbackPostOptions)
         } catch (error: unknown) {
             let msg: string = "Unexpected Unknown Error"
             if (error instanceof Error) {

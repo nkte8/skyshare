@@ -1,12 +1,25 @@
 # Skyshare 更新履歴
 
+## 1.5.3
+
+### Patch Changes
+
+- `共有メニューからアプリ版Xを開く`オプションのON/OFF時、ブラウザで利用可能かを判定するようにしました
+  - `共有メニューからアプリ版Xを開く`オプションを実行する際、トグルスイッチを押した時点で可能であるかどうかを判定、不可能な場合はエラーを出力するように修正しました。
+  - WebShareAPIが無効ではないが、一部の機能が使えない場合（具体的には`navigator.share !== undefined && navigator.canShare({...}) == false`、エラーログを出した上でオプション自体は有効になるようになっています。
+    - Android上で画像添付時は本文が抜け落ちるといった事象が発生しており、これに対しての切り分けとしての対応になります。
+      - Android端末をご持参の方のフィードバック協力に感謝いたします。
+- `Xの投稿はアプリを強制的に起動する`の削除予定を解除し、名称を変更しました。
+  - 共有機能によるXアプリの実行では一部オプションが使用できず、これまで通りアプリを起動するオプションはあったほうが良いとのフィードバックを受け、削除予定を解除しました。
+  - `Xの投稿はアプリを強制的に起動する`から`デバイス固有URLを用いてポップアップを実行する`に名称を変更しました。
+
 ## 1.5.2
 
 ### Patch Changes
 
 - トグルの内容を改善しました
   - `共有メニューからXへを開く`から`共有ﾒﾆｭｰ(アイコン)でアプリ版Xへ投稿をコピーする`に変更しました。
-  - `Xを自動でポップアップする`→`ブラウザ版Xを自動でポップアップする`に変更しました。
+  - `Xを自動でポップアップする`から`ブラウザ版Xを自動でポップアップする`に変更しました。
 
 ## 1.5.1
 
@@ -251,23 +264,23 @@
 - 今回のアップデートにて、投稿フォームのプレビュー画面にOGP画像を表示させるため、データの扱いを大幅に改修しました。これまで`Array<Files>: imageFiles`と定義していた変数は`MediaData`としてより広い役割を持つようになりました。`MediaData`型は`LinkCard`と`Images`、メディアが存在しない場合の`null`のユニオン型で、以下のように定義されています。
 
 ```ts
-export type MediaData = LinkCard | Images | null;
+export type MediaData = LinkCard | Images | null
 type LinkCard = {
-  type: "external";
+  type: "external"
   images: Array<{
-    blob: Blob | null;
-  }>;
+    blob: Blob | null
+  }>
   meta: ogpMetaData & {
-    url: string;
-  };
-};
+    url: string
+  }
+}
 type Images = {
-  type: "images";
+  type: "images"
   images: Array<{
-    alt: string;
-    blob: Blob;
-  }>;
-};
+    alt: string
+    blob: Blob
+  }>
+}
 ```
 
 - これまで`Array<File>`型で定義していた変数は`Images.images.blob`に、`Blob`型として配置されています。これはプレビューの作成や実際の`createRecord`の際に`File`型である必要がないためです。

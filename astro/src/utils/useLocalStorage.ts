@@ -43,9 +43,6 @@ export const readUseWebShareAPI = (def: boolean): boolean => {
 
 export const setUseWebShareAPI = (flag: boolean): void => {
     set_ls_value(LSKeyName.useWebShareAPI, flag.toString())
-    if (flag === false) {
-        rm_ls_value(LSKeyName.useWebShareAPI)
-    }
 }
 
 // viaはlexicon的には定義されていない?付与しての投稿自体は問題ないため、オプションに変更
