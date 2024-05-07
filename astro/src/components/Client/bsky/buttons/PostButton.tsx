@@ -296,18 +296,14 @@ export const Component = ({
                 if (isShareEnable({ setMsgInfo, shareData })) {
                     try {
                         // 暫定対処: 本文をクリップボードにコピーする、コピー例外はスルーする
-                        await navigator.clipboard
+                        navigator.clipboard
                             .writeText(shareData.text)
-                            .then(() => {
+                            .then(() =>
                                 setMsgInfo({
                                     msg: "本文をクリップボードにコピーしました",
                                     isError: false,
                                 }),
-                                    setMsgInfo({
-                                        msg: "クリップボードへのコピーに失敗しました",
-                                        isError: true,
-                                    })
-                            })
+                            ).catch(() => {})
                         await navigator.share(shareData).then(() => {
                             setMsgInfo({
                                 msg: "共有が完了しました!",
