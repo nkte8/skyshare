@@ -36,6 +36,9 @@ import { richTextFacetParser } from "@/utils/richTextParser"
 import { bskyProfileURL } from "@/env/bsky"
 import { isShareEnable } from "../lib/webshareApi"
 
+const sleep = (msec: number) =>
+    new Promise(resolve => setTimeout(resolve, msec))
+
 export const Component = ({
     postText,
     language,
@@ -122,13 +125,19 @@ export const Component = ({
                         // 暫定対処: 本文をクリップボードにコピーする、コピー例外はスルーする
                         navigator.clipboard
                             .writeText(shareData.text)
-                            .then(() =>
+                            .then(() => {
                                 setMsgInfo({
                                     msg: "本文をクリップボードにコピーしました",
                                     isError: false,
-                                }),
-                            )
-                            .catch(() => {})
+                                })
+                            })
+                            .catch(() => {
+                                setMsgInfo({
+                                    msg: "クリップボードへの本文コピーに失敗しました",
+                                    isError: true,
+                                })
+                            })
+                        await sleep(1000)
                         await navigator.share(shareData).then(() => {
                             setMsgInfo({
                                 msg: "共有が完了しました!",
