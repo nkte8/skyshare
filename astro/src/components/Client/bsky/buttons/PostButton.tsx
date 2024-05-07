@@ -298,16 +298,19 @@ export const Component = ({
                         // 暫定対処: 本文をクリップボードにコピーする、コピー例外はスルーする
                         await navigator.clipboard
                             .writeText(shareData.text)
-                            .then(() =>
+                            .then(() => {
                                 setMsgInfo({
                                     msg: "本文をクリップボードにコピーしました",
                                     isError: false,
                                 }),
-                            )
-                            .catch(() => {})
+                                    setMsgInfo({
+                                        msg: "クリップボードへのコピーに失敗しました",
+                                        isError: true,
+                                    })
+                            })
                         await navigator.share(shareData).then(() => {
                             setMsgInfo({
-                                msg: "共有が完了しました",
+                                msg: "共有が完了しました!",
                                 isError: false,
                             })
                             callbackPostOptions.isNeedChangeMode = false
@@ -318,7 +321,7 @@ export const Component = ({
                         if (e instanceof Error) {
                             if (e.name === "AbortError") {
                                 msg =
-                                    "共有が中断されたため、投稿をキャンセルしました。"
+                                    "共有が中断されたため、投稿をキャンセルしました"
                                 // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
                                 // } else if (e.name === "NotAllowedError") {
                                 //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
@@ -361,7 +364,7 @@ export const Component = ({
                 mediaData.type === "images"
             ) {
                 setMsgInfo({
-                    msg: "Twitter用ページ生成中...",
+                    msg: "X用ページ生成中...",
                     isError: false,
                 })
                 const createPageResult = await createPage({
@@ -374,7 +377,7 @@ export const Component = ({
                     throw e
                 }
                 setMsgInfo({
-                    msg: "Twitter用リンクを生成しました!",
+                    msg: "生成したOGPの取得中...",
                     isError: false,
                 })
                 const [id, rkey] = createPageResult.uri.split("/")
@@ -402,6 +405,10 @@ export const Component = ({
                         languageCode: language,
                     })
                 }
+                setMsgInfo({
+                    msg: "X用ポストの作成が完了しました!",
+                    isError: false,
+                })
             }
             // 外部URLの場合は取得済みであろう内容を使用する
             if (
