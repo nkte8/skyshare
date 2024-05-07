@@ -36,6 +36,9 @@ import { richTextFacetParser } from "@/utils/richTextParser"
 import { bskyProfileURL } from "@/env/bsky"
 import { isShareEnable } from "../lib/webshareApi"
 
+const sleep = (msec: number) =>
+    new Promise(resolve => setTimeout(resolve, msec))
+
 export const Component = ({
     postText,
     language,
@@ -95,10 +98,6 @@ export const Component = ({
             // Postを押したら強制的にフォーカスアウトイベントを発火
         }
         initializePost()
-        setMsgInfo({
-            msg: "レコードを作成中...",
-            isError: false,
-        })
         try {
             // プレビューへ送るテキストを別途初期化
             const callbackPostOptions: callbackPostOptions = {
@@ -107,6 +106,73 @@ export const Component = ({
                 previewData: undefined,
                 isNeedChangeMode: true,
             }
+            // WebShareAPI対応
+            if (options.useWebAPI) {
+                const url =
+                    mediaData?.type === "external"
+                        ? mediaData.meta.url
+                        : undefined
+                const files =
+                    mediaData?.type === "images" ? mediaData.files : undefined
+
+                const shareData = {
+                    text: callbackPostOptions.externalPostText,
+                    url: url,
+                    files: files,
+                }
+                if (isShareEnable({ setMsgInfo, shareData })) {
+                    try {
+                        // 暫定対処: 本文をクリップボードにコピーする、コピー例外はスルーする
+                        navigator.clipboard
+                            .writeText(shareData.text)
+                            .then(() => {
+                                setMsgInfo({
+                                    msg: "本文をクリップボードにコピーしました",
+                                    isError: false,
+                                })
+                            })
+                            .catch(() => {
+                                setMsgInfo({
+                                    msg: "クリップボードへの本文コピーに失敗しました",
+                                    isError: true,
+                                })
+                            })
+                        await sleep(1000)
+                        await navigator.share(shareData).then(() => {
+                            setMsgInfo({
+                                msg: "共有が完了しました!",
+                                isError: false,
+                            })
+                            callbackPostOptions.isNeedChangeMode = false
+                        })
+                    } catch (e: unknown) {
+                        let msg = "Unexpected Unknown Error"
+                        let isError: boolean = false
+                        if (e instanceof Error) {
+                            if (e.name === "AbortError") {
+                                msg =
+                                    "共有が中断されたため、投稿をキャンセルしました"
+                                // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
+                                // } else if (e.name === "NotAllowedError") {
+                                //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
+                            } else {
+                                msg = e.name + ": " + e.message
+                                isError = true
+                            }
+                        }
+                        setMsgInfo({
+                            msg: msg,
+                            isError: isError,
+                        })
+                        setProcessing(false)
+                        return
+                    }
+                }
+            }
+            setMsgInfo({
+                msg: "レコードを作成中...",
+                isError: false,
+            })
             // facetを取得
             const facets = await detectFacets({ text: postText })
             // 今後公式APIを使うことを考慮し、recordBuilder.tsの利用を終了
@@ -304,7 +370,7 @@ export const Component = ({
                 mediaData.type === "images"
             ) {
                 setMsgInfo({
-                    msg: "Twitter用ページ生成中...",
+                    msg: "X用ページ生成中...",
                     isError: false,
                 })
                 const createPageResult = await createPage({
@@ -317,7 +383,7 @@ export const Component = ({
                     throw e
                 }
                 setMsgInfo({
-                    msg: "Twitter用リンクを生成しました!",
+                    msg: "生成したOGPの取得中...",
                     isError: false,
                 })
                 const [id, rkey] = createPageResult.uri.split("/")
@@ -345,6 +411,10 @@ export const Component = ({
                         languageCode: language,
                     })
                 }
+                setMsgInfo({
+                    msg: "X用ポストの作成が完了しました!",
+                    isError: false,
+                })
             }
             // 外部URLの場合は取得済みであろう内容を使用する
             if (
@@ -356,46 +426,6 @@ export const Component = ({
                     callbackPostOptions.previewData = blob
                 }
                 callbackPostOptions.previewTitle = mediaData.meta.title
-            }
-            // WebShareAPI対応
-            if (options.useWebAPI) {
-                const url =
-                    mediaData?.type === "external"
-                        ? mediaData.meta.url
-                        : undefined
-                const files =
-                    mediaData?.type === "images" ? mediaData.files : undefined
-
-                const shareData = {
-                    text: callbackPostOptions.externalPostText,
-                    url: url,
-                    files: files,
-                }
-                if (isShareEnable({ setMsgInfo, shareData })) {
-                    try {
-                        await navigator.share(shareData)
-                        callbackPostOptions.isNeedChangeMode = false
-                    } catch (e: unknown) {
-                        let msg = "Unexpected Unknown Error"
-                        let isError: boolean = false
-                        if (e instanceof Error) {
-                            if (e.name === "AbortError") {
-                                msg =
-                                    "共有が中断されたため、Blueskyにのみ投稿されました"
-                                // // WebShareAPIをSafariで動かす場合、HTTPSのホストでしか利用できない成約がある
-                                // } else if (e.name === "NotAllowedError") {
-                                //     msg = "On Safari, localhost not allowed to use WebShareAPI with media attached."
-                            } else {
-                                msg = e.name + ": " + e.message
-                                isError = true
-                            }
-                        }
-                        setMsgInfo({
-                            msg: msg,
-                            isError: isError,
-                        })
-                    }
-                }
             }
             // callbackを起動
             callback(callbackPostOptions)

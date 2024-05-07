@@ -11,7 +11,7 @@ const Component = ({
     labeltext,
     prop,
     setProp,
-    isLocked
+    isLocked,
 }: {
     labeltext: ReactNode
     prop: boolean

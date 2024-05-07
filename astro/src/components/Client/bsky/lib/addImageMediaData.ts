@@ -51,7 +51,7 @@ const addImageMediaData = (
     const result: MediaData = {
         type: "images",
         images: newMediaDataImages.slice(0, maxAttachableImages),
-        files: newMediaDataFiles.slice(0, maxAttachableImages)
+        files: newMediaDataFiles.slice(0, maxAttachableImages),
     }
     setMediaData(result)
 }
