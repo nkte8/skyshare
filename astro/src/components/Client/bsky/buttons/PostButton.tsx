@@ -303,7 +303,8 @@ export const Component = ({
                                     msg: "本文をクリップボードにコピーしました",
                                     isError: false,
                                 }),
-                            ).catch(() => {})
+                            )
+                            .catch(() => {})
                         await navigator.share(shareData).then(() => {
                             setMsgInfo({
                                 msg: "共有が完了しました!",
