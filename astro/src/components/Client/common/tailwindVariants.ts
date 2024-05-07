@@ -61,6 +61,7 @@ export const load_circle = tv({
         size: {
             s: "h-[20px] w-[20px]",
             l: "h-24 w-24",
+            m: "h-16 w-16"
         },
     },
 })

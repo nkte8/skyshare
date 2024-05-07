@@ -57,7 +57,7 @@ const Component = ({
                 <>
                     {Forms({ mode })}
                     <div
-                        className={["flex", "justify-center", "my-1"].join("")}
+                        className={["flex", "justify-center", "my-1"].join(" ")}
                     >
                         <ModeSelectButton
                             mode={mode}
