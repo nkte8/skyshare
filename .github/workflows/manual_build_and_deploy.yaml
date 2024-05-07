@@ -23,7 +23,8 @@ jobs:
       contents: write
 
   deploy_frontend:
-    needs: ["get_env_name"]
+    if: ${{ ! failure() }}
+    needs: ["get_env_name", "format_code"]
     environment:
       name: ${{ needs.get_env_name.outputs.env_name }}
       url: ${{ steps.published.outputs.pageurl }}
