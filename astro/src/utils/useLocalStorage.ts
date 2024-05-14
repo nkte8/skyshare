@@ -18,6 +18,7 @@ const LSKeyName: Obj = {
     drafts: "drafts",
     appendVia: "appendVia",
     useWebShareAPI: "useWebShareAPI",
+    announceClosed: "announceClosed",
 }
 
 const ZodTags = z.array(z.string())
@@ -31,6 +32,19 @@ const ZodLoginInfo = z.object({
     pw: z.string(),
 })
 type LoginInfo = z.infer<typeof ZodLoginInfo>
+
+export const readAnnounceClosed = (def: number): Date => {
+    const value = get_ls_value(LSKeyName.announceClosed)
+    if (value !== null) {
+        return new Date(Number(value))
+    }
+    rm_ls_value(LSKeyName.announceClosed)
+    return new Date(def)
+}
+
+export const setAnnounceClosed = (time: number): void => {
+    set_ls_value(LSKeyName.announceClosed, time.toString())
+}
 
 export const readUseWebShareAPI = (def: boolean): boolean => {
     const value = get_ls_value(LSKeyName.useWebShareAPI)

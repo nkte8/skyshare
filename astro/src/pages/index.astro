@@ -1,7 +1,7 @@
 ---
 import Pagelayout from "@/layouts/Indexlayout.astro"
 import { servicename, githuburl } from "@/env/vars"
-import { posturl, qaurl, changeurl, featureurl } from "@/env/envs"
+import { posturl, qaurl, changeurl, featureurl, skythrowurl } from "@/env/envs"
 const title = `${servicename} - Share Bluesky to X`
 import version from "@/env/version"
 
@@ -59,16 +59,26 @@ const robots = ["index", "follow", "noarchive", "noimageindex"]
             </div>
         </div>
 
-        <div class="max-w-xl mt-4 my-8 mx-auto text-lg font-normal">
-            <div>アプリ化、対応しています</div>
-            <div class="text-sm">
+        <div
+            class="max-w-sm mt-4 my-8 mx-auto font-normal rounded-2xl bg-white bg-opacity-80 py-2"
+        >
+            <div class="mt-2"><b>ネイティブアプリ対応</b>の</div>
+            <div class="mb-2">Bluesky投稿専用クライアント</div>
+            <a href="https://skythrow.com">
+                <img
+                    src="https://cdn.bsky.app/img/avatar/plain/did:plc:5nor25cnkgdkhfgkgmgz4tn5/bafkreibnzneiofx44dwug3dqehanpnsyd5t3rdd2pgvoffbido6hbviesi@jpeg"
+                    class="w-20 h-20 rounded-2xl mx-auto mb-1"
+                />
+                SkyThrow</a
+            >
+            <!-- <div class="text-sm">
                 <img
                     src="/apple-touch-icon.png"
                     class="w-20 h-20 rounded-2xl mx-auto mb-1"
                 />
                 Skyshare
-            </div>
-            <div>「ホーム画面に追加」からどうぞ</div>
+            </div> -->
+            <div>を<a href={skythrowurl}>紹介・応援しています。</a></div>
         </div>
     </div>
 </Pagelayout>
