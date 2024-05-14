@@ -9,6 +9,7 @@ import LogoutButton from "./bsky/buttons/LogoutButton"
 import PopupPreviewForm from "./intents/PopupPreviewForm"
 import { MediaData } from "./common/types"
 import { popupPreviewOptions } from "./intents/types"
+import AnnouceLabel from "./common/AnnounceLabel"
 
 const Component = ({
     session,
@@ -55,6 +56,7 @@ const Component = ({
         <>
             {session.accessJwt !== "" ? (
                 <>
+                    <AnnouceLabel />
                     {Forms({ mode })}
                     <div
                         className={["flex", "justify-center", "my-1"].join(" ")}
